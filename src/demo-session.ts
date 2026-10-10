@@ -1,45 +1,15 @@
-export type DemoRole = "student" | "club"
+// Identity now comes from Supabase Auth (src/auth). This module only keeps the
+// return-to-item destination used while a visitor signs in.
 
-export type DemoSession = {
-  role: DemoRole
-  displayName: string
-  // Unverified, format-checked only. Replace with a real identity once a backend exists.
-  email?: string
+// Left over from the format-only demo login. It granted a role from a localStorage value,
+// so it is removed on load and never read.
+try {
+  localStorage.removeItem("uniflow-demo-session")
+} catch {
+  // Storage can be unavailable; there is nothing to clean up then.
 }
 
-const SESSION_KEY = "uniflow-demo-session"
-
-export function getDemoSession(): DemoSession | null {
-  try {
-    const value = JSON.parse(localStorage.getItem(SESSION_KEY) ?? "null")
-    if (value?.role === "student" || value?.role === "club") {
-      return {
-        role: value.role,
-        displayName: typeof value.displayName === "string" ? value.displayName : value.role === "student" ? "Alex" : "Campus Code Collective",
-        email: typeof value.email === "string" ? value.email : undefined,
-      }
-    }
-  } catch {
-    return null
-  }
-  return null
-}
-
-export function enterDemo(role: DemoRole, displayName?: string, email?: string) {
-  const session: DemoSession = {
-    role,
-    displayName: displayName ?? (role === "student" ? "Alex" : "Campus Code Collective"),
-    ...(email ? { email } : {}),
-  }
-  localStorage.setItem(SESSION_KEY, JSON.stringify(session))
-  return session
-}
-
-export function exitDemo() {
-  localStorage.removeItem(SESSION_KEY)
-}
-
-// Where to send a visitor once student entry finishes, set when they tap Join or Save without
+// Where to send a visitor once student sign-in finishes, set when they tap Join or Save without
 // a session. Only student item pages are accepted, so a stored value can never redirect elsewhere.
 const PENDING_KEY = "uniflow-pending-destination"
 const ITEM_ROUTE = /^\/app\/item\/[A-Za-z0-9_-]{1,80}$/

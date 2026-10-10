@@ -15,14 +15,17 @@ import {
   Sparkles,
   X,
 } from "lucide-react"
-import { campusItems, defaultProfile, DEMO_PERIOD } from "./data"
+import { defaultProfile, DEMO_PERIOD } from "./data"
 import { filterCampusItems, matchInterests, orderByInterests, type DiscoverFilters } from "./services"
 import type { CampusCategory, CampusItem, StudentProfile } from "./types"
 import { interestOptions } from "./types"
 import { useSavedItems } from "./useSavedItems"
-import { canJoin, getStudentEmail, isRegistrationClosed, registrationCutoff, useJoinedEvents, type JoinedEvents } from "./useJoinedEvents"
-import { clearPendingDestination, exitDemo, setPendingItemDestination } from "../demo-session"
-import { clubSlug, getPublishedCampusItems } from "../club/publishing"
+import { acceptsRsvps, canJoin, isRegistrationClosed, registrationCutoff, useJoinedEvents, type JoinedEvents } from "./useJoinedEvents"
+import { useAuth } from "../auth/AuthProvider"
+import { clearPendingDestination, setPendingItemDestination } from "../demo-session"
+import { clubSlug } from "../club/publishing"
+import { useCampusItems } from "../club/published-events"
+import { refreshPublishedEvents } from "../club/published-events"
 
 type StudentRoute = "today" | "discover" | "saved" | "joined" | "profile" | "item"
 
@@ -91,8 +94,8 @@ function DateLines({ item }: { item: CampusItem }) {
   return <span className="student-when"><b>When</b>{formatDate(item.startDate)}</span>
 }
 
-// Student entry for a visitor with no session. From Join or Save, entry returns to that item;
-// from anywhere else it is a normal entry that ends on Today.
+// Student sign-in for a visitor with no session. From Join or Save, sign-in returns to that item;
+// from anywhere else it is a normal sign-in that ends on Today.
 function enterStudentDemo(returnToItemId?: string) {
   if (returnToItemId) setPendingItemDestination(returnToItemId)
   else clearPendingDestination()
@@ -110,7 +113,7 @@ function SourceBadge({ item }: { item: CampusItem }) {
   return (
     <span className="student-source-badge">
       <span className="student-source-dot" />
-      {item.isDemoPublication ? "Local demo" : item.reviewStatus}
+      {item.reviewStatus}
     </span>
   )
 }
@@ -318,7 +321,18 @@ function FilterBar({
   )
 }
 
+// Browsing stays open to everyone. Join, Save, Saved, and Joined need a signed-in user, and
+// the page waits for a stored session to be restored before deciding there is none.
 function StudentApp() {
+  const auth = useAuth()
+  if (auth.status === "loading") {
+    return <div className="student-app"><main className="student-main"><p className="student-personalization-note" role="status" aria-live="polite">Checking your session…</p></main></div>
+  }
+  return <StudentAppContent key={auth.email ?? "signed-out"} />
+}
+
+function StudentAppContent() {
+  const auth = useAuth()
   const [location, setLocation] = useState(getRoute)
   const [profile, setProfile] = useState<StudentProfile>(() => {
     try {
@@ -329,19 +343,14 @@ function StudentApp() {
   })
   const [mobileNav, setMobileNav] = useState(false)
   const [savedNotice, setSavedNotice] = useState("")
-  const [studentEmail] = useState(getStudentEmail)
+  // The signed-in user's email, from Supabase Auth. Nothing typed into the app can set it.
+  const studentEmail = auth.email
   const { saved, isSaved, toggleSaved } = useSavedItems(studentEmail)
-  const rsvp = useJoinedEvents(studentEmail)
+  const rsvp = useJoinedEvents(auth.user?.id ?? null, studentEmail)
   const reducedMotion = useReducedMotion() ?? false
-  const campusRecords = useMemo(() => {
-    const published = getPublishedCampusItems()
-    const publishedIds = new Set(published.map((entry) => entry.id))
-    const publishedKeys = new Set(published.map((entry) => `${entry.title.toLowerCase()}::${entry.publisher.toLowerCase()}`))
-    return [
-      ...campusItems.filter((entry) => !publishedIds.has(entry.id) && !publishedKeys.has(`${entry.title.toLowerCase()}::${entry.publisher.toLowerCase()}`)),
-      ...published,
-    ]
-  }, [])
+  // Sample records, then everything clubs have published, read from the server.
+  const campus = useCampusItems(false)
+  const campusRecords = campus.items
 
   useEffect(() => {
     const sync = () => setLocation(getRoute())
@@ -361,13 +370,15 @@ function StudentApp() {
     window.scrollTo({ top: 0, behavior: reducedMotion ? "auto" : "smooth" })
   }
 
-  const leaveDemo = () => {
-    exitDemo()
+  const [signingOut, setSigningOut] = useState(false)
+  const signOut = async () => {
+    setSigningOut(true)
+    await auth.signOut()
     window.location.assign("/get-started")
   }
 
   const handleSave = (item: CampusItem) => {
-    // Saved items are kept per demo student, so there is nothing to save under without a session.
+    // Saved items are kept per signed-in student, so there is nothing to save under without a session.
     if (!studentEmail) {
       enterStudentDemo(item.id)
       return
@@ -414,8 +425,15 @@ function StudentApp() {
           <p>Example period</p>
           <strong>18—25 OCT 2026</strong>
           <span>Illustrative campus data. No live institutional feed is connected.</span>
-          <button type="button" className="student-session-action" onClick={() => window.location.assign("/get-started")}>Switch demo role</button>
-          <button type="button" className="student-session-action" onClick={leaveDemo}>Exit demo</button>
+          {studentEmail ? (
+            <>
+              <span>Signed in as {studentEmail}</span>
+              <button type="button" className="student-session-action" onClick={() => window.location.assign("/login/club")}>Club workspace</button>
+              <button type="button" className="student-session-action" disabled={signingOut} onClick={signOut}>{signingOut ? "Signing out…" : "Sign out"}</button>
+            </>
+          ) : (
+            <button type="button" className="student-session-action" onClick={() => enterStudentDemo()}>Sign in</button>
+          )}
         </div>
       </aside>
       <nav className="student-tabbar" aria-label="Student application tabs">
@@ -438,6 +456,7 @@ function StudentApp() {
           </button>
         </header>
         {savedNotice && <div className="student-toast" role="status"><Check size={15} />{savedNotice}</div>}
+        {campus.status === "error" && <p className="student-personalization-note" role="alert"><CircleAlert size={15} /> {campus.message} Club updates may be missing or out of date. <button type="button" className="student-session-action" onClick={() => void refreshPublishedEvents()}>Try again</button></p>}
         {/* No exit-then-enter here: the next page mounts at once and stays visible while it settles. */}
           <motion.div key={`${location.route}-${location.id ?? ""}`} initial={reducedMotion ? false : { y: 10 }} animate={{ y: 0 }} transition={{ duration: reducedMotion ? 0 : 0.25 }}>
             {location.route === "today" && <TodayPage items={campusRecords} profile={profile} saved={isSaved} onSave={handleSave} onOpen={(id) => go(`/app/item/${id}`)} onDiscover={() => go("/app/discover")} />}
@@ -445,7 +464,7 @@ function StudentApp() {
             {location.route === "saved" && <SavedPage email={studentEmail} items={campusRecords} savedItems={saved.map((entry) => campusRecords.find((itemEntry) => itemEntry.id === entry.itemId)).filter((entry): entry is CampusItem => Boolean(entry))} saved={isSaved} onSave={handleSave} onOpen={(id) => go(`/app/item/${id}`)} onDiscover={() => go("/app/discover")} />}
             {location.route === "profile" && <ProfilePage profile={profile} onSave={(next) => { setProfile(next); localStorage.setItem("uniflow-student-profile", JSON.stringify(next)); setSavedNotice("Demo preferences saved.") }} />}
             {location.route === "joined" && <JoinedPage rsvp={rsvp} joinedItems={rsvp.joined.map((entry) => campusRecords.find((itemEntry) => itemEntry.id === entry.itemId)).filter((entry): entry is CampusItem => Boolean(entry))} saved={isSaved} onSave={handleSave} onOpen={(id) => go(`/app/item/${id}`)} onDiscover={() => go("/app/discover")} />}
-            {location.route === "item" && <DetailPage rsvp={rsvp} items={campusRecords} item={item} saved={item ? isSaved(item.id) : false} onSave={item ? () => handleSave(item) : undefined} onBack={() => window.history.back()} onOpen={(id) => go(`/app/item/${id}`)} />}
+            {location.route === "item" && <DetailPage loading={campus.status === "loading"} rsvp={rsvp} items={campusRecords} item={item} saved={item ? isSaved(item.id) : false} onSave={item ? () => handleSave(item) : undefined} onBack={() => window.history.back()} onOpen={(id) => go(`/app/item/${id}`)} />}
           </motion.div>
       </main>
     </div>
@@ -454,9 +473,9 @@ function StudentApp() {
 
 function TodayPage({ items, profile, saved, onSave, onOpen, onDiscover }: { items: CampusItem[]; profile: StudentProfile; saved: (id: string) => boolean; onSave: (item: CampusItem) => void; onOpen: (id: string) => void; onDiscover: () => void }) {
   const personalized = items.filter((item) => profile.preferredCategories.includes(item.category) || item.tags.some((tag) => profile.interests.some((interest) => tag.toLowerCase().includes(interest.split(" ")[0].toLowerCase()))))
-  const featured = items.find((item) => item.isDemoPublication) ?? items.find((item) => item.id === "build-first-web-app") ?? items[0]
+  const featured = items.find((item) => item.isClubPublication) ?? items.find((item) => item.id === "build-first-web-app") ?? items[0]
   // Urgency decides membership: the two earliest deadlines. Interests only reorder within the section.
-  const mostUrgent = items.filter((item) => item.deadline && item.id !== featured.id && !item.isDemoPublication).sort((a, b) => a.deadline!.localeCompare(b.deadline!)).slice(0, 2)
+  const mostUrgent = items.filter((item) => item.deadline && item.id !== featured.id && !item.isClubPublication).sort((a, b) => a.deadline!.localeCompare(b.deadline!)).slice(0, 2)
   const needsAttention = orderByInterests(mostUrgent, profile.interests)
   const comingUp = orderByInterests(items.filter((item) => !needsAttention.includes(item) && item.id !== featured.id), profile.interests).slice(0, 3)
   void personalized
@@ -517,8 +536,8 @@ function SavedPage({ email, items: _items, savedItems, saved, onSave, onOpen, on
   const filtered = savedItems.filter((item) => category === "All" || item.category === category)
   return (
     <section className="student-page">
-      <div className="student-page-heading"><div><p className="student-eyebrow">YOUR SHORTLIST · {savedItems.length} SAVED</p><h1>Keep it close.</h1><p>{email ? <>Saved for <strong>{email}</strong> in this browser. Important notices and opportunities, gathered without losing their source context.</> : "Enter the student demo to keep a shortlist under your own email."}</p></div><label className="student-inline-filter"><span>Show</span><select value={category} onChange={(event) => setCategory(event.target.value as CampusCategory | "All")}><option>All</option>{categories.slice(1).map((entry) => <option key={entry}>{entry}</option>)}</select></label></div>
-      {!email ? <div className="student-empty-state"><Bookmark size={25} /><h2>No student demo session.</h2><p>Saved items are kept per demo student, so you need to enter with an email first.</p><button type="button" onClick={() => enterStudentDemo()}>Enter the student demo</button></div> : filtered.length ? <div className="student-saved-list">{filtered.map((item) => <CampusItemRow key={item.id} item={item} saved={saved(item.id)} onToggleSaved={() => onSave(item)} onOpen={() => onOpen(item.id)} />)}</div> : <div className="student-empty-state"><Bookmark size={25} /><h2>Nothing saved yet.</h2><p>Keep important notices and opportunities close.</p><button type="button" onClick={onDiscover}>Discover campus information</button></div>}
+      <div className="student-page-heading"><div><p className="student-eyebrow">YOUR SHORTLIST · {savedItems.length} SAVED</p><h1>Keep it close.</h1><p>{email ? <>Saved for <strong>{email}</strong> in this browser. Important notices and opportunities, gathered without losing their source context.</> : "Sign in to keep a shortlist under your own account."}</p></div><label className="student-inline-filter"><span>Show</span><select value={category} onChange={(event) => setCategory(event.target.value as CampusCategory | "All")}><option>All</option>{categories.slice(1).map((entry) => <option key={entry}>{entry}</option>)}</select></label></div>
+      {!email ? <div className="student-empty-state"><Bookmark size={25} /><h2>You’re not signed in.</h2><p>Saved items are kept per student, so you need to sign in first.</p><button type="button" onClick={() => enterStudentDemo()}>Sign in</button></div> : filtered.length ? <div className="student-saved-list">{filtered.map((item) => <CampusItemRow key={item.id} item={item} saved={saved(item.id)} onToggleSaved={() => onSave(item)} onOpen={() => onOpen(item.id)} />)}</div> : <div className="student-empty-state"><Bookmark size={25} /><h2>Nothing saved yet.</h2><p>Keep important notices and opportunities close.</p><button type="button" onClick={onDiscover}>Discover campus information</button></div>}
     </section>
   )
 }
@@ -543,15 +562,19 @@ function ProfilePage({ profile, onSave }: { profile: StudentProfile; onSave: (pr
   )
 }
 
-const RSVP_NOTE = "Browser-only demo RSVP, not a confirmed registration. The organizer isn’t notified."
+const RSVP_NOTE = "Your RSVP is saved to your account. The club sees how many students joined, not who."
 
 function JoinedPage({ rsvp, joinedItems, saved, onSave, onOpen, onDiscover }: { rsvp: JoinedEvents; joinedItems: CampusItem[]; saved: (id: string) => boolean; onSave: (item: CampusItem) => void; onOpen: (id: string) => void; onDiscover: () => void }) {
   return (
     <section className="student-page">
-      <div className="student-page-heading"><div><p className="student-eyebrow">YOUR RSVPS · {joinedItems.length} JOINED</p><h1>Events you’ve joined.</h1><p>{rsvp.email ? <>Demo RSVPs for <strong>{rsvp.email}</strong>. Saved items stay in Saved.</> : "Enter the student demo to keep RSVPs under your own email."}</p></div></div>
+      <div className="student-page-heading"><div><p className="student-eyebrow">YOUR RSVPS · {joinedItems.length} JOINED</p><h1>Events you’ve joined.</h1><p>{rsvp.email ? <>RSVPs for <strong>{rsvp.email}</strong>. Saved items stay in Saved.</> : "Sign in to keep RSVPs under your own account."}</p></div></div>
       <p className="student-personalization-note"><CircleAlert size={15} /> {RSVP_NOTE}</p>
-      {!rsvp.email ? (
-        <div className="student-empty-state"><CalendarDays size={25} /><h2>No student demo session.</h2><p>RSVPs are kept per demo student, so you need to enter with an email first.</p><button type="button" onClick={() => enterStudentDemo()}>Enter the student demo</button></div>
+      {rsvp.email && rsvp.status === "loading" ? (
+        <p className="student-personalization-note" role="status" aria-live="polite">Loading your RSVPs…</p>
+      ) : rsvp.email && rsvp.status === "error" ? (
+        <div className="student-empty-state"><CircleAlert size={25} /><h2>Your RSVPs couldn’t be loaded.</h2><p role="alert">{rsvp.error}</p><button type="button" onClick={rsvp.reload}>Try again</button></div>
+      ) : !rsvp.email ? (
+        <div className="student-empty-state"><CalendarDays size={25} /><h2>You’re not signed in.</h2><p>RSVPs are kept per student, so you need to sign in first.</p><button type="button" onClick={() => enterStudentDemo()}>Sign in</button></div>
       ) : joinedItems.length ? (
         <div className="student-saved-list">{joinedItems.map((item) => <CampusItemRow key={item.id} item={item} saved={saved(item.id)} onToggleSaved={() => onSave(item)} onOpen={() => onOpen(item.id)} />)}</div>
       ) : (
@@ -562,8 +585,18 @@ function JoinedPage({ rsvp, joinedItems, saved, onSave, onOpen, onDiscover }: { 
 }
 
 function JoinAction({ item, rsvp }: { item: CampusItem; rsvp: JoinedEvents }) {
-  const { email, isJoined, join, cancel } = rsvp
+  const { email, isJoined, join, cancel, pendingId, error, status } = rsvp
   const joined = isJoined(item.id)
+  const busy = pendingId === item.id
+  // Sample records have no row on the server for an RSVP to point at.
+  if (!acceptsRsvps(item)) {
+    return (
+      <div className="student-join" role="status">
+        <strong className="student-join-state is-closed"><CircleAlert size={16} aria-hidden="true" /> RSVPs aren’t open for this sample event</strong>
+        <p>This is a sample record that ships with the prototype. Events published by a club can be joined.</p>
+      </div>
+    )
+  }
   const closed = isRegistrationClosed(item)
   const cutoff = registrationCutoff(item)
   const closedReason = item.deadline ? `Registration closed on ${formatDate(cutoff)}.` : "This event has already started."
@@ -572,25 +605,32 @@ function JoinAction({ item, rsvp }: { item: CampusItem; rsvp: JoinedEvents }) {
       {joined ? (
         <>
           <strong className="student-join-state"><Check size={16} aria-hidden="true" /> You’ve joined this event</strong>
-          <button type="button" className="student-secondary-action" onClick={() => cancel(item.id)}>Cancel RSVP</button>
+          <button type="button" className="student-secondary-action" disabled={busy} onClick={() => void cancel(item.id)}>{busy ? "Cancelling…" : "Cancel RSVP"}</button>
         </>
       ) : closed ? (
         <strong className="student-join-state is-closed"><CircleAlert size={16} aria-hidden="true" /> Registration closed</strong>
       ) : !email ? (
-        <button type="button" className="student-primary-action" onClick={() => enterStudentDemo(item.id)}><CalendarDays size={16} aria-hidden="true" /> Enter student demo to join</button>
+        <button type="button" className="student-primary-action" onClick={() => enterStudentDemo(item.id)}><CalendarDays size={16} aria-hidden="true" /> Sign in to join</button>
+      ) : status === "loading" ? (
+        <strong className="student-join-state">Checking your RSVP…</strong>
+      ) : status === "error" ? (
+        <button type="button" className="student-secondary-action" onClick={rsvp.reload}>Try loading your RSVP again</button>
       ) : (
-        <button type="button" className="student-primary-action" onClick={() => join(item.id)}><CalendarDays size={16} aria-hidden="true" /> Join event</button>
+        <button type="button" className="student-primary-action" disabled={busy} onClick={() => void join(item.id)}><CalendarDays size={16} aria-hidden="true" /> {busy ? "Joining…" : "Join event"}</button>
       )}
+      {error && <p role="alert"><strong>{error}</strong></p>}
       <p>
         {joined
           ? closed ? `${closedReason} If you cancel, you won’t be able to join again. ${RSVP_NOTE}` : `Joined as ${email}. ${RSVP_NOTE}`
-          : closed ? closedReason : !email ? "Joining needs a student demo session, so RSVPs stay separate for each student on this browser. Nothing is recorded until you enter." : RSVP_NOTE}
+          : closed ? closedReason : !email ? "Joining needs you to be signed in, so the RSVP is recorded under your own account. Nothing is recorded until you sign in." : RSVP_NOTE}
       </p>
     </div>
   )
 }
 
-function DetailPage({ rsvp, items, item, saved, onSave, onBack, onOpen }: { rsvp: JoinedEvents; items: CampusItem[]; item: CampusItem | null; saved: boolean; onSave?: () => void; onBack: () => void; onOpen: (id: string) => void }) {
+function DetailPage({ loading, rsvp, items, item, saved, onSave, onBack, onOpen }: { loading: boolean; rsvp: JoinedEvents; items: CampusItem[]; item: CampusItem | null; saved: boolean; onSave?: () => void; onBack: () => void; onOpen: (id: string) => void }) {
+  // A club update is only known once the server has answered, so don't call it missing before then.
+  if (!item && loading) return <section className="student-page"><p className="student-personalization-note" role="status" aria-live="polite">Loading this update…</p></section>
   if (!item) return <section className="student-page student-not-found"><ArrowLeft size={25} /><p className="student-eyebrow">404 · INFORMATION NOT FOUND</p><h1>This record isn’t available.</h1><p>The link may be outdated, or this illustrative item has moved.</p><button type="button" onClick={onBack}>Go back</button></section>
   const related = items.filter((entry) => entry.id !== item.id && (entry.department === item.department || entry.category === item.category)).slice(0, 2)
   return (

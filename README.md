@@ -22,13 +22,13 @@ The loop UniFlow is built around: campus notice or poster → AI extraction → 
 | Area | State |
 |---|---|
 | Landing page, role selection, guest Explore | Works |
-| Student app: Today & Soon, Discover with search and filters, item detail with source details, Saved, Joined, Profile | Works, on sample data plus anything published in the same browser |
-| Club workspace: drafts, create, review, publish, club profile, RSVP counts | Works, stored in the same browser only |
-| Student sign-in | **Demo only.** The email is format-checked for `@nith.ac.in`; nothing verifies it belongs to the visitor |
-| Club sign-in | **Demo only.** Anyone can pick any of the three sample clubs |
-| Storage | **Demo only.** `localStorage`; nothing is shared between browsers or devices |
+| Student app: Today & Soon, Discover with search and filters, item detail with source details, Saved, Joined, Profile | Works, on sample data plus everything clubs have published (read from Supabase). RSVPs are stored in Supabase; Saved and Profile stay in the browser |
+| Club workspace: drafts, create, review, publish, club profile, RSVP counts | Drafts, publications and RSVP counts are stored in Supabase and shared by the club's members. Club profile text and the activity list stay in the browser |
+| Student sign-in | Supabase email and password (`signInWithPassword`). Accounts are created by the team; there is no sign-up screen. Needs users to exist in the project |
+| Club sign-in | Same sign-in, then the account's rows in `club_members` decide which club workspaces open. Stays closed until the migration is applied and members are added |
+| Storage | Supabase for events (drafts and publications), RSVPs and membership. `localStorage` for saved items, interests, club profile text and the activity list |
 | AI extraction from a poster | **Simulated.** The review screen shows preset sample values; no model is called |
-| Supabase database | **Not connected.** A migration and access tests are in `supabase/`, checked locally, not applied to any project |
+| Supabase database | Connected: Auth, `club_members`, `events`, `rsvps` and `club_rsvp_counts()`. `seed.sql` is not applied, so the sample records are not in the database and cannot be joined |
 | Gemma via the Gemini API | **Not implemented.** No API call exists in the code |
 
 ## Flows
@@ -36,7 +36,7 @@ The loop UniFlow is built around: campus notice or poster → AI extraction → 
 ### Student
 
 1. Open the landing page and choose **Get started**, or browse `/explore` without an account.
-2. Enter a `@nith.ac.in` address and pick interests (`/login/student`).
+2. Sign in with the email and password you were given, then pick interests (`/login/student`).
 3. **Today & Soon** (`/app/today`) and **Discover** (`/app/discover`) list items, ordered by the chosen interests.
 4. Open an item (`/app/item/:id`) to see publisher, source, dates and review status.
 5. Save it, or join it if it is an event whose registration is still open. Saved and joined items appear under `/app/saved` and `/app/joined`.
@@ -46,7 +46,7 @@ The loop UniFlow is built around: campus notice or poster → AI extraction → 
 1. Choose the club role and pick one of the three sample clubs (`/login/club`).
 2. Create an update (`/club/create`) manually, from the sample brief, or with an uploaded image as the source document.
 3. Check every field on the review screen (`/club/review/:id`) and confirm the human review.
-4. Publish. The item appears in the student app and Explore in the same browser.
+4. Publish. The item appears in the student app and Explore for everyone, in any browser.
 5. The overview and published pages show how many students joined each event. Counts only; no attendee details.
 
 ## Architecture
@@ -55,12 +55,11 @@ The loop UniFlow is built around: campus notice or poster → AI extraction → 
 
 - React 19, TypeScript, Vite 8, Tailwind CSS v4, Motion.
 - Single-page app with hand-rolled routing on `window.location.pathname` in `src/App.tsx`.
-- `src/entry/` access pages and Explore, `src/student-app/` student app, `src/club/` club workspace and publishing logic, `src/demo-session.ts` the demo session.
-- All state is in `localStorage` under `uniflow-*` keys.
+- `src/entry/` access pages and Explore, `src/student-app/` student app, `src/club/` club workspace and publishing logic, `src/auth/` Supabase client and session, `src/demo-session.ts` the return-to-item destination.
+- Events and RSVPs go through `src/club/events-api.ts`; the rest of the state is in `localStorage` under `uniflow-*` keys.
 
 **Planned, not built**
 
-- **Supabase** for Auth and Postgres. Published events, club membership and RSVPs move from `localStorage` to the tables in `supabase/migrations/`. Row level security decides who can read and write.
 - **Gemma through the Gemini API** for extracting fields from an uploaded notice or poster. The call must run server-side so the API key never reaches the browser, and its output always goes through human review before publication.
 
 ## Repository layout
@@ -92,13 +91,13 @@ The dev server uses port 8443 and fails if it is taken; set `PORT` to change it.
 
 ## Environment variables
 
-Copy `.env.example` to `.env.local`. **The app does not read any of these yet**; they are the names the planned integration will use.
+Copy `.env.example` to `.env.local`. The browser reads the two `VITE_` values; without them the public pages still work and sign-in reports that it is not set up.
 
 | Name | Used by | Notes |
 |---|---|---|
 | `VITE_SUPABASE_URL` | browser | Project URL |
-| `VITE_SUPABASE_ANON_KEY` | browser | Public anon key; safe to ship only because RLS is enabled |
-| `SUPABASE_SERVICE_ROLE_KEY` | admin scripts only | Never prefix with `VITE_`, never ship to the browser |
+| `VITE_SUPABASE_PUBLISHABLE_KEY` | browser | Publishable key (`sb_publishable_…`); safe to ship only because RLS is enabled |
+| `SUPABASE_SECRET_KEY` | admin scripts only | Secret key (`sb_secret_…`). Not read by the app. Never prefix with `VITE_`, never ship to the browser |
 | `GEMINI_API_KEY` | server-side extraction only | Never prefix with `VITE_` |
 | `PORT` | Vite | Optional, defaults to 8443 |
 
@@ -136,15 +135,15 @@ The club ids are `campus-code-collective`, `student-arts-circle` and `creative-c
 
 ## Demo steps
 
-Use one browser throughout; data does not travel between browsers yet.
+Needs two accounts created in the Supabase project, one of them added to `club_members` (see `supabase/README.md`). The two halves can run in different browsers.
 
 1. `npm run dev`, open `http://localhost:8443`, choose **Get started**.
-2. Enter as a club and open the workspace.
+2. Sign in with the club account and open the workspace.
 3. Create an update with **Use sample brief**. Change the category to `Event` if you want students to be able to join it; the sample is an `Opportunity`.
 4. Save, open the review screen, confirm the human review, and publish.
-5. Use **Switch demo role**, enter as a student with a `@nith.ac.in` address, and pick interests.
+5. Sign out, sign in with the student account, and pick interests.
 6. Find the published item in Today & Soon or Discover, open it, check the source details, then save and join it.
-7. Switch back to the club and open the published page to see the RSVP count.
+7. Sign back in as the club and open the published page to see the RSVP count.
 
 ## Known limitations
 

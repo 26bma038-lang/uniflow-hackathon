@@ -1,7 +1,9 @@
 # UniFlow Supabase backend
 
 Schema, access rules, and tests for the cross-browser publish → discover → join → count flow.
-The React app does not use any of this yet.
+The React app uses Supabase Auth for sign-in and reads `club_members` to decide club workspace
+access (`src/auth/`). Drafts, publications, RSVPs, and RSVP counts go through
+`src/club/events-api.ts`. Uploaded poster images, club profile text, and saved items are not stored here.
 
 - `migrations/20261010120000_clubs_events_rsvps.sql` — tables, RLS, functions, the three clubs
 - `seed.sql` — two sample events for local resets only

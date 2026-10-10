@@ -1,46 +1,23 @@
 import { useCallback, useEffect, useMemo, useState } from "react"
-import { getDemoSession } from "../demo-session"
+import { cancelRsvp, joinEvent, listMyRsvps } from "../club/events-api"
 import type { CampusItem } from "./types"
 
-// Local demo RSVP. Nothing is sent to an organizer; swap this storage for an API later.
-// Each entry belongs to one event and one demo student, keyed by normalized email.
+// RSVPs live in public.rsvps. Each row belongs to one event and the signed-in user; the
+// database fills in the user from the session and enforces the registration window.
 export type JoinedEvent = {
   itemId: string
-  email: string
   joinedAt: string
-}
-
-const STORAGE_KEY = "uniflow-student-joined-events"
-
-export function normalizeEmail(email: string) {
-  return email.trim().toLowerCase()
-}
-
-// The demo student who can hold RSVPs, or null when nobody has entered the student demo.
-export function getStudentEmail() {
-  const session = getDemoSession()
-  return session?.role === "student" && session.email ? normalizeEmail(session.email) : null
-}
-
-// Entries saved before RSVPs were tied to a student have no email and are dropped.
-function readJoined(): JoinedEvent[] {
-  try {
-    const parsed = JSON.parse(localStorage.getItem(STORAGE_KEY) ?? "[]")
-    if (!Array.isArray(parsed)) return []
-    return parsed.filter(
-      (entry): entry is JoinedEvent =>
-        typeof entry?.itemId === "string" &&
-        typeof entry?.email === "string" &&
-        typeof entry?.joinedAt === "string",
-    )
-  } catch {
-    return []
-  }
 }
 
 // Only events can be joined. Scholarships, notices, deadlines, and opportunities cannot.
 export function canJoin(item: CampusItem) {
   return item.category === "Event"
+}
+
+// An RSVP needs a row in the events table to point at. Sample records that only ship with
+// the prototype have none, so they can be read but not joined.
+export function acceptsRsvps(item: CampusItem) {
+  return canJoin(item) && Boolean(item.isClubPublication)
 }
 
 // Registration closes at the registration deadline, or when the event starts if there is none.
@@ -55,58 +32,72 @@ export function isRegistrationClosed(item: CampusItem, now = Date.now()) {
   return !Number.isNaN(time) && now > time
 }
 
-// RSVPs per event for the club workspace: each normalized email counts once per event.
-// Returns numbers only, so no student email leaves this module.
-export function readRsvpCounts() {
-  const emailsByItem = new Map<string, Set<string>>()
-  for (const entry of readJoined()) {
-    const emails = emailsByItem.get(entry.itemId) ?? new Set<string>()
-    emails.add(normalizeEmail(entry.email))
-    emailsByItem.set(entry.itemId, emails)
-  }
-  return new Map([...emailsByItem].map(([itemId, emails]) => [itemId, emails.size]))
-}
-
-export function useJoinedEvents(email: string | null) {
-  const [entries, setEntries] = useState<JoinedEvent[]>(readJoined)
+export function useJoinedEvents(userId: string | null, email: string | null) {
+  const [joined, setJoined] = useState<JoinedEvent[]>([])
+  const [status, setStatus] = useState<"idle" | "loading" | "ready" | "error">(userId ? "loading" : "idle")
+  // The event a join or cancel is in flight for, and the last thing that went wrong.
+  const [pendingId, setPendingId] = useState<string | null>(null)
+  const [error, setError] = useState<string | null>(null)
+  const [reloadToken, setReloadToken] = useState(0)
 
   useEffect(() => {
-    try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(entries))
-    } catch {
-      // Local persistence is optional in the prototype.
+    if (!userId) {
+      setJoined([])
+      setStatus("idle")
+      return
     }
-  }, [entries])
+    let cancelled = false
+    setStatus("loading")
+    listMyRsvps(userId).then((result) => {
+      if (cancelled) return
+      if (result.ok) {
+        setJoined(result.value)
+        setStatus("ready")
+        setError(null)
+      } else {
+        setStatus("error")
+        setError(result.message)
+      }
+    })
+    return () => {
+      cancelled = true
+    }
+  }, [userId, reloadToken])
 
-  const joined = useMemo(
-    () => (email ? entries.filter((entry) => entry.email === email) : []),
-    [entries, email],
-  )
-  const isJoined = useCallback(
-    (itemId: string) => joined.some((entry) => entry.itemId === itemId),
-    [joined],
-  )
+  const isJoined = useCallback((itemId: string) => joined.some((entry) => entry.itemId === itemId), [joined])
+
   const join = useCallback(
-    (itemId: string) => {
-      if (!email) return
-      setEntries((current) =>
-        current.some((entry) => entry.itemId === itemId && entry.email === email)
-          ? current
-          : [...current, { itemId, email, joinedAt: new Date().toISOString() }],
-      )
+    async (itemId: string) => {
+      if (!userId || pendingId) return
+      setPendingId(itemId)
+      setError(null)
+      const result = await joinEvent(itemId)
+      if (result.ok) setJoined((current) => (current.some((entry) => entry.itemId === itemId) ? current : [...current, result.value]))
+      else setError(result.message)
+      setPendingId(null)
     },
-    [email],
-  )
-  const cancel = useCallback(
-    (itemId: string) => {
-      setEntries((current) =>
-        current.filter((entry) => !(entry.itemId === itemId && entry.email === email)),
-      )
-    },
-    [email],
+    [userId, pendingId],
   )
 
-  return { email, joined, isJoined, join, cancel }
+  const cancel = useCallback(
+    async (itemId: string) => {
+      if (!userId || pendingId) return
+      setPendingId(itemId)
+      setError(null)
+      const result = await cancelRsvp(itemId, userId)
+      if (result.ok) setJoined((current) => current.filter((entry) => entry.itemId !== itemId))
+      else setError(result.message)
+      setPendingId(null)
+    },
+    [userId, pendingId],
+  )
+
+  const reload = useCallback(() => setReloadToken((value) => value + 1), [])
+
+  return useMemo(
+    () => ({ email, joined, isJoined, join, cancel, status, pendingId, error, reload }),
+    [email, joined, isJoined, join, cancel, status, pendingId, error, reload],
+  )
 }
 
 export type JoinedEvents = ReturnType<typeof useJoinedEvents>

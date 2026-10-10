@@ -32,7 +32,8 @@ export type CampusItem = {
   status: ItemStatus
   image?: string
   tags: string[]
-  isDemoPublication?: boolean
+  // True for an update a club published through UniFlow, which has a row in the events table.
+  isClubPublication?: boolean
   sourceLabel?: string
 }
 

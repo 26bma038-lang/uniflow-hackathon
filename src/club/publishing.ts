@@ -7,10 +7,10 @@ export type PublicationStatus =
   | "ready_for_approval"
   | "published_demo"
 
+// One row of public.events, in the shape the workspace edits. "published_demo" is the
+// database's "published"; src/club/events-api.ts converts in both directions.
 export type ClubRecord = EventDraft & {
   id: string
-  // The demo club that owns this record. Records saved before clubs could be switched
-  // have no clubId and are read as Campus Code Collective's.
   clubId: string
   status: PublicationStatus
   updatedAt: string
@@ -44,8 +44,8 @@ export const sampleRecordValues: Partial<EventDraft> = {
   registrationDeadline: "2026-10-17T18:00",
 }
 
-// Demo club identities. These are the student groups already present in UniFlow's sample data.
-// Choosing one is a demo convenience in this browser, not a verified organizer permission.
+// The clubs UniFlow knows, with the same ids as public.clubs. Which of them an account may
+// open is decided by club_members on the server, never by this list.
 export type DemoClub = { id: string; name: string }
 
 export const demoClubs: DemoClub[] = [
@@ -169,65 +169,6 @@ export function blankRecord(clubId: string = DEFAULT_CLUB_ID): ClubRecord {
   }
 }
 
-function parseStoredRecords(): unknown[] {
-  try {
-    const parsed = JSON.parse(localStorage.getItem(CLUB_RECORDS_KEY) ?? "[]")
-    return Array.isArray(parsed) ? parsed : []
-  } catch {
-    return []
-  }
-}
-
-function normalizeRecord(value: unknown): ClubRecord | null {
-  if (!value || typeof value !== "object") return null
-  const item = value as Partial<ClubRecord> & { source?: string; status?: string }
-  if (typeof item.id !== "string") return null
-  const now = new Date().toISOString()
-  const clubId = getDemoClub(typeof item.clubId === "string" ? item.clubId : clubIdForPublisher(item.publisher)).id
-  const status: PublicationStatus =
-    item.status === "published_demo" ||
-    item.status === "needs_review" ||
-    item.status === "ready_for_approval"
-      ? item.status
-      : "draft"
-  const source =
-    item.source === "Sample document" ||
-    item.source === "Uploaded document"
-      ? item.source
-      : "Manual entry"
-  return {
-    ...blankRecord(),
-    ...item,
-    id: item.id,
-    status,
-    source,
-    sourceName: item.sourceName || item.source || source,
-    createdAt: item.createdAt || item.updatedAt || now,
-    updatedAt: item.updatedAt || now,
-    clubId,
-    publisher: item.publisher || getDemoClub(clubId).name,
-    publisherCampusId: item.publisherCampusId || "demo-campus",
-    reviewedAt: item.reviewedAt || null,
-    approvedAt: item.approvedAt || null,
-    publishedAt: item.publishedAt || null,
-    reviewConfirmed: Boolean(item.reviewConfirmed),
-  }
-}
-
-export function readClubRecords(): ClubRecord[] {
-  return parseStoredRecords()
-    .map(normalizeRecord)
-    .filter((item): item is ClubRecord => Boolean(item))
-}
-
-export function writeClubRecords(records: ClubRecord[]) {
-  localStorage.setItem(CLUB_RECORDS_KEY, JSON.stringify(records))
-}
-
-export function publishedClubRecords() {
-  return readClubRecords().filter((record) => record.status === "published_demo")
-}
-
 function isoDate(record: ClubRecord, time: string) {
   if (!record.startDate) return null
   return `${record.startDate}T${time || "00:00"}:00+05:30`
@@ -272,12 +213,9 @@ export function toCampusItem(record: ClubRecord): CampusItem {
     lastVerifiedAt: record.reviewedAt,
     reviewStatus: "Human reviewed",
     status: registrationStatus(deadline),
-    tags: [record.category.toLowerCase(), "local demo publication", "student group"],
-    isDemoPublication: true,
+    tags: [record.category.toLowerCase(), "club update", "student group"],
+    isClubPublication: true,
     sourceLabel: record.sourceName,
   }
 }
 
-export function getPublishedCampusItems() {
-  return publishedClubRecords().map(toCampusItem)
-}

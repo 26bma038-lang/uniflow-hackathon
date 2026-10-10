@@ -6,23 +6,23 @@ import {
   Check,
   CircleAlert,
   Compass,
-  FileText,
-  Home,
   Sparkles,
   Users,
 } from "lucide-react"
-import { clearPendingDestination, enterDemo, exitDemo, peekPendingDestination, takePendingDestination } from "../demo-session"
-import { campusItems, defaultProfile } from "../student-app/data"
+import { allowedClubIds, useAuth } from "../auth/AuthProvider"
+import { clearPendingDestination, peekPendingDestination, takePendingDestination } from "../demo-session"
+import { defaultProfile } from "../student-app/data"
 import { interestOptions, type CampusItem, type StudentProfile } from "../student-app/types"
-import { clubIdForPublisher, clubSlug, demoClubs, getCurrentClubId, getDemoClub, getPublishedCampusItems, publishedClubRecords, readClubProfile, setCurrentClubId } from "../club/publishing"
+import { clubIdForPublisher, clubSlug, demoClubs, getCurrentClubId, readClubProfile, setCurrentClubId } from "../club/publishing"
+import { useCampusItems, usePublishedEvents } from "../club/published-events"
 
-type EntryRoute = "roles" | "explore" | "explore-item" | "explore-club" | "student" | "student-interests" | "club" | "club-overview"
+type EntryRoute = "roles" | "explore" | "explore-item" | "explore-club" | "student" | "student-interests" | "club"
 
 const STUDENT_EMAIL_DOMAIN = "nith.ac.in"
 const STUDENT_ACCESS_KEY = "uniflow-student-access"
 const STUDENT_PROFILE_KEY = "uniflow-student-profile"
 
-type StudentAccessDraft = { email: string; interests: string[] }
+type StudentAccessDraft = { interests: string[] }
 
 export function routeFromPath(path: string): EntryRoute {
   if (path === "/explore") return "explore"
@@ -31,8 +31,12 @@ export function routeFromPath(path: string): EntryRoute {
   if (path === "/login/student/interests") return "student-interests"
   if (path === "/login/student") return "student"
   if (path === "/login/club") return "club"
-  if (path === "/club/overview") return "club-overview"
   return "roles"
+}
+
+function replaceRoute(path: string) {
+  window.history.replaceState({}, "", path)
+  window.dispatchEvent(new PopStateEvent("popstate"))
 }
 
 function navigate(path: string) {
@@ -52,7 +56,6 @@ function readJson<T>(key: string): T | null {
 function readAccessDraft(): StudentAccessDraft {
   const value = readJson<Partial<StudentAccessDraft>>(STUDENT_ACCESS_KEY)
   return {
-    email: typeof value?.email === "string" ? value.email : "",
     interests: Array.isArray(value?.interests) ? value.interests.filter((entry) => interestOptions.includes(entry)) : [],
   }
 }
@@ -61,15 +64,13 @@ function writeAccessDraft(draft: StudentAccessDraft) {
   localStorage.setItem(STUDENT_ACCESS_KEY, JSON.stringify(draft))
 }
 
-// Format check only. Nothing here proves the address exists or belongs to the visitor.
-export function validateStudentEmail(raw: string): string | null {
+// Catches obvious typos before a request is made. Supabase Auth decides who the visitor is.
+export function validateEmail(raw: string): string | null {
   const email = raw.trim().toLowerCase()
-  if (!email) return "Enter your college email address."
+  if (!email) return "Enter the email address for your account."
   if (/\s/.test(email)) return "Email addresses can’t contain spaces."
   const parts = email.split("@")
-  if (parts.length !== 2 || !parts[0] || !parts[1]) return "Enter a full email address, like name@nith.ac.in."
-  if (parts[1] !== STUDENT_EMAIL_DOMAIN) return `Use your @${STUDENT_EMAIL_DOMAIN} address. Other domains aren’t accepted.`
-  if (!/^[a-z0-9._%+-]+$/.test(parts[0])) return "The part before @ has characters an email address can’t use."
+  if (parts.length !== 2 || !parts[0] || !parts[1].includes(".")) return `Enter a full email address, like name@${STUDENT_EMAIL_DOMAIN}.`
   return null
 }
 
@@ -104,7 +105,7 @@ function EntryShell({
           <span className="entry-logo-mark">U</span>
           UniFlow
         </LinkButton>
-        {back ? <LinkButton to="/get-started" className="access-switch"><ArrowLeft size={15} /> All ways in</LinkButton> : <span className="entry-header-note">Local demo</span>}
+        {back ? <LinkButton to="/get-started" className="access-switch"><ArrowLeft size={15} /> All ways in</LinkButton> : <span className="entry-header-note">Prototype</span>}
       </header>
       <main className="entry-main">
         <motion.div
@@ -120,7 +121,7 @@ function EntryShell({
         {children}
       </main>
       <footer className="entry-footer">
-        <span>Frontend-only prototype. No real sign-in, and not an official NIT Hamirpur service.</span>
+        <span>Prototype with sample campus content. Not an official NIT Hamirpur service.</span>
         <LinkButton to="/">Return to UniFlow <ArrowUpRight size={15} /></LinkButton>
       </footer>
     </div>
@@ -144,10 +145,10 @@ function AccessSelection() {
       to: "/login/student",
       icon: <Sparkles size={24} />,
       title: "I’m a student",
-      description: "Enter your college email, pick your interests, and get a Today feed shaped around them.",
+      description: "Sign in with your account, pick your interests, and get a Today feed shaped around them.",
       points: ["Today & Soon, Discover, and Saved", "Interests you can change later", "Stays on this device"],
       action: "Continue as student",
-      note: "Demo access with an @nith.ac.in email",
+      note: "Sign in with the account you were given",
     },
     {
       key: "club",
@@ -155,9 +156,9 @@ function AccessSelection() {
       icon: <Users size={24} />,
       title: "I’m a club organizer",
       description: "Turn a poster or notice into a structured update, review it, and publish it to the student feed.",
-      points: ["Create and review updates", "Publish to the demo student feed", "See your demo publications"],
+      points: ["Create and review updates", "Publish to the student feed", "See RSVP counts for your events"],
       action: "Open club workspace",
-      note: "Demo access, permissions not verified",
+      note: "Sign in required, club members only",
     },
   ]
   return (
@@ -182,7 +183,7 @@ function AccessSelection() {
           </li>
         ))}
       </ul>
-      <p className="entry-disclaimer"><CircleAlert size={15} /> Student and club access are local demos. Nothing here verifies identity or publisher permissions.</p>
+      <p className="entry-disclaimer"><CircleAlert size={15} /> Student and club access need an account we’ve set up for you. A club workspace opens only for accounts listed as members of that club. Saved items and interests are still stored in this browser.</p>
     </EntryShell>
   )
 }
@@ -202,22 +203,28 @@ function hasRegistration(entry: CampusItem) {
   return Boolean(entry.startDate && entry.deadline) && (entry.category === "Event" || entry.category === "Opportunity")
 }
 
-// Local demo publications first, then the sample records they do not replace.
-function readPublicItems() {
-  const published = getPublishedCampusItems()
-  const key = (entry: CampusItem) => `${entry.title.toLowerCase()}::${entry.publisher.toLowerCase()}`
-  const ids = new Set(published.map((entry) => entry.id))
-  const keys = new Set(published.map(key))
-  return [...published, ...campusItems.filter((entry) => !ids.has(entry.id) && !keys.has(key(entry)))]
+function PublicLoadNote({ status, message }: { status: "loading" | "ready" | "error"; message: string | null }) {
+  if (status === "loading") return <p className="access-hint" role="status" aria-live="polite">Loading club updates…</p>
+  if (status === "error") return <p className="access-error" role="alert"><CircleAlert size={15} /> {message} Club updates may be missing; the sample records below are still shown.</p>
+  return null
 }
 
 function PublicItemDetail() {
   const id = decodeURIComponent(window.location.pathname.split("/")[3] ?? "")
-  const item = useMemo(() => readPublicItems().find((entry) => entry.id === id) ?? null, [id])
+  // Club updates first, then the sample records they do not replace.
+  const campus = useCampusItems(true)
+  const item = useMemo(() => campus.items.find((entry) => entry.id === id) ?? null, [campus.items, id])
   const backLink = <LinkButton to="/explore" className="access-switch"><ArrowLeft size={15} /> Back to Explore</LinkButton>
+  if (!item && campus.status === "loading") {
+    return (
+      <EntryShell back eyebrow="Public view" title="Loading this update…" description="Checking the latest club updates.">
+        <p className="access-detail-back">{backLink}</p>
+      </EntryShell>
+    )
+  }
   if (!item) {
     return (
-      <EntryShell back eyebrow="Public view" title="This update isn’t available." description="The link may be outdated, or the update was published in a different browser.">
+      <EntryShell back eyebrow="Public view" title="This update isn’t available." description={campus.status === "error" ? "Club updates couldn’t be loaded just now. Try again in a moment." : "The link may be outdated, or the update is no longer published."}>
         <p className="access-detail-back">{backLink}</p>
       </EntryShell>
     )
@@ -232,7 +239,7 @@ function PublicItemDetail() {
       <p className="access-detail-back">{backLink}</p>
       <div className="access-detail-layout">
         <article className="access-detail-main">
-          <p className="access-sample-tag">{item.isDemoPublication ? "Local demo publication, saved in this browser only" : "Sample data for the prototype, not an official notice"}</p>
+          <p className="access-sample-tag">{item.isClubPublication ? "Published by a club through UniFlow, not an official institutional notice" : "Sample data for the prototype, not an official notice"}</p>
           {item.description && item.description !== item.summary && <p className="access-detail-description">{item.description}</p>}
           <dl className="access-detail-facts">
             {hasRegistration(item) ? (
@@ -252,7 +259,7 @@ function PublicItemDetail() {
           <dl>
             <div><dt>Publisher</dt><dd>{item.sourceType === "Student group" ? <LinkButton to={`/explore/club/${clubSlug(item.publisher)}`}>{item.publisher}</LinkButton> : item.publisher}</dd></div>
             <div><dt>Source</dt><dd>{item.sourceLabel ?? (item.sourceUrl ? <a href={item.sourceUrl} target="_blank" rel="noopener noreferrer">Open original source</a> : `${item.sourceType}, no link available in this demo`)}</dd></div>
-            <div><dt>Review status</dt><dd>{item.isDemoPublication ? "Reviewed in the local club demo" : item.reviewStatus}</dd></div>
+            <div><dt>Review status</dt><dd>{item.isClubPublication ? "Reviewed by the publishing club" : item.reviewStatus}</dd></div>
             <div><dt>Last checked</dt><dd>{item.lastVerifiedAt ? formatDateTime(item.lastVerifiedAt) : "Not recorded"}</dd></div>
           </dl>
           <p>Review in this prototype does not make a record an official institutional notice.</p>
@@ -261,9 +268,9 @@ function PublicItemDetail() {
       <div className="access-detail-invite">
         <div>
           <h2>Want this in your own feed?</h2>
-          <p>The student demo adds Today & Soon, Discover, and Saved, shaped by your interests.</p>
+          <p>Signing in as a student adds Today & Soon, Discover, and Saved, shaped by your interests.</p>
         </div>
-        <LinkButton to="/login/student" className="entry-primary-action">Enter the student demo <ArrowUpRight size={17} /></LinkButton>
+        <LinkButton to="/login/student" className="entry-primary-action">Sign in as a student <ArrowUpRight size={17} /></LinkButton>
       </div>
     </EntryShell>
   )
@@ -279,7 +286,7 @@ function PublicUpdateList({ items }: { items: CampusItem[] }) {
             <span className="access-info-body">
               <strong>{entry.title}</strong>
               <span>{entry.summary}</span>
-              <small>{entry.category} from {entry.publisher}{entry.isDemoPublication ? " (published in this demo)" : ""}</small>
+              <small>{entry.category} from {entry.publisher}{entry.isClubPublication ? " (club update)" : ""}</small>
             </span>
             <ArrowUpRight size={17} aria-hidden="true" />
           </a>
@@ -301,17 +308,25 @@ function readPublicClubs(items: CampusItem[]): PublicClub[] {
 
 function PublicClubProfile() {
   const slug = decodeURIComponent(window.location.pathname.split("/")[3] ?? "")
-  const club = useMemo(() => readPublicClubs(readPublicItems()).find((entry) => entry.slug === slug) ?? null, [slug])
+  const campus = useCampusItems(true)
+  const club = useMemo(() => readPublicClubs(campus.items).find((entry) => entry.slug === slug) ?? null, [campus.items, slug])
   const backLink = <LinkButton to="/explore" className="access-switch"><ArrowLeft size={15} /> Back to Explore</LinkButton>
+  if (!club && campus.status === "loading") {
+    return (
+      <EntryShell back eyebrow="Public view" title="Loading this club…" description="Checking the latest club updates.">
+        <p className="access-detail-back">{backLink}</p>
+      </EntryShell>
+    )
+  }
   if (!club) {
     return (
-      <EntryShell back eyebrow="Public view" title="This club isn’t listed." description="The link may be outdated, or the club has no public updates in this browser.">
+      <EntryShell back eyebrow="Public view" title="This club isn’t listed." description="The link may be outdated, or the club has no public updates yet.">
         <p className="access-detail-back">{backLink}</p>
       </EntryShell>
     )
   }
   const profile = club.clubId ? readClubProfile(club.clubId) : null
-  const demoCount = club.updates.filter((entry) => entry.isDemoPublication).length
+  const publishedCount = club.updates.filter((entry) => entry.isClubPublication).length
   return (
     <EntryShell
       back
@@ -322,7 +337,7 @@ function PublicClubProfile() {
       <p className="access-detail-back">{backLink}</p>
       <p className="access-sample-tag access-club-status">
         Sample club from the prototype data.
-        {club.clubId ? " Its profile text and any updates marked “published in this demo” come from the demo club workspace in this browser." : ""}
+        {club.clubId ? " Updates marked “club update” were published by a signed-in member of this club. Its profile text is stored in this browser." : ""}
         {" "}Not a verified NIT Hamirpur club.
       </p>
       {profile && (profile.category || profile.departments) && (
@@ -337,11 +352,11 @@ function PublicClubProfile() {
             <h2 id="club-updates-title">Published updates</h2>
             <span className="access-sample-tag">
               {club.updates.length === 1 ? "1 update" : `${club.updates.length} updates`}
-              {demoCount > 0 ? `, ${demoCount} published in this browser’s demo` : ", sample data"}
+              {publishedCount > 0 ? `, ${publishedCount} published by the club` : ", sample data"}
             </span>
           </div>
           <PublicUpdateList items={club.updates} />
-          <p className="access-hint">Updates without the “published in this demo” note are sample records that ship with the prototype.</p>
+          <p className="access-hint">Updates without the “club update” note are sample records that ship with the prototype.</p>
         </section>
       </div>
     </EntryShell>
@@ -349,7 +364,8 @@ function PublicClubProfile() {
 }
 
 function ExplorePublic() {
-  const items = useMemo(readPublicItems, [])
+  const campus = useCampusItems(true)
+  const items = campus.items
   const clubs = useMemo(() => readPublicClubs(items), [items])
   const places = useMemo(() => {
     const venues = new Map<string, CampusItem[]>()
@@ -361,7 +377,7 @@ function ExplorePublic() {
       back
       eyebrow="Public view"
       title="Explore the campus."
-      description="Campus information anyone can read, without an account. Everything on this page is sample content for the prototype."
+      description="Campus information anyone can read, without an account. Club updates are published by signed-in club members; everything else is sample content for the prototype."
     >
       <nav className="access-jump" aria-label="On this page">
         <a href="#campus-information">Campus information</a>
@@ -375,6 +391,7 @@ function ExplorePublic() {
           <h2 id="campus-information-title">Campus information</h2>
           <LinkButton to="/events">Open the events feed <ArrowUpRight size={15} /></LinkButton>
         </div>
+        <PublicLoadNote status={campus.status} message={campus.message} />
         <PublicUpdateList items={items} />
         <p className="access-hint">Want to save items or filter by interest? <LinkButton to="/login/student">Continue as a student</LinkButton>.</p>
       </section>
@@ -396,7 +413,7 @@ function ExplorePublic() {
             </li>
           ))}
         </ul>
-        <p className="access-hint">These are example student groups from the prototype data, not a list of real NIT Hamirpur clubs. Run a club? <LinkButton to="/login/club">Open the club workspace</LinkButton>.</p>
+        <p className="access-hint">These are example student groups from the prototype data, not a list of real NIT Hamirpur clubs. Run a club? <LinkButton to="/login/club">Sign in to the club workspace</LinkButton>.</p>
       </section>
 
       <section id="campus-guide" className="access-section" aria-labelledby="campus-guide-title">
@@ -421,60 +438,129 @@ function ExplorePublic() {
 
 function ReturnNotice() {
   if (!peekPendingDestination()) return null
-  return <p className="access-return-notice"><CircleAlert size={15} /> After this you’ll go back to the item you were viewing. Nothing is joined or saved for you.</p>
+  return <p className="access-return-notice"><CircleAlert size={15} /> After signing in you’ll go back to the item you were viewing. Nothing is joined or saved for you.</p>
+}
+
+function SessionChecking({ label = "Checking your session…" }: { label?: string }) {
+  return <p className="access-identity" role="status" aria-live="polite">{label}</p>
+}
+
+// Email and password sign-in for an account that already exists. There is no sign-up here:
+// accounts are created by the UniFlow team.
+function SignInForm({ idPrefix, pill, submitLabel, links }: { idPrefix: string; pill: React.ReactNode; submitLabel: string; links: React.ReactNode }) {
+  const auth = useAuth()
+  const [email, setEmail] = useState("")
+  const [password, setPassword] = useState("")
+  const [emailError, setEmailError] = useState<string | null>(null)
+  const [passwordError, setPasswordError] = useState<string | null>(null)
+  const [formError, setFormError] = useState<string | null>(null)
+  const [busy, setBusy] = useState(false)
+  const emailRef = useRef<HTMLInputElement>(null)
+  const passwordRef = useRef<HTMLInputElement>(null)
+  const mounted = useRef(true)
+  useEffect(() => { mounted.current = true; return () => { mounted.current = false } }, [])
+
+  const submit = async (event: React.FormEvent) => {
+    event.preventDefault()
+    if (busy) return
+    setFormError(null)
+    const emailProblem = validateEmail(email)
+    if (emailProblem) {
+      setEmailError(emailProblem)
+      emailRef.current?.focus()
+      return
+    }
+    if (!password) {
+      setPasswordError("Enter your password.")
+      passwordRef.current?.focus()
+      return
+    }
+    setBusy(true)
+    const problem = await auth.signIn(email, password)
+    // On success the auth state changes and the page moves on by itself.
+    if (!mounted.current) return
+    setBusy(false)
+    if (problem) {
+      setFormError(problem)
+      setPassword("")
+      passwordRef.current?.focus()
+    }
+  }
+
+  return (
+    <form className="access-panel" onSubmit={submit} noValidate aria-busy={busy}>
+      {pill}
+      <label htmlFor={`${idPrefix}-email`} className="access-label">Email</label>
+      <input
+        id={`${idPrefix}-email`}
+        ref={emailRef}
+        className="access-input"
+        type="email"
+        inputMode="email"
+        autoComplete="username"
+        autoCapitalize="none"
+        spellCheck={false}
+        placeholder={`name@${STUDENT_EMAIL_DOMAIN}`}
+        value={email}
+        readOnly={busy}
+        aria-invalid={Boolean(emailError)}
+        aria-describedby={emailError ? `${idPrefix}-email-error` : undefined}
+        onChange={(event) => { setEmail(event.target.value); if (emailError) setEmailError(null) }}
+      />
+      {emailError && <p id={`${idPrefix}-email-error`} className="access-error" role="alert"><CircleAlert size={15} /> {emailError}</p>}
+      <label htmlFor={`${idPrefix}-password`} className="access-label">Password</label>
+      <input
+        id={`${idPrefix}-password`}
+        ref={passwordRef}
+        className="access-input"
+        type="password"
+        autoComplete="current-password"
+        value={password}
+        readOnly={busy}
+        aria-invalid={Boolean(passwordError)}
+        aria-describedby={passwordError ? `${idPrefix}-password-error` : undefined}
+        onChange={(event) => { setPassword(event.target.value); if (passwordError) setPasswordError(null) }}
+      />
+      {passwordError && <p id={`${idPrefix}-password-error`} className="access-error" role="alert"><CircleAlert size={15} /> {passwordError}</p>}
+      {formError && <p className="access-error" role="alert"><CircleAlert size={15} /> {formError}</p>}
+      {!auth.configured && <p className="access-error" role="alert"><CircleAlert size={15} /> Sign-in isn’t set up in this build, so no account can be checked.</p>}
+      <button type="submit" className="entry-primary-action" disabled={busy}>{busy ? "Signing in…" : submitLabel} {!busy && <ArrowUpRight size={17} />}</button>
+      <p className="access-notice"><CircleAlert size={15} /> Use the account we set up for you. There is no public sign-up; ask the UniFlow team if you need an account or a new password.</p>
+      <div className="entry-login-links">{links}</div>
+    </form>
+  )
+}
+
+function SignedInAs({ email }: { email: string | null }) {
+  const auth = useAuth()
+  return <p className="access-identity">Signed in as <strong>{email}</strong> <a href="/get-started" onClick={(event) => { event.preventDefault(); void auth.signOut() }}>Sign out</a></p>
 }
 
 function StudentEmailStep() {
-  const [email, setEmail] = useState(() => readAccessDraft().email)
-  const [error, setError] = useState<string | null>(null)
-  const inputRef = useRef<HTMLInputElement>(null)
-  const submit = (event: React.FormEvent) => {
-    event.preventDefault()
-    const problem = validateStudentEmail(email)
-    if (problem) {
-      setError(problem)
-      inputRef.current?.focus()
-      return
-    }
-    writeAccessDraft({ ...readAccessDraft(), email: email.trim().toLowerCase() })
-    navigate("/login/student/interests")
-  }
+  const auth = useAuth()
+  // Already signed in, or just signed in: carry on to interests.
+  useEffect(() => {
+    if (auth.status === "signed-in") replaceRoute("/login/student/interests")
+  }, [auth.status])
   return (
     <EntryShell
       back
       eyebrow="Student access · step 1 of 2"
-      title="Start with your college email."
-      description="We use it to label your demo session. Next, you’ll pick what you care about."
+      title="Sign in with your college account."
+      description="Use the email and password we gave you. Next, you’ll pick what you care about."
     >
       <ReturnNotice />
       <div className="access-panel-layout">
-        <form className="access-panel" onSubmit={submit} noValidate>
-          <div className="entry-role-pill"><Sparkles size={15} /> Student demo</div>
-          <label htmlFor="student-email" className="access-label">College email</label>
-          <input
-            id="student-email"
-            ref={inputRef}
-            className="access-input"
-            type="email"
-            inputMode="email"
-            autoComplete="email"
-            autoCapitalize="none"
-            spellCheck={false}
-            placeholder={`name@${STUDENT_EMAIL_DOMAIN}`}
-            value={email}
-            aria-invalid={Boolean(error)}
-            aria-describedby={error ? "student-email-error student-email-help" : "student-email-help"}
-            onChange={(event) => { setEmail(event.target.value); if (error) setError(null) }}
+        {auth.status === "signed-out" ? (
+          <SignInForm
+            idPrefix="student"
+            pill={<div className="entry-role-pill"><Sparkles size={15} /> Student sign-in</div>}
+            submitLabel="Sign in"
+            links={<><LinkButton to="/explore">Explore without an account</LinkButton><LinkButton to="/login/club">I’m a club organizer instead</LinkButton></>}
           />
-          {error && <p id="student-email-error" className="access-error" role="alert"><CircleAlert size={15} /> {error}</p>}
-          <p id="student-email-help" className="access-help">Only @{STUDENT_EMAIL_DOMAIN} addresses are accepted.</p>
-          <button type="submit" className="entry-primary-action">Continue <ArrowUpRight size={17} /></button>
-          <p className="access-notice"><CircleAlert size={15} /> This is not a real sign-in. We check the format only: no email is sent, and nothing confirms the address is yours until a backend is connected. It is saved in this browser.</p>
-          <div className="entry-login-links">
-            <LinkButton to="/explore">Explore without an account</LinkButton>
-            <LinkButton to="/login/club">I’m a club organizer instead</LinkButton>
-          </div>
-        </form>
+        ) : (
+          <div className="access-panel"><SessionChecking /></div>
+        )}
         <StudentPreview />
       </div>
     </EntryShell>
@@ -482,16 +568,19 @@ function StudentEmailStep() {
 }
 
 function StudentInterestsStep() {
-  const [draft, setDraft] = useState(readAccessDraft)
+  const auth = useAuth()
+  const [draft, setDraft] = useState<StudentAccessDraft>(() => {
+    const stored = readAccessDraft()
+    if (stored.interests.length) return stored
+    const existing = readJson<StudentProfile>(STUDENT_PROFILE_KEY)
+    return { interests: Array.isArray(existing?.interests) ? existing.interests.filter((entry) => interestOptions.includes(entry)) : [] }
+  })
   const [error, setError] = useState<string | null>(null)
-  const hasEmail = validateStudentEmail(draft.email) === null
 
+  // This step is only for a signed-in user. Without a session it goes back to sign-in.
   useEffect(() => {
-    if (!hasEmail) {
-      window.history.replaceState({}, "", "/login/student")
-      window.dispatchEvent(new PopStateEvent("popstate"))
-    }
-  }, [hasEmail])
+    if (auth.status === "signed-out") replaceRoute("/login/student")
+  }, [auth.status])
 
   const toggle = (interest: string) => {
     const interests = draft.interests.includes(interest) ? draft.interests.filter((entry) => entry !== interest) : [...draft.interests, interest]
@@ -503,19 +592,25 @@ function StudentInterestsStep() {
 
   const finish = (event: React.FormEvent) => {
     event.preventDefault()
+    if (!auth.email) return
     if (!draft.interests.length) {
       setError("Pick at least one interest so Today has something to work with.")
       return
     }
     const existing = readJson<StudentProfile>(STUDENT_PROFILE_KEY)
-    const displayName = existing?.displayName && existing.displayName !== defaultProfile.displayName ? existing.displayName : nameFromEmail(draft.email)
+    const displayName = existing?.displayName && existing.displayName !== defaultProfile.displayName ? existing.displayName : nameFromEmail(auth.email)
     localStorage.setItem(STUDENT_PROFILE_KEY, JSON.stringify({ ...defaultProfile, ...existing, displayName, interests: draft.interests }))
-    enterDemo("student", displayName, draft.email)
-    // Back to the item that asked for entry, if there was one. Nothing is joined or saved here.
+    // Back to the item that asked for sign-in, if there was one. Nothing is joined or saved here.
     navigate(takePendingDestination() ?? "/app/today")
   }
 
-  if (!hasEmail) return null
+  if (auth.status !== "signed-in") {
+    return (
+      <EntryShell back eyebrow="Student access · step 2 of 2" title="What do you care about?" description="Your picks shape Today & Soon. You can change them later in Profile.">
+        <div className="access-panel-layout"><div className="access-panel"><SessionChecking /></div><StudentPreview /></div>
+      </EntryShell>
+    )
+  }
   return (
     <EntryShell
       back
@@ -526,7 +621,7 @@ function StudentInterestsStep() {
       <ReturnNotice />
       <div className="access-panel-layout">
         <form className="access-panel" onSubmit={finish} noValidate>
-          <p className="access-identity">Continuing in demo mode as <strong>{draft.email}</strong> <LinkButton to="/login/student">Change</LinkButton></p>
+          <SignedInAs email={auth.email} />
           <fieldset className="access-interests" aria-describedby={error ? "student-interests-error" : undefined}>
             <legend className="access-label">Interests</legend>
             <div className="student-interest-list">
@@ -538,7 +633,7 @@ function StudentInterestsStep() {
           </fieldset>
           {error && <p id="student-interests-error" className="access-error" role="alert"><CircleAlert size={15} /> {error}</p>}
           <button type="submit" className="entry-primary-action">Open Today & Soon <ArrowUpRight size={17} /></button>
-          <p className="access-notice"><CircleAlert size={15} /> Your email and interests are saved in this browser only. This is a demo session, not a verified account.</p>
+          <p className="access-notice"><CircleAlert size={15} /> Your account is verified by sign-in. Your interests and saved items are still kept in this browser only.</p>
         </form>
         <StudentPreview />
       </div>
@@ -547,9 +642,77 @@ function StudentInterestsStep() {
 }
 
 function ClubAccess() {
-  const [clubId, setClubId] = useState(getCurrentClubId)
-  const club = getDemoClub(clubId)
-  const published = useMemo(() => publishedClubRecords().filter((record) => record.clubId === clubId), [clubId])
+  const auth = useAuth()
+  const { memberships } = auth
+  // Only clubs this account is a member of, as read from club_members. Nothing typed or
+  // picked on this page can add one.
+  const allowed = useMemo(() => { const ids = allowedClubIds(memberships, demoClubs.map((club) => club.id)); return demoClubs.filter((entry) => ids.includes(entry.id)) }, [memberships])
+  const [pickedId, setPickedId] = useState(getCurrentClubId)
+  const club = allowed.find((entry) => entry.id === pickedId) ?? allowed[0] ?? null
+  const publishedEvents = usePublishedEvents()
+  const published = useMemo(() => (club ? publishedEvents.items.filter((entry) => entry.publisher === club.name) : []), [club, publishedEvents.items])
+  const otherLinks = <><LinkButton to="/login/student">I’m a student instead</LinkButton><LinkButton to="/explore">Explore without an account</LinkButton></>
+
+  let panel: React.ReactNode
+  if (auth.status === "signed-out") {
+    panel = (
+      <SignInForm
+        idPrefix="club"
+        pill={<div className="entry-role-pill"><Users size={15} /> Club organizer sign-in</div>}
+        submitLabel="Sign in"
+        links={otherLinks}
+      />
+    )
+  } else if (auth.status === "loading" || memberships.status === "loading" || memberships.status === "idle") {
+    panel = <div className="access-panel"><SessionChecking label={auth.status === "loading" ? "Checking your session…" : "Checking your club membership…"} /></div>
+  } else if (memberships.status === "error") {
+    panel = (
+      <div className="access-panel">
+        <div className="entry-role-pill"><Users size={15} /> Club workspace</div>
+        <h2 className="access-panel-title">We couldn’t confirm club access.</h2>
+        <SignedInAs email={auth.email} />
+        <p className="access-error" role="alert"><CircleAlert size={15} /> {memberships.message}</p>
+        <p className="access-help">The workspace stays closed until membership can be confirmed.</p>
+        <button type="button" className="entry-primary-action" onClick={auth.reloadMemberships}>Check again <ArrowUpRight size={17} /></button>
+        <div className="entry-login-links"><LinkButton to="/app/today">Go to the student app</LinkButton><LinkButton to="/explore">Explore</LinkButton></div>
+      </div>
+    )
+  } else if (!club) {
+    panel = (
+      <div className="access-panel">
+        <div className="entry-role-pill"><Users size={15} /> Club workspace</div>
+        <h2 className="access-panel-title">This account isn’t a member of a club.</h2>
+        <SignedInAs email={auth.email} />
+        <p className="access-error" role="alert"><CircleAlert size={15} /> No club workspace is open to this account.</p>
+        <p className="access-help">Club access is granted by the UniFlow team, per club. If you organize a club, ask them to add this account, then check again.</p>
+        <button type="button" className="entry-primary-action" onClick={auth.reloadMemberships}>Check again <ArrowUpRight size={17} /></button>
+        <div className="entry-login-links"><LinkButton to="/app/today">Go to the student app</LinkButton><LinkButton to="/explore">Explore</LinkButton></div>
+      </div>
+    )
+  } else {
+    panel = (
+      <div className="access-panel">
+        <div className="entry-role-pill"><Users size={15} /> Club workspace</div>
+        <h2 className="access-panel-title">Enter as {club.name}</h2>
+        <SignedInAs email={auth.email} />
+        <p className="access-help">{allowed.length === 1 ? "This account is a member of one club." : "This account is a member of these clubs. You can switch between them inside the workspace."}</p>
+        <fieldset className="access-club-choice">
+          <legend className="access-label">Your clubs</legend>
+          {allowed.map((entry) => (
+            <label key={entry.id}>
+              <input type="radio" name="member-club" value={entry.id} checked={entry.id === club.id} onChange={() => setPickedId(entry.id)} />
+              <span>{entry.name}</span>
+            </label>
+          ))}
+        </fieldset>
+        <p className="access-identity">{publishedEvents.status === "loading" ? "Checking published updates…" : publishedEvents.status === "error" ? "Published updates couldn’t be loaded just now." : published.length === 0 ? "No published updates yet." : published.length === 1 ? "1 published update." : `${published.length} published updates.`}</p>
+        <button type="button" className="entry-primary-action" onClick={() => { setCurrentClubId(club.id); navigate("/club/overview") }}>Open {club.name}’s workspace <ArrowUpRight size={17} /></button>
+        <p className="access-notice"><CircleAlert size={15} /> Your membership is checked on the server, and so is every draft and publication you save.</p>
+        <div className="entry-login-links">{otherLinks}</div>
+      </div>
+    )
+  }
+
   return (
     <EntryShell
       back
@@ -558,27 +721,7 @@ function ClubAccess() {
       description="Prepare, review, and publish information for your campus community."
     >
       <div className="access-panel-layout">
-        <div className="access-panel">
-          <div className="entry-role-pill"><Users size={15} /> Club demo</div>
-          <h2 className="access-panel-title">Enter as {club.name}</h2>
-          <p className="access-help">Pick one of the sample clubs. Each has its own profile, drafts, and published updates in this browser, and you can switch again inside the workspace.</p>
-          <fieldset className="access-club-choice">
-            <legend className="access-label">Demo club identity</legend>
-            {demoClubs.map((entry) => (
-              <label key={entry.id}>
-                <input type="radio" name="demo-club" value={entry.id} checked={entry.id === clubId} onChange={() => setClubId(entry.id)} />
-                <span>{entry.name}</span>
-              </label>
-            ))}
-          </fieldset>
-          <p className="access-identity">{published.length === 0 ? "No demo publications in this browser yet." : published.length === 1 ? "1 demo publication saved in this browser." : `${published.length} demo publications saved in this browser.`}</p>
-          <button type="button" className="entry-primary-action" onClick={() => { setCurrentClubId(club.id); enterDemo("club", club.name); navigate("/club/overview") }}>Open {club.name}’s workspace <ArrowUpRight size={17} /></button>
-          <p className="access-notice"><CircleAlert size={15} /> Demo identity switching, not verified organizer permission. UniFlow does not check that you run this club, anyone using this browser can pick any of them, and published updates stay in this browser.</p>
-          <div className="entry-login-links">
-            <LinkButton to="/login/student">I’m a student instead</LinkButton>
-            <LinkButton to="/explore">Explore without an account</LinkButton>
-          </div>
-        </div>
+        {panel}
         <PublisherPreview />
       </div>
     </EntryShell>
@@ -617,33 +760,6 @@ function PublisherPreview({ compact = false }: { compact?: boolean }) {
   return compact ? preview : <div className="access-preview access-preview-club" aria-hidden="true">{preview}</div>
 }
 
-function ClubOverview() {
-  return (
-    <EntryShell
-      eyebrow="CLUB WORKSPACE · DEMO"
-      title={<>Welcome back,<br />Campus Code Collective.</>}
-      description="A starting workspace for club organizers. Milestone 4 will grow this into the complete publishing application."
-    >
-      <div className="club-overview-grid">
-        <section className="club-welcome-panel">
-          <div className="entry-role-pill"><Users size={15} /> Demo club identity</div>
-          <h2>Make the next update easier to trust.</h2>
-          <p>Prepare a source document, review the structured details, and keep the original context close to every campus update.</p>
-          <button type="button" className="club-primary-action" onClick={() => navigate("/poster-to-event")}>Create campus update <ArrowUpRight size={17} /></button>
-          <div className="club-status"><span /> Prototype workspace active</div>
-        </section>
-        <section className="club-actions-panel">
-          <p className="entry-eyebrow">YOUR NEXT MOVE</p>
-          <div className="club-workflow-preview"><PublisherPreview compact /></div>
-          <button type="button" onClick={() => navigate("/poster-to-event")}><FileText size={20} /><span><strong>Try poster extraction</strong><small>Reuse the existing local publishing workflow</small></span><ArrowUpRight size={17} /></button>
-          <button type="button" onClick={() => navigate("/app/today")}><Home size={20} /><span><strong>Preview the student view</strong><small>See how a published update reaches students</small></span><ArrowUpRight size={17} /></button>
-          <button type="button" onClick={() => { exitDemo(); navigate("/get-started") }}><ArrowLeft size={18} /><span><strong>Switch demo role</strong><small>Return to the role selection screen</small></span><ArrowUpRight size={17} /></button>
-        </section>
-      </div>
-    </EntryShell>
-  )
-}
-
 export default function EntryExperience({ route }: { route: EntryRoute }) {
   const [currentRoute, setCurrentRoute] = useState(route)
   // A pending return only applies while the visitor is in student entry. Choosing the public
@@ -666,7 +782,6 @@ export default function EntryExperience({ route }: { route: EntryRoute }) {
         {currentRoute === "student" && <StudentEmailStep />}
         {currentRoute === "student-interests" && <StudentInterestsStep />}
         {currentRoute === "club" && <ClubAccess />}
-        {currentRoute === "club-overview" && <ClubOverview />}
     </div>
   )
 }
