@@ -9,7 +9,7 @@ import { extractJsonObject } from "./poster.ts"
 
 // The columns the discover function selects from public.events, with the club name joined.
 export const DISCOVER_COLUMNS =
-  "id, title, description, campus_category, start_date, start_time, end_date, end_time, timezone, venue, eligibility, registration_deadline, registration_url, published_at, club_id, club:clubs(name)"
+  "id, title, description, campus_category, start_date, start_time, end_date, end_time, timezone, venue, eligibility, registration_deadline, registration_url, published_at, club_id, publisher_name, source, source_url, deadline_date, club:clubs(name)"
 
 export type PublishedRow = {
   id: string
@@ -26,8 +26,20 @@ export type PublishedRow = {
   registration_deadline: string | null
   registration_url: string
   published_at: string | null
-  club_id: string
+  // Null for a record imported from a publisher that is not a club on UniFlow.
+  club_id: string | null
   club?: { name: string } | null
+  publisher_name: string
+  source: string
+  // The original source of an imported record, kept apart from registration_url.
+  source_url: string
+  // A deadline the source gives as a date with no time.
+  deadline_date: string | null
+}
+
+// Who published the original: the named publisher of an imported record, else the club.
+export function publisherOf(row: PublishedRow): string {
+  return row.publisher_name?.trim() || row.club?.name || row.club_id || "Unknown publisher"
 }
 
 // How many published records are sent to the model, newest first.
@@ -61,7 +73,9 @@ export function buildDiscoverPrompt(query: string, rows: PublishedRow[], today: 
   const records = rows.map((row) => ({
     id: row.id,
     title: plain(row.title, 200),
-    publisher: plain(row.club?.name ?? row.club_id, 120),
+    publisher: plain(publisherOf(row), 120),
+    // Imported records were copied from the publisher's public page; the publisher does not post on UniFlow.
+    importedFromPublisher: row.source === "Imported source",
     category: row.campus_category,
     description: plain(row.description, DESCRIPTION_LIMIT) || null,
     startDate: row.start_date,
@@ -71,7 +85,8 @@ export function buildDiscoverPrompt(query: string, rows: PublishedRow[], today: 
     timezone: row.timezone,
     venue: plain(row.venue, 160) || null,
     eligibility: plain(row.eligibility, 300) || null,
-    registrationDeadline: row.registration_deadline,
+    // A date with no time means the source gave no cut-off time.
+    registrationDeadline: row.registration_deadline ?? row.deadline_date,
     hasRegistrationLink: row.registration_url !== "",
   }))
 
@@ -89,7 +104,8 @@ Reply with exactly this JSON shape:
 Rules:
 - "answer" is plain text, at most 4 short sentences, written to the student. Refer to records by title. Do not write ids, links, or markdown in it.
 - "sourceIds" lists the "id" of each record the answer relies on, most relevant first, at most ${DISCOVER_MAX_SOURCES}. Copy ids exactly.
-- State dates, times, and venues only as the records give them. If a record leaves something out, say it isn't given.
+- State dates, times, and venues only as the records give them. If a record leaves something out, say it isn't given. Never add a time to a date that has none.
+- When startDate and endDate differ, give both.
 - If nothing fits, "answer" says that nothing published matches and "sourceIds" is [].`
 }
 
@@ -130,17 +146,27 @@ function toIso(timestamp: string | null): string | null {
   return Number.isNaN(time) ? null : new Date(time).toISOString()
 }
 
+function dateOnly(value: string | null): string | null {
+  return value && /^\d{4}-\d{2}-\d{2}$/.test(value) ? value : null
+}
+
+function webUrl(value: string | null | undefined): string | null {
+  return value && /^https?:\/\//i.test(value) ? value : null
+}
+
 export function toSource(row: PublishedRow): DiscoverSource {
   return {
     id: row.id,
     title: row.title,
-    publisher: row.club?.name ?? row.club_id,
+    publisher: publisherOf(row),
     category: row.campus_category,
-    startDate: zonedToIso(row.start_date, row.start_time, row.timezone),
-    deadline: toIso(row.registration_deadline),
+    // With no start time the date is passed through as a date, never as midnight.
+    startDate: row.start_time ? zonedToIso(row.start_date, row.start_time, row.timezone) : dateOnly(row.start_date),
+    deadline: toIso(row.registration_deadline) ?? dateOnly(row.deadline_date),
     venue: row.venue.trim() === "" ? null : row.venue,
     path: `/explore/item/${row.id}`,
-    sourceUrl: /^https?:\/\//i.test(row.registration_url) ? row.registration_url : null,
+    // The original source when there is one, otherwise the club's own registration link.
+    sourceUrl: webUrl(row.source_url) ?? webUrl(row.registration_url),
   }
 }
 
