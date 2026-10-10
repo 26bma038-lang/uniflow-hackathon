@@ -25,10 +25,10 @@ The loop UniFlow is built around: campus notice or poster → AI extraction → 
 | Student app: Today & Soon, Discover with search and filters, item detail with source details, Saved, Joined, Profile | Works, on sample data plus everything clubs have published (read from Supabase). RSVPs are stored in Supabase; Saved and Profile stay in the browser |
 | Club workspace: drafts, create, review, publish, club profile, RSVP counts | Drafts, publications and RSVP counts are stored in Supabase and shared by the club's members. Club profile text and the activity list stay in the browser |
 | Student sign-in | Supabase email and password. Accounts are created by the team; there is no sign-up screen. **Tested live** against the hosted project |
-| Club sign-in | Same sign-in, then the account's rows in `club_members` decide which club workspaces open. Sign-in and the refusal of non-members are **tested live**. A member opening the workspace is **not yet tested live**: the club account had no `club_members` row when testing stopped (SQL in `supabase/README.md`) |
+| Club sign-in | Same sign-in, then the account's rows in `club_members` decide which club workspaces open. **Tested live**: a member opens the workspace, a non-member is refused |
 | Storage | Supabase for events (drafts and publications), RSVPs and membership. `localStorage` for saved items, interests, club profile text and the activity list |
-| AI extraction from a poster | Deployed. The club create screen sends an image to the `extract-poster` Edge Function and the result goes to human review with flagged fields. **Not yet tested live with the model**: only the refusal of a non-member was checked live; the rest was checked with mocked responses. "Use sample brief" is still simulated |
-| AI discovery (`/app/ask`) | Deployed. Answers come from published events only and link to the records used. The function answers a signed-in student live, but only its "nothing published yet" reply was seen, so **the model's answers are not yet tested live** |
+| AI extraction from a poster | Working, **tested live** with `gemma-4-26b-a4b-it`: a club member's poster image goes to the `extract-poster` Edge Function, the fields fill the editable form, and the update goes through human review before it can be published. "Use sample brief" is still simulated |
+| AI discovery (`/app/ask`) | Working, **tested live**: the model answered from a published event and cited that record with its source link. Answers come from published events only |
 | Assignments (`/app/assignments`) | Working, **tested live**: create, list, mark done, delete. A private per-student coursework list |
 | Supabase database | Connected: Auth, `club_members`, `events`, `rsvps` and `club_rsvp_counts()`. `seed.sql` is not applied, so the sample records are not in the database and cannot be joined |
 | Gemma via the Gemini API | Called only from the Edge Functions in `supabase/functions/`, default model `gemma-4-26b-a4b-it`. Needs the `GEMINI_API_KEY` function secret; see `supabase/README.md` |
@@ -62,7 +62,7 @@ The loop UniFlow is built around: campus notice or poster → AI extraction → 
 
 **Planned, not built**
 
-- A live end-to-end run as a club member: real poster extraction, publishing, discovery citing a published record, and RSVP counts.
+- A live check of RSVPs and club RSVP counts with real accounts.
 
 ## Repository layout
 
@@ -152,8 +152,8 @@ Needs two accounts created in the Supabase project, one of them added to `club_m
 - No real authentication, and no organizer permission check.
 - Data is per browser. Clearing site data removes everything.
 - Uploaded source images are not stored; they must be reattached after a refresh.
-- Publishing, RSVPs, RSVP counts, poster extraction with the real model, and discovery over real records have been checked with mocked server responses only. The live run stopped at the club account's missing `club_members` row.
-- Whether the default model `gemma-4-26b-a4b-it` accepts the inline image the function sends is unconfirmed until that run. `GEMMA_MODEL` can be changed as a function secret without redeploying code.
+- RSVPs and club RSVP counts have been checked with mocked server responses only. Extraction, human review, publishing to `public.events`, and discovery were each run live once, on one generated poster and one question; nothing broader has been measured.
+- Discovery answers can show times as raw UTC timestamps.
 - The Edge Functions have no per-user rate limit, and extraction flags are kept only for the browser session.
 - All campus content is sample data for 18–25 October 2026. Some filters use those fixed dates.
 - The Supabase migration is untested against a real Supabase stack and unused by the app. Sign-in method (and whether anonymous sign-in is allowed) is undecided.
