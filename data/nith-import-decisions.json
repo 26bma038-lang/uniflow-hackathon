@@ -1,0 +1,72 @@
+{
+  "about": "What UniFlow publishes from data/nith-import-pack.json, and why. The pack is kept verbatim; this file holds the import decisions and the wording that was checked against the official sources on the date below. Only statements seen on a live official page are published. Four of the five notice PDFs are scanned images with no readable text, so anything the pack takes from inside them is left out of the published wording.",
+  "sources_checked_on": "2026-10-10",
+  "source_checks": [
+    { "url": "https://nith.ac.in/chemference2026/index.php", "result": "verified", "seen": "Organized by Department of Chemical Engineering, NIT Hamirpur; Oct 29 - 31, 2026; 11th edition; Abstract Submission deadline October 10, 2026; Acceptance Intimation October 12, 2026; Full Paper Submission deadline October 15, 2026; Registration Deadline October 15, 2026. No times, no room-level venue." },
+    { "url": "https://nith.ac.in/scholarships-and-fellowships", "result": "verified", "seen": "Links 'Notice / Guidelines for the Submission of Scholarship Applications for the Academic Session 2026–27' (the PDF below) and the National Scholarship Portal. No closing date on the page." },
+    { "url": "https://nith.ac.in/uploads/files/jul26/dsw-n-2-7-26.pdf", "result": "reachable, not readable", "seen": "Scanned image. Its contents could not be checked, so the pack's statements about hard-copy submission and audience are not published." },
+    { "url": "https://nith.ac.in/student-related-notices", "result": "verified", "seen": "Lists, with these dates: Office Bearers of Student Discipline Club for the Session 2026–2027 (05-10-2026); Selection Interviews for SHIELD (Cybersecurity Society) (11-09-2026); positions under Ek Bharat Shreshtha Bharat (EBSB) for AY 2026-27 (11-09-2026); Various Positions in the E-Cell (Academic Year 2026–27) (10-09-2026); Submission of Scholarship Applications for the Academic Session 2026–27 (02-07-2026)." },
+    { "url": "https://nith.ac.in/uploads/files/oct26/sdc-26.pdf", "result": "reachable, not readable", "seen": "Scanned image. The 2026-10-01 document date in the pack could not be checked; the listing date 2026-10-05 is used instead." },
+    { "url": "https://nith.ac.in/uploads/files/sept26/shield%20recruitment_0001.pdf", "result": "reachable, not readable", "seen": "Scanned image." },
+    { "url": "https://nith.ac.in/uploads/files/sept26/e-cell-advt.pdf", "result": "verified", "seen": "Applications invited for various positions under E-Cell for the Academic Year 2026-27." },
+    { "url": "https://nith.ac.in/uploads/files/sept26/notice-ebsb.pdf", "result": "reachable, not readable", "seen": "Scanned image." },
+    { "url": "https://nith.ac.in/hillffair", "result": "verified", "seen": "'Some of the key clubs offered by NIT Hamirpur' includes Music Club, Dance Club, Discipline Club and Dramatics Club." },
+    { "url": "https://spec.nith.ac.in/", "result": "verified", "seen": "Run under the aegis of the Electronics and Communication Department; national level hackathon Electrothon; yearly technical fest SPEC FEST; spec@nith.ac.in." },
+    { "url": "https://appteam.nith.ac.in/", "result": "verified", "seen": "'The core technical club of NIT Hamirpur'; web, app, AI/ML, blockchain, open source, cloud; Hack On Hills annual hackathon." }
+  ],
+  "clubs": {
+    "club-spec": { "description": "Technical society run under the aegis of the Electronics and Communication Department, NIT Hamirpur. Its site describes Electrothon, a national-level hackathon, and SPEC Fest, a yearly technical fest with events, workshops and exhibitions." },
+    "club-appteam": { "description": "APP TEAM's site describes it as the core technical club of NIT Hamirpur, working in web development, app development, AI/ML, blockchain, open source and cloud operations, and as the organiser of the annual Hack On Hills hackathon." },
+    "club-student-discipline": { "description": "Discipline Club is on NIT Hamirpur's list of key clubs. The institute's student-notice index lists a notice on office bearers of the Student Discipline Club for the session 2026–2027." },
+    "club-shield": { "description": "NIT Hamirpur's student notices name SHIELD as a Cybersecurity Society and list selection interviews for it in September 2026. That recruitment is over and is not shown as an opportunity." },
+    "club-ecell": { "description": "An NIT Hamirpur notice invited applications for student positions in the E-Cell for the Academic Year 2026–27. That application period is over and is not shown as an opportunity." },
+    "club-ebsb": { "description": "An NIT Hamirpur notice invited applications for positions under Ek Bharat Shreshtha Bharat (EBSB) for AY 2026–27. That application period is over and is not shown as an opportunity." },
+    "club-music": { "description": "Music Club is on NIT Hamirpur's list of key clubs." },
+    "club-dance": { "description": "Dance Club is on NIT Hamirpur's list of key clubs." },
+    "club-dramatics": { "description": "Dramatics Club is on NIT Hamirpur's list of key clubs." }
+  },
+  "updates": {
+    "event-chemference-2026": {
+      "publish": true,
+      "publisher": "Department of Chemical Engineering, NIT Hamirpur",
+      "description": "The 11th edition of ChEmference, a three-day international conference organised by the Department of Chemical Engineering, NIT Hamirpur, on 29–31 October 2026. Important dates on the official page: abstract submission 10 October 2026, acceptance intimation 12 October 2026, full paper submission 15 October 2026, registration deadline 15 October 2026. The page gives no start or end times and no room-level venue.",
+      "deadline_date": "2026-10-15",
+      "source_published_on": null
+    },
+    "deadline-chemference-abstract": {
+      "publish": true,
+      "publisher": "Department of Chemical Engineering, NIT Hamirpur",
+      "description": "The official ChEmference 2026 page gives 10 October 2026 as the abstract submission deadline. It gives a date only, with no cut-off time.",
+      "deadline_date": "2026-10-10",
+      "source_published_on": null
+    },
+    "deadline-chemference-registration": {
+      "publish": true,
+      "publisher": "Department of Chemical Engineering, NIT Hamirpur",
+      "description": "The official ChEmference 2026 page gives 15 October 2026 as the registration deadline for the conference on 29–31 October 2026. It gives a date only, with no cut-off time.",
+      "deadline_date": "2026-10-15",
+      "source_published_on": null
+    },
+    "scholarship-guidance-2026-27": {
+      "publish": true,
+      "publisher": "NIT Hamirpur (Scholarships and Fellowships)",
+      "description": "NIT Hamirpur's Scholarships and Fellowships page links this notice with guidelines for submitting scholarship applications for the academic session 2026–27, alongside the National Scholarship Portal. Neither the page nor the notice listing gives a closing date, and deadlines can differ by scheme, so check the notice and the portal for the scheme you are applying to.",
+      "eligibility": "Depends on the scholarship scheme. See the notice.",
+      "venue": "",
+      "deadline_date": null,
+      "source_published_on": "2026-07-02"
+    },
+    "notice-discipline-office-bearers-2026-27": {
+      "publish": true,
+      "publisher": "NIT Hamirpur (student notices)",
+      "description": "Listed on NIT Hamirpur's student-notice index on 5 October 2026. UniFlow links to the notice and does not reproduce the names or roll numbers in it.",
+      "deadline_date": null,
+      "source_published_on": "2026-10-05"
+    },
+    "opportunity-campus-recruitment-2026-27": {
+      "publish": false,
+      "reason": "Recruiter-facing invitation to organisations, not a student opportunity. Its only dated source is a third-party social account with no exact post date."
+    }
+  },
+  "not_imported": "The four records under 'unresolved' in the pack (E-Summit 2026, the well-being workshop, Hill'ffair 2026, Shiksha Mahakumbh 2026) have no directly verified dates and are not imported."
+}

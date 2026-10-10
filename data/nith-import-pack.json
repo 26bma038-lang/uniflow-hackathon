@@ -1,0 +1,701 @@
+{
+  "clubs": [
+    {
+      "record_id": "club-spec",
+      "name": "SPEC",
+      "official_slug": "spec",
+      "official_slug_basis": "Official NIT Hamirpur subdomain hostname: spec.nith.ac.in",
+      "description": "Technical society run under the aegis of the Electronics and Communication Department, NIT Hamirpur. Its official site says it organizes events, workshops and competitions, conducts the Electrothon hackathon and a yearly SPEC Fest, and supports student technical projects.",
+      "category": "Technical / Electronics and Computing",
+      "official_webpage": "https://spec.nith.ac.in/",
+      "official_social_account": null,
+      "public_contact": {
+        "email": "spec@nith.ac.in",
+        "phone": null
+      },
+      "image": {
+        "url": null,
+        "original_source_url": null,
+        "attribution": null,
+        "reuse_permission": null
+      },
+      "evidence_url": "https://spec.nith.ac.in/",
+      "source_publication_date": null,
+      "source_uploaded_date": null,
+      "verification_date": "2026-10-10",
+      "missing_fields": [
+        "source_publication_date",
+        "logo/image URL",
+        "image attribution",
+        "image reuse permission"
+      ],
+      "uncertainties": [
+        "The official webpage does not expose a page-level publication date in the reviewed content."
+      ]
+    },
+    {
+      "record_id": "club-appteam",
+      "name": "APP TEAM",
+      "official_slug": "appteam",
+      "official_slug_basis": "Official NIT Hamirpur subdomain hostname: appteam.nith.ac.in",
+      "description": "The official site identifies APP TEAM as the core technical club of NIT Hamirpur. It lists technical work in web development, app development, AI/ML, blockchain, open source and cloud operations, and identifies Hack On Hills as an annual hackathon organized by the team.",
+      "category": "Technical / Software Engineering",
+      "official_webpage": "https://appteam.nith.ac.in/",
+      "official_social_account": null,
+      "public_contact": null,
+      "image": {
+        "url": null,
+        "original_source_url": null,
+        "attribution": null,
+        "reuse_permission": null
+      },
+      "evidence_url": "https://appteam.nith.ac.in/",
+      "source_publication_date": null,
+      "source_uploaded_date": null,
+      "verification_date": "2026-10-10",
+      "missing_fields": [
+        "source_publication_date",
+        "public club contact",
+        "direct official social account URLs",
+        "logo/image URL",
+        "image attribution",
+        "image reuse permission"
+      ],
+      "uncertainties": [
+        "The page links to social platforms, but direct destination URLs were not imported because they were not needed to establish the club record.",
+        "The copyright year shown by the site is not treated as a publication date."
+      ]
+    },
+    {
+      "record_id": "club-student-discipline",
+      "name": "Student Discipline Club",
+      "official_slug": null,
+      "official_slug_basis": null,
+      "description": "NIT Hamirpur's cultural-activities page lists Discipline Club among its key clubs. An official Dean Student Welfare notice dated 2026-10-01 establishes office bearers for the Student Discipline Club for session 2026-2027 and states that their duties are governed by institute rules, regulations, guidelines and competent-authority directions.",
+      "category": "Student Discipline / Governance",
+      "official_webpage": "https://nith.ac.in/hillffair",
+      "official_social_account": null,
+      "public_contact": null,
+      "image": {
+        "url": null,
+        "original_source_url": null,
+        "attribution": null,
+        "reuse_permission": null
+      },
+      "evidence_url": "https://nith.ac.in/uploads/files/oct26/sdc-26.pdf",
+      "additional_evidence_urls": [
+        "https://nith.ac.in/hillffair",
+        "https://nith.ac.in/student-related-notices"
+      ],
+      "source_publication_date": "2026-10-01",
+      "source_uploaded_date": "2026-10-05",
+      "verification_date": "2026-10-10",
+      "missing_fields": [
+        "official slug",
+        "club-specific webpage",
+        "official social account",
+        "public club contact",
+        "logo/image URL",
+        "image attribution",
+        "image reuse permission"
+      ],
+      "uncertainties": [
+        "The institute's general club list uses the shorter name 'Discipline Club'; the October 2026 notice uses 'Student Discipline Club'.",
+        "Student office-bearer names and roll numbers in the source PDF are intentionally not imported."
+      ]
+    },
+    {
+      "record_id": "club-shield",
+      "name": "SHIELD (Cybersecurity Society)",
+      "official_slug": null,
+      "official_slug_basis": null,
+      "description": "An NIT Hamirpur student notice explicitly identifies SHIELD as a Cybersecurity Society. Its September 2026 recruitment notice scheduled interviews for students interested in cybersecurity and contributing to the society.",
+      "category": "Technical / Cybersecurity",
+      "official_webpage": null,
+      "official_social_account": null,
+      "public_contact": null,
+      "image": {
+        "url": null,
+        "original_source_url": null,
+        "attribution": null,
+        "reuse_permission": null
+      },
+      "evidence_url": "https://nith.ac.in/uploads/files/sept26/shield%20recruitment_0001.pdf",
+      "additional_evidence_urls": [
+        "https://nith.ac.in/student-related-notices"
+      ],
+      "source_publication_date": "2026-09-11",
+      "source_uploaded_date": "2026-09-11",
+      "verification_date": "2026-10-10",
+      "missing_fields": [
+        "official slug",
+        "club-specific webpage",
+        "official social account",
+        "public club contact",
+        "logo/image URL",
+        "image attribution",
+        "image reuse permission"
+      ],
+      "uncertainties": [
+        "No club-specific official webpage or social account was established from the reviewed official institute sources.",
+        "The September recruitment activity is historical and is not imported as a current opportunity."
+      ]
+    },
+    {
+      "record_id": "club-ecell",
+      "name": "E-Cell",
+      "official_slug": null,
+      "official_slug_basis": null,
+      "description": "NIT Hamirpur issued an official notice inviting applications for multiple student positions in the E-Cell for Academic Year 2026-27. The institute's E-Summit subdomain also identifies E-Cell NIT Hamirpur as organizer of its entrepreneurship summit, but that event page is not treated as a dedicated club homepage.",
+      "category": "Entrepreneurship",
+      "official_webpage": null,
+      "official_social_account": null,
+      "public_contact": null,
+      "image": {
+        "url": null,
+        "original_source_url": null,
+        "attribution": null,
+        "reuse_permission": null
+      },
+      "evidence_url": "https://nith.ac.in/uploads/files/sept26/e-cell-advt.pdf",
+      "additional_evidence_urls": [
+        "https://nith.ac.in/student-related-notices",
+        "https://esummit.nith.ac.in/"
+      ],
+      "source_publication_date": "2026-09-10",
+      "source_uploaded_date": "2026-09-10",
+      "verification_date": "2026-10-10",
+      "missing_fields": [
+        "official slug",
+        "dedicated club webpage",
+        "official social account",
+        "general public club contact",
+        "logo/image URL",
+        "image attribution",
+        "image reuse permission"
+      ],
+      "uncertainties": [
+        "The E-Summit subdomain is an event site, not proven to be the E-Cell's general-purpose club homepage.",
+        "The September 2026 position application is closed and is not imported as a current opportunity."
+      ]
+    },
+    {
+      "record_id": "club-ebsb",
+      "name": "Ek Bharat Shreshtha Bharat (EBSB)",
+      "official_slug": null,
+      "official_slug_basis": null,
+      "description": "An official NIT Hamirpur notice invited institute students to positions under Ek Bharat Shreshtha Bharat for AY 2026-27 and described the initiative in terms of celebrating India's cultural unity.",
+      "category": "Cultural Integration / Student Activities",
+      "official_webpage": null,
+      "official_social_account": null,
+      "public_contact": null,
+      "image": {
+        "url": null,
+        "original_source_url": null,
+        "attribution": null,
+        "reuse_permission": null
+      },
+      "evidence_url": "https://nith.ac.in/uploads/files/sept26/notice-ebsb.pdf",
+      "additional_evidence_urls": [
+        "https://nith.ac.in/student-related-notices"
+      ],
+      "source_publication_date": "2026-09-11",
+      "source_uploaded_date": "2026-09-11",
+      "verification_date": "2026-10-10",
+      "missing_fields": [
+        "official slug",
+        "club-specific webpage",
+        "official social account",
+        "general public club contact",
+        "logo/image URL",
+        "image attribution",
+        "image reuse permission"
+      ],
+      "uncertainties": [
+        "An email address was published for the 2026 application process, but it is not imported as a general club contact because the source presents it as an application-submission address.",
+        "The September 2026 recruitment is historical and is not imported as a current opportunity."
+      ]
+    },
+    {
+      "record_id": "club-music",
+      "name": "Music Club",
+      "official_slug": null,
+      "official_slug_basis": null,
+      "description": "Music Club is listed by NIT Hamirpur among its key cultural clubs. The institute states generally that its cultural clubs provide opportunities for culturally enriching activities, student hobbies and development of organizational skills.",
+      "category": "Cultural / Music",
+      "official_webpage": "https://nith.ac.in/hillffair",
+      "official_social_account": null,
+      "public_contact": null,
+      "image": {
+        "url": null,
+        "original_source_url": null,
+        "attribution": null,
+        "reuse_permission": null
+      },
+      "evidence_url": "https://nith.ac.in/hillffair",
+      "source_publication_date": null,
+      "source_uploaded_date": null,
+      "verification_date": "2026-10-10",
+      "missing_fields": [
+        "official slug",
+        "club-specific webpage",
+        "official social account",
+        "public club contact",
+        "source publication date",
+        "logo/image URL",
+        "image attribution",
+        "image reuse permission"
+      ],
+      "uncertainties": [
+        "The official page gives institute-wide objectives for the listed cultural clubs rather than a Music Club-specific mission statement."
+      ]
+    },
+    {
+      "record_id": "club-dance",
+      "name": "Dance Club",
+      "official_slug": null,
+      "official_slug_basis": null,
+      "description": "Dance Club is listed by NIT Hamirpur among its key cultural clubs. The institute states generally that its cultural clubs provide opportunities for culturally enriching activities, student hobbies and development of organizational skills.",
+      "category": "Cultural / Dance",
+      "official_webpage": "https://nith.ac.in/hillffair",
+      "official_social_account": null,
+      "public_contact": null,
+      "image": {
+        "url": null,
+        "original_source_url": null,
+        "attribution": null,
+        "reuse_permission": null
+      },
+      "evidence_url": "https://nith.ac.in/hillffair",
+      "source_publication_date": null,
+      "source_uploaded_date": null,
+      "verification_date": "2026-10-10",
+      "missing_fields": [
+        "official slug",
+        "club-specific webpage",
+        "official social account",
+        "public club contact",
+        "source publication date",
+        "logo/image URL",
+        "image attribution",
+        "image reuse permission"
+      ],
+      "uncertainties": [
+        "The official page gives institute-wide objectives for the listed cultural clubs rather than a Dance Club-specific mission statement."
+      ]
+    },
+    {
+      "record_id": "club-dramatics",
+      "name": "Dramatics Club",
+      "official_slug": null,
+      "official_slug_basis": null,
+      "description": "Dramatics Club is listed by NIT Hamirpur among its key cultural clubs. The institute states generally that its cultural clubs provide opportunities for culturally enriching activities, student hobbies and development of organizational skills.",
+      "category": "Cultural / Dramatics",
+      "official_webpage": "https://nith.ac.in/hillffair",
+      "official_social_account": null,
+      "public_contact": null,
+      "image": {
+        "url": null,
+        "original_source_url": null,
+        "attribution": null,
+        "reuse_permission": null
+      },
+      "evidence_url": "https://nith.ac.in/hillffair",
+      "source_publication_date": null,
+      "source_uploaded_date": null,
+      "verification_date": "2026-10-10",
+      "missing_fields": [
+        "official slug",
+        "club-specific webpage",
+        "official social account",
+        "public club contact",
+        "source publication date",
+        "logo/image URL",
+        "image attribution",
+        "image reuse permission"
+      ],
+      "uncertainties": [
+        "The official page gives institute-wide objectives for the listed cultural clubs rather than a Dramatics Club-specific mission statement."
+      ]
+    }
+  ],
+  "events": [
+    {
+      "record_id": "event-chemference-2026",
+      "title": "ChEmference 2026 — Sustainable Processes for Cleaner and Greener Tomorrow",
+      "summary": "Three-day international conference organized by the Department of Chemical Engineering, NIT Hamirpur, scheduled for 2026-10-29 through 2026-10-31.",
+      "description": "The 11th edition of ChEmference is hosted by NIT Hamirpur. The official page describes it as a platform for researchers, experts and professionals to discuss sustainable chemical processes and related interdisciplinary work.",
+      "type": "Event",
+      "publisher": "Department of Chemical Engineering, NIT Hamirpur",
+      "related_club_slug": null,
+      "related_club_record_id": null,
+      "start_date": "2026-10-29",
+      "end_date": "2026-10-31",
+      "start_time": null,
+      "end_time": null,
+      "timezone": "Asia/Kolkata",
+      "venue": "NIT Hamirpur, Himachal Pradesh",
+      "audience": [
+        "Academicians and R&D personnel",
+        "Industry personnel",
+        "Students and research scholars",
+        "Attendees/listeners"
+      ],
+      "eligibility": null,
+      "department": "Department of Chemical Engineering",
+      "registration_deadline": "2026-10-15",
+      "registration_url": null,
+      "other_deadlines": [
+        {
+          "kind": "abstract_submission",
+          "date": "2026-10-10",
+          "time": null
+        },
+        {
+          "kind": "acceptance_intimation",
+          "date": "2026-10-12",
+          "time": null
+        },
+        {
+          "kind": "full_paper_submission",
+          "date": "2026-10-15",
+          "time": null
+        }
+      ],
+      "original_source_url": "https://nith.ac.in/chemference2026/index.php",
+      "source_publication_date": null,
+      "source_uploaded_date": null,
+      "poster_image": {
+        "url": null,
+        "attribution": null,
+        "reuse_permission": null
+      },
+      "current_state": "upcoming",
+      "verification_date": "2026-10-10",
+      "missing_fields": [
+        "event start time",
+        "event end time",
+        "room/building-level venue",
+        "registration URL",
+        "source publication date",
+        "poster/image URL",
+        "image attribution",
+        "image reuse permission"
+      ],
+      "uncertainties": [
+        "The official page provides conference dates but no conference start/end times.",
+        "The venue is stated only at institute level.",
+        "No event registration URL was established from the reviewed page content.",
+        "The abstract deadline is date-only; no cutoff time is published."
+      ]
+    }
+  ],
+  "notices": [
+    {
+      "record_id": "deadline-chemference-abstract",
+      "title": "ChEmference 2026 Abstract Submission Deadline",
+      "summary": "The official ChEmference page states that the abstract submission deadline is 2026-10-10.",
+      "description": "Date-only abstract submission deadline for ChEmference 2026. Because no cutoff time is stated, this record does not assume whether the deadline has already passed at any particular time on 2026-10-10.",
+      "type": "Deadline",
+      "publisher": "Department of Chemical Engineering, NIT Hamirpur",
+      "related_club_slug": null,
+      "related_club_record_id": null,
+      "start_date": null,
+      "end_date": null,
+      "start_time": null,
+      "end_time": null,
+      "timezone": "Asia/Kolkata",
+      "deadline_kind": "abstract_submission",
+      "deadline_date": "2026-10-10",
+      "venue": null,
+      "audience": [
+        "Prospective ChEmference 2026 abstract submitters"
+      ],
+      "eligibility": null,
+      "department": "Department of Chemical Engineering",
+      "registration_deadline": null,
+      "registration_url": null,
+      "original_source_url": "https://nith.ac.in/chemference2026/index.php",
+      "source_publication_date": null,
+      "source_uploaded_date": null,
+      "poster_image": {
+        "url": null,
+        "attribution": null,
+        "reuse_permission": null
+      },
+      "current_state": "unknown",
+      "verification_date": "2026-10-10",
+      "missing_fields": [
+        "deadline cutoff time",
+        "submission URL",
+        "source publication date",
+        "poster/image URL",
+        "image reuse permission"
+      ],
+      "uncertainties": [
+        "The deadline date is the reference date itself and the source gives no cutoff time, so 'upcoming', 'ongoing' or 'past' cannot be resolved safely within the day."
+      ]
+    },
+    {
+      "record_id": "deadline-chemference-registration",
+      "title": "ChEmference 2026 Registration Deadline",
+      "summary": "The official ChEmference page states that registration closes on 2026-10-15.",
+      "description": "Registration deadline for the conference scheduled for 2026-10-29 through 2026-10-31. This deadline is stored separately from the conference event dates.",
+      "type": "Deadline",
+      "publisher": "Department of Chemical Engineering, NIT Hamirpur",
+      "related_club_slug": null,
+      "related_club_record_id": null,
+      "start_date": null,
+      "end_date": null,
+      "start_time": null,
+      "end_time": null,
+      "timezone": "Asia/Kolkata",
+      "deadline_kind": "registration",
+      "deadline_date": "2026-10-15",
+      "venue": null,
+      "audience": [
+        "Prospective ChEmference 2026 participants"
+      ],
+      "eligibility": null,
+      "department": "Department of Chemical Engineering",
+      "registration_deadline": "2026-10-15",
+      "registration_url": null,
+      "original_source_url": "https://nith.ac.in/chemference2026/index.php",
+      "source_publication_date": null,
+      "source_uploaded_date": null,
+      "poster_image": {
+        "url": null,
+        "attribution": null,
+        "reuse_permission": null
+      },
+      "current_state": "upcoming",
+      "verification_date": "2026-10-10",
+      "missing_fields": [
+        "deadline cutoff time",
+        "registration URL",
+        "source publication date",
+        "poster/image URL",
+        "image reuse permission"
+      ],
+      "uncertainties": [
+        "The deadline is date-only; no closing time is stated."
+      ]
+    },
+    {
+      "record_id": "scholarship-guidance-2026-27",
+      "title": "Submission of Scholarship Applications for Academic Session 2026–27",
+      "summary": "NIT Hamirpur informed UG and PG students that the National Scholarship Portal had been opened by various Ministries for AY 2026–27 Fresh and Renewal applications and advised eligible students to apply within the timelines prescribed by the relevant Ministries.",
+      "description": "After online submission, the NIT notice asks students to submit the required hard copy and supporting documents to the Dean Student Welfare office for institute verification and processing. The notice does not provide one consolidated application closing date.",
+      "type": "Scholarship",
+      "publisher": "Office of Dean (Student Welfare), NIT Hamirpur",
+      "related_club_slug": null,
+      "related_club_record_id": null,
+      "start_date": null,
+      "end_date": null,
+      "start_time": null,
+      "end_time": null,
+      "timezone": "Asia/Kolkata",
+      "venue": "Dean Student Welfare, NIT Hamirpur, for institute document verification/processing",
+      "audience": "NIT Hamirpur UG and PG students",
+      "eligibility": "Eligible UG and PG students; exact eligibility depends on the relevant scholarship scheme and Ministry.",
+      "department": "Dean (Student Welfare)",
+      "registration_deadline": null,
+      "registration_url": "https://scholarships.gov.in/",
+      "original_source_url": "https://nith.ac.in/uploads/files/jul26/dsw-n-2-7-26.pdf",
+      "additional_evidence_urls": [
+        "https://nith.ac.in/scholarships-and-fellowships",
+        "https://nith.ac.in/student-related-notices"
+      ],
+      "source_publication_date": "2026-07-02",
+      "source_uploaded_date": "2026-07-02",
+      "poster_image": {
+        "url": null,
+        "attribution": null,
+        "reuse_permission": null
+      },
+      "current_state": "unknown",
+      "verification_date": "2026-10-10",
+      "missing_fields": [
+        "single application opening date",
+        "single registration/application deadline",
+        "scheme-specific eligibility",
+        "scheme-specific award amount",
+        "poster/image URL",
+        "image reuse permission"
+      ],
+      "uncertainties": [
+        "The NIT notice says application timelines are prescribed separately by the respective Ministries; no universal closing date appears in the institute notice.",
+        "The NIT scholarships page still links the 2026-27 guidance, but this alone does not prove that every NSP scheme remains open on 2026-10-10.",
+        "Current state is therefore 'unknown' rather than 'ongoing'."
+      ]
+    },
+    {
+      "record_id": "opportunity-campus-recruitment-2026-27",
+      "title": "Campus Recruitment 2026–27 — Recruiter Invitation",
+      "summary": "The Training and Placement Office, NIT Hamirpur is inviting organizations to participate in campus recruitment. Its official institutional account identifies the cycle as Campus Recruitment 2026–27 and directs organizations to a Job Application Form.",
+      "description": "Recruiter-facing opportunity associated with recruitment of NIT Hamirpur's 2027 graduating batch. No student application deadline or individual company drive schedule is published in the source used for this record.",
+      "type": "Opportunity",
+      "publisher": "Training and Placement Office, NIT Hamirpur",
+      "related_club_slug": null,
+      "related_club_record_id": null,
+      "start_date": null,
+      "end_date": null,
+      "start_time": null,
+      "end_time": null,
+      "timezone": "Asia/Kolkata",
+      "venue": "NIT Hamirpur / campus placement process",
+      "audience": "Organizations and recruiters",
+      "eligibility": "Organizations seeking to recruit NIT Hamirpur students / Batch of 2027",
+      "department": "Training and Placement Office",
+      "registration_deadline": null,
+      "registration_url": "https://lnkd.in/ggsAjMUn",
+      "original_source_url": "https://in.linkedin.com/company/training-and-placement-cell-nit-hamirpur",
+      "additional_evidence_urls": [
+        "https://tpo.nith.ac.in/"
+      ],
+      "source_publication_date": null,
+      "source_uploaded_date": null,
+      "poster_image": {
+        "url": null,
+        "attribution": null,
+        "reuse_permission": null
+      },
+      "current_state": "ongoing",
+      "verification_date": "2026-10-10",
+      "missing_fields": [
+        "exact source post publication date",
+        "opportunity start date",
+        "opportunity closing date",
+        "individual recruiter/company schedules",
+        "student-facing registration URL",
+        "poster/image URL",
+        "image reuse permission"
+      ],
+      "uncertainties": [
+        "The official account exposed the relevant update with a relative posting age rather than an exact publication date; no date has been inferred.",
+        "No overall closing date for the 2026-27 campus recruitment process was found.",
+        "This record is a recruiter-facing campus-recruitment invitation and should not be interpreted as a specific student job opening."
+      ]
+    },
+    {
+      "record_id": "notice-discipline-office-bearers-2026-27",
+      "title": "Information Regarding Office Bearers of Student Discipline Club for the Session 2026–2027",
+      "summary": "Official NIT Hamirpur notice establishes office bearers for the Student Discipline Club for session 2026–2027.",
+      "description": "The notice states that the office bearers are to perform duties and responsibilities in accordance with institute rules, regulations, guidelines and directions of the competent authority. UniFlow's import intentionally omits all student names and roll numbers contained in the source.",
+      "type": "Notice",
+      "publisher": "Office of Dean (Student Welfare), NIT Hamirpur",
+      "related_club_slug": null,
+      "related_club_record_id": "club-student-discipline",
+      "start_date": null,
+      "end_date": null,
+      "start_time": null,
+      "end_time": null,
+      "timezone": "Asia/Kolkata",
+      "venue": null,
+      "audience": "NIT Hamirpur community",
+      "eligibility": null,
+      "department": "Dean Student Welfare / Student Discipline",
+      "registration_deadline": null,
+      "registration_url": null,
+      "original_source_url": "https://nith.ac.in/uploads/files/oct26/sdc-26.pdf",
+      "additional_evidence_urls": [
+        "https://nith.ac.in/student-related-notices"
+      ],
+      "source_publication_date": "2026-10-01",
+      "source_uploaded_date": "2026-10-05",
+      "poster_image": {
+        "url": null,
+        "attribution": null,
+        "reuse_permission": null
+      },
+      "current_state": "ongoing",
+      "verification_date": "2026-10-10",
+      "missing_fields": [
+        "exact session start date",
+        "exact session end date",
+        "club-specific webpage",
+        "official club slug",
+        "public club contact"
+      ],
+      "uncertainties": [
+        "The source gives only the academic-session label 2026-2027 rather than explicit session boundary dates.",
+        "Student names and roll numbers have deliberately not been collected into this dataset."
+      ]
+    }
+  ],
+  "unresolved": [
+    {
+      "candidate_id": "unresolved-esummit-2026",
+      "title": "E-Summit 2026 — Winter of Innovation",
+      "candidate_type": "Event",
+      "reason": "An official NIT Hamirpur subdomain identifies E-Summit 2026 as the flagship entrepreneurship summit by E-Cell NIT Hamirpur, but a directly inspectable source in this verification run did not provide sufficiently verified event dates, registration deadline or registration URL. No year-specific date has been inferred.",
+      "evidence_url": "https://esummit.nith.ac.in/",
+      "source_publication_date": null,
+      "verification_date": "2026-10-10",
+      "import_decision": "Do not import as upcoming until dates are directly verified from the official page or an official NIT notice.",
+      "missing_fields": [
+        "start date",
+        "end date",
+        "times",
+        "registration deadline",
+        "registration URL",
+        "source publication date"
+      ]
+    },
+    {
+      "candidate_id": "unresolved-emotional-mental-wellbeing-workshop",
+      "title": "One-Day Workshop on Emotional and Mental Well-Being",
+      "candidate_type": "Event",
+      "reason": "The official NIT Hamirpur notice identifies a one-day workshop organized with Brahma Kumaris, provides the intended student groups and asks participants to reach by 09:45 AM, but the reviewed notice does not state the actual workshop date. A time without a date is insufficient to classify the workshop as upcoming or past.",
+      "evidence_url": "https://nith.ac.in/uploads/files/sept26/nith-bk.pdf",
+      "additional_evidence_urls": [
+        "https://nith.ac.in/student-related-notices"
+      ],
+      "source_publication_date": "2026-09-25",
+      "source_uploaded_date": "2026-09-28",
+      "verification_date": "2026-10-10",
+      "import_decision": "Do not import as a current event until an explicit event date is verified.",
+      "missing_fields": [
+        "event date",
+        "verified venue",
+        "registration deadline",
+        "registration URL"
+      ]
+    },
+    {
+      "candidate_id": "unresolved-hillfair-2026",
+      "title": "Hill'ffair 2026",
+      "candidate_type": "Event",
+      "reason": "The official Hill'ffair subdomain found during verification still displays dates for the 2024 edition. No official 2026 Hill'ffair dates were verified, so a 2026 edition or date must not be inferred from the annual nature of the festival.",
+      "evidence_url": "https://festhillffair.nith.ac.in/",
+      "source_publication_date": null,
+      "verification_date": "2026-10-10",
+      "import_decision": "Do not import a 2026 Hill'ffair event until an official 2026 announcement is published.",
+      "missing_fields": [
+        "verified 2026 start date",
+        "verified 2026 end date",
+        "2026 registration information"
+      ]
+    },
+    {
+      "candidate_id": "unresolved-shiksha-mahakumbh-overall-event",
+      "title": "Shiksha Mahakumbh 2026 — overall event",
+      "candidate_type": "Event",
+      "reason": "An official NIT student notice directly verifies a special first-year interaction session under Shiksha Mahakumbh 2026 on 2026-10-09 from 14:00 to 16:00 at the Institute Auditorium. Broader Shiksha Mahakumbh date information appeared in the NIT homepage search index, but search-index text is not treated as sufficient evidence for importing the overall multi-day event. The verified 2026-10-09 component session is already past as of the reference date.",
+      "evidence_url": "https://nith.ac.in/uploads/files/oct26/dsw.pdf",
+      "additional_evidence_urls": [
+        "https://nith.ac.in/",
+        "https://nith.ac.in/student-related-notices"
+      ],
+      "source_publication_date": "2026-10-09",
+      "source_uploaded_date": "2026-10-09",
+      "verification_date": "2026-10-10",
+      "import_decision": "Do not import the broader event dates until they are available in a directly inspectable official NIT source. The verified first-year session is historical and therefore excluded from the current/upcoming event array.",
+      "missing_fields": [
+        "directly verified overall start date",
+        "directly verified overall end date",
+        "overall-event registration URL"
+      ]
+    }
+  ]
+}
