@@ -213,8 +213,9 @@ function CampusItemRow({
           animate={isScholarship ? { scale: expanded ? 1.06 : 1 } : undefined}
           transition={motionTransition}
         >
-          <strong>{formatDate(primaryDate(item)).split(" ")[0]}</strong>
-          <span>{formatDate(primaryDate(item)).split(" ")[1] ?? "TBC"}</span>
+          {/* With no date at all the tile says so instead of splitting a sentence in two. */}
+          <strong>{primaryDate(item) ? formatDate(primaryDate(item)).split(" ")[0] : "–"}</strong>
+          <span>{primaryDate(item) ? formatDate(primaryDate(item)).split(" ")[1] ?? "TBC" : "No date"}</span>
         </motion.div>
       )}
       <button type="button" className="student-item-content" onClick={onOpen}>

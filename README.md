@@ -30,7 +30,8 @@ The loop UniFlow is built around: campus notice or poster → AI extraction → 
 | AI extraction from a poster | Working, **tested live** with `gemma-4-26b-a4b-it`: a club member's poster image goes to the `extract-poster` Edge Function, the fields fill the editable form, and the update goes through human review before it can be published. "Use sample brief" is still simulated |
 | AI discovery (`/app/ask`) | Working, **tested live**: the model answered from a published event and cited that record with its source link. Answers come from published events only |
 | Assignments (`/app/assignments`) | Working, **tested live**: create, list, mark done, delete. A private per-student coursework list |
-| Supabase database | Connected: Auth, `club_members`, `events`, `rsvps` and `club_rsvp_counts()`. `seed.sql` is not applied, so the sample records are not in the database and cannot be joined |
+| Supabase database | Connected: Auth, `club_members`, `events`, `rsvps`, `assignments` and `club_rsvp_counts()`. `seed.sql` is not applied, so the sample records are not in the database and cannot be joined |
+| Imported campus data | **Live.** 9 NIT Hamirpur clubs and 5 updates imported from official public sources, labelled "Imported from …" with their source links. See [Imported campus data](#imported-campus-data) |
 | Gemma via the Gemini API | Called only from the Edge Functions in `supabase/functions/`, default model `gemma-4-26b-a4b-it`. Needs the `GEMINI_API_KEY` function secret; see `supabase/README.md` |
 
 ## Flows
@@ -127,6 +128,40 @@ select 'campus-code-collective', id from auth.users where email = 'organizer@nit
 
 The club ids are `campus-code-collective`, `student-arts-circle` and `creative-circle`.
 
+## Imported campus data
+
+Real NIT Hamirpur records come from a research pack whose JSON is checked in as `data/nith-import-pack.json` (extracted from the PDF with only line wrapping repaired). `data/nith-import-decisions.json` records what was checked against the live official pages on 2026-10-10 and the wording that is published. UniFlow is independent of NIT Hamirpur: imported records are copies of public information, the publishers do not post here, and nothing implies endorsement.
+
+**What was imported into the hosted project**
+
+| | Count | Notes |
+|---|---|---|
+| Clubs | 9 of 9 | SPEC, APP TEAM, Student Discipline Club, SHIELD, E-Cell, EBSB, Music Club, Dance Club, Dramatics Club. No memberships were created; no account can edit them |
+| Updates | 5 of 6 | ChEmference 2026 (29–31 Oct), its abstract deadline (10 Oct) and registration deadline (15 Oct), the 2026–27 scholarship guidance, and the Student Discipline Club office-bearer notice |
+| Left out | 1 | The campus-recruitment invitation, because it is addressed to recruiters, not students |
+| Not imported | 4 | The pack's unresolved candidates (E-Summit 2026, a well-being workshop, Hill'ffair 2026, Shiksha Mahakumbh 2026): no directly verified dates |
+
+**Rules the import follows**
+
+- Dates stay as the source gives them. ChEmference has no start or end time and its deadlines have no cut-off time, so none is stored or shown.
+- A deadline the source does not give is shown as "Check source", never "Closing soon". Past dates are shown as past and are not offered on Today.
+- The original source link is stored separately from any application link (the scholarship has both).
+- Images are null in the pack, so none are shown. No logos or posters were added.
+- Four of the five notice PDFs are scanned images. Statements the pack takes from inside them (for example the scholarship notice's submission steps) could not be checked and are not published; the record's title, listing date and link are.
+- No student names or roll numbers are stored.
+- Imported records cannot be created, edited or joined from the app: the app offers no way to, and the migration adds database rules that refuse all three. Those database refusals were not exercised live.
+
+**Running it**
+
+```sh
+node scripts/build-nith-import.mjs                                   # regenerate supabase/imports/nith-import.sql
+supabase db query --linked -f supabase/imports/nith-import.sql        # or paste the file into the SQL editor
+```
+
+It needs the `20261010180000_imported_records.sql` migration, and it only inserts or updates rows with the pack's own ids. Run twice against the hosted project, the counts stayed at 12 clubs and 6 events.
+
+**Checked live on 2026-10-10**, through the site against the hosted project: all 9 clubs appear in the directory after a refresh; ChEmference shows 29 Oct 2026 to 31 Oct 2026, a 15 Oct 2026 registration deadline with no time, and its official source link; the scholarship is not marked closing soon; the imported event cannot be joined; and Ask answered "When is ChEmference 2026?" with the dates and a citation to the record and its official page. How imported records render at phone width, and in a viewer's time zone far from India, was checked with mocked server responses only.
+
 ## Human review and source provenance
 
 - A record moves through `draft` → `needs_review` → `ready_for_approval` → published. Editing any field sends it back to review.
@@ -148,6 +183,9 @@ Needs two accounts created in the Supabase project, one of them added to `club_m
 7. Sign back in as the club and open the published page to see the RSVP count.
 
 ## Known limitations
+
+- Imported records are a snapshot from 2026-10-10. Nothing re-checks the sources, so a date changed by the publisher will not update here.
+- AI discovery cites a record's start date only; a multi-day range appears in the answer text and on the record page.
 
 - No real authentication, and no organizer permission check.
 - Data is per browser. Clearing site data removes everything.
