@@ -9,35 +9,6 @@
   text-align: left;
 }
 
-.kicker {
-  display: flex;
-  align-items: center;
-  gap: 0.4rem;
-  margin: 0;
-  color: #7c429c;
-  font-size: 0.7rem;
-  font-weight: 850;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-}
-
-.title {
-  margin: 0.5rem 0 0;
-  color: #17131d;
-  font-size: clamp(1.6rem, 3.2vw, 2.2rem);
-  font-weight: 800;
-  line-height: 1.05;
-  letter-spacing: -0.045em;
-}
-
-.lede {
-  max-width: 40rem;
-  margin: 0.7rem 0 0;
-  color: #5d5260;
-  font-size: 0.95rem;
-  line-height: 1.6;
-}
-
 /* Question */
 .form {
   margin-top: 1.5rem;

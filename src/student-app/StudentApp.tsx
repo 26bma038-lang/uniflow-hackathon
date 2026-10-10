@@ -16,7 +16,7 @@ import {
   X,
 } from "lucide-react"
 import { defaultProfile, DEMO_PERIOD } from "./data"
-import { filterCampusItems, matchInterests, orderByInterests, type DiscoverFilters } from "./services"
+import { filterCampusItems, matchInterests, orderByInterests, originLabels, recordOrigin, type DiscoverFilters } from "./services"
 import type { CampusCategory, CampusItem, StudentProfile } from "./types"
 import { interestOptions } from "./types"
 import { useSavedItems } from "./useSavedItems"
@@ -115,9 +115,9 @@ function getGreeting() {
 
 function SourceBadge({ item }: { item: CampusItem }) {
   return (
-    <span className="student-source-badge">
+    <span className="student-source-badge" data-origin={recordOrigin(item)}>
       <span className="student-source-dot" />
-      {item.reviewStatus}
+      {originLabels[recordOrigin(item)]}{recordOrigin(item) === "test" ? "" : ` · ${item.reviewStatus}`}
     </span>
   )
 }
@@ -362,11 +362,6 @@ function StudentAppContent() {
     return () => window.removeEventListener("popstate", sync)
   }, [])
 
-  // The mobile tab bar scrolls sideways; keep the current tab in view.
-  useEffect(() => {
-    document.querySelector('.student-tabbar a[aria-current="page"]')?.scrollIntoView({ inline: "center", block: "nearest" })
-  }, [location.route])
-
   const go = (path: string) => {
     if (path === "/") {
       window.location.assign("/")
@@ -407,7 +402,7 @@ function StudentAppContent() {
             <span className="student-brand-mark">U</span>
             <span>UniFlow</span>
           </a>
-          <span className="student-prototype-label">STUDENT VIEW · DEMO</span>
+          <span className="student-prototype-label">STUDENT VIEW</span>
         </div>
         <nav aria-label="Student application">
           {[
@@ -433,9 +428,9 @@ function StudentAppContent() {
           ))}
         </nav>
         <div className="student-sidebar-footer">
-          <p>Example period</p>
+          <p>Sample period</p>
           <strong>18—25 OCT 2026</strong>
-          <span>Illustrative campus data. No live institutional feed is connected.</span>
+          <span>Sample records are labelled. Club updates, RSVPs and assignments are saved to UniFlow. No official institutional feed is connected.</span>
           {studentEmail ? (
             <>
               <span>Signed in as {studentEmail}</span>
@@ -448,7 +443,8 @@ function StudentAppContent() {
         </div>
       </aside>
       <nav className="student-tabbar" aria-label="Student application tabs">
-        {[["today", "Today"], ["discover", "Discover"], ["ask", "Ask"], ["assignments", "Assignments"], ["saved", "Saved"], ["joined", "Joined"], ["profile", "Profile"]].map(([route, label]) => (
+        {/* Five destinations fit a phone; Joined and Profile are in the menu. */}
+        {[["today", "Today"], ["discover", "Discover"], ["ask", "Ask"], ["assignments", "Assignments"], ["saved", "Saved"]].map(([route, label]) => (
           <a key={route} href={`/app/${route}`} aria-current={location.route === route ? "page" : undefined} onClick={(event) => { event.preventDefault(); go(`/app/${route}`) }}>{label}{route === "saved" && saved.length > 0 && <b>{saved.length}</b>}{route === "joined" && rsvp.joined.length > 0 && <b>{rsvp.joined.length}</b>}</a>
         ))}
       </nav>
@@ -474,13 +470,13 @@ function StudentAppContent() {
             {location.route === "discover" && <DiscoverPage items={campusRecords} interests={profile.interests} saved={isSaved} onSave={handleSave} onOpen={(id) => go(`/app/item/${id}`)} />}
             {location.route === "ask" && (
               <section className="student-page">
-                <div className="student-page-heading"><div><p className="student-eyebrow">AI DISCOVERY · PUBLISHED UPDATES ONLY</p><h1>Ask UniFlow.</h1></div></div>
+                <div className="student-page-heading"><div><p className="student-eyebrow">AI DISCOVERY · PUBLISHED UPDATES ONLY</p><h1>Ask UniFlow.</h1><p>Ask in your own words. The answer is built only from updates clubs have published on UniFlow, and it links to each record it used.</p></div></div>
                 <AskCampus signedIn={Boolean(studentEmail)} onSignIn={() => enterStudentDemo()} onOpenItem={(id) => go(`/app/item/${id}`)} />
               </section>
             )}
             {location.route === "assignments" && <AssignmentsPage signedIn={Boolean(studentEmail)} email={studentEmail} onSignIn={() => enterStudentDemo()} />}
             {location.route === "saved" && <SavedPage email={studentEmail} items={campusRecords} savedItems={saved.map((entry) => campusRecords.find((itemEntry) => itemEntry.id === entry.itemId)).filter((entry): entry is CampusItem => Boolean(entry))} saved={isSaved} onSave={handleSave} onOpen={(id) => go(`/app/item/${id}`)} onDiscover={() => go("/app/discover")} />}
-            {location.route === "profile" && <ProfilePage profile={profile} onSave={(next) => { setProfile(next); localStorage.setItem("uniflow-student-profile", JSON.stringify(next)); setSavedNotice("Demo preferences saved.") }} />}
+            {location.route === "profile" && <ProfilePage profile={profile} onSave={(next) => { setProfile(next); localStorage.setItem("uniflow-student-profile", JSON.stringify(next)); setSavedNotice("Preferences saved.") }} />}
             {location.route === "joined" && <JoinedPage rsvp={rsvp} joinedItems={rsvp.joined.map((entry) => campusRecords.find((itemEntry) => itemEntry.id === entry.itemId)).filter((entry): entry is CampusItem => Boolean(entry))} saved={isSaved} onSave={handleSave} onOpen={(id) => go(`/app/item/${id}`)} onDiscover={() => go("/app/discover")} />}
             {location.route === "item" && <DetailPage loading={campus.status === "loading"} rsvp={rsvp} items={campusRecords} item={item} saved={item ? isSaved(item.id) : false} onSave={item ? () => handleSave(item) : undefined} onBack={() => window.history.back()} onOpen={(id) => go(`/app/item/${id}`)} />}
           </motion.div>
@@ -503,11 +499,11 @@ function TodayPage({ items, profile, saved, onSave, onOpen, onDiscover }: { item
         <div>
           <p className="student-eyebrow">TODAY & SOON · {DEMO_PERIOD}</p>
           <h1>{getGreeting()}, {profile.displayName}.</h1>
-          <p>Here’s what matters on your campus, shaped by your demo preferences.</p>
+          <p>Here’s what matters on your campus, shaped by your interests.</p>
         </div>
         <button className="student-text-action" type="button" onClick={onDiscover}><Search size={17} /> Search campus</button>
       </div>
-      <div className="student-personalization-note"><Sparkles size={16} /> Recommendations based on your demo preferences · {profile.department} · {profile.academicYear}</div>
+      <div className="student-personalization-note"><Sparkles size={16} /> Recommendations based on your interests · {profile.department} · {profile.academicYear}</div>
       <div className="student-today-grid">
         <section className="student-attention-column">
           <div className="student-section-label"><span>01</span><h2>Needs attention</h2><span className="student-section-rule" /></div>
@@ -522,7 +518,7 @@ function TodayPage({ items, profile, saved, onSave, onOpen, onDiscover }: { item
         <div className="student-section-label"><span>02</span><h2>Coming up</h2><span className="student-section-rule" /><button type="button" onClick={onDiscover}>View all <ArrowUpRight size={15} /></button></div>
         <div className="student-coming-list">{comingUp.map((item) => <CampusItemRow key={item.id} item={item} matches={matchInterests(item, profile.interests)} saved={saved(item.id)} onToggleSaved={() => onSave(item)} onOpen={() => onOpen(item.id)} />)}</div>
       </section>
-      <p className="student-demo-footnote"><CircleAlert size={15} /> Prototype records are illustrative and are not official institutional notices.</p>
+      <p className="student-demo-footnote"><CircleAlert size={15} /> Sample records are illustrative. Club updates are published by club members. Nothing here is an official institutional notice.</p>
     </section>
   )
 }
@@ -656,15 +652,15 @@ function DetailPage({ loading, rsvp, items, item, saved, onSave, onBack, onOpen 
       <button type="button" className="student-back-action" onClick={onBack}><ArrowLeft size={16} /> Back to campus information</button>
       <div className="student-detail-layout">
         <div className="student-detail-main">
-          <div className="student-detail-kicker"><span className={categoryColors[item.category]}>{item.category}</span><span>{item.status}</span></div>
+          <div className="student-detail-kicker"><span className={categoryColors[item.category]}>{item.category}</span><span>{item.status}</span><span className="student-origin-tag" data-origin={recordOrigin(item)}>{originLabels[recordOrigin(item)]}</span></div>
           <h1>{item.title}</h1><p className="student-detail-summary">{item.summary}</p>
           {canJoin(item) && <JoinAction item={item} rsvp={rsvp} />}
-          <div className="student-detail-actions"><SaveButton item={item} isSaved={saved} onToggle={() => onSave?.()} />{item.sourceUrl && <button type="button" className="student-primary-action" onClick={() => window.open(item.sourceUrl!, "_blank", "noopener,noreferrer")}>Open source <ArrowUpRight size={16} /></button>}</div>
+          <div className="student-detail-actions"><SaveButton item={item} isSaved={saved} onToggle={() => onSave?.()} />{item.sourceUrl && <button type="button" className="student-primary-action" onClick={() => window.open(item.sourceUrl!, "_blank", "noopener,noreferrer")}>Open original link <ArrowUpRight size={16} /></button>}</div>
           {item.image && <img className="student-detail-image" src={item.image} alt="" />}
           {item.description && item.description !== item.summary && <p className="student-detail-description">{item.description}</p>}
           <div className="student-detail-facts"><div><span>WHO IT’S FOR</span><strong>{item.audience}</strong></div><div><span>DEPARTMENT</span><strong>{item.department}</strong></div>{hasRegistration(item) ? <><div className="student-fact-date"><span>EVENT DATE</span><strong>{formatDate(item.startDate)}</strong></div><div className="student-fact-date is-deadline"><span>REGISTRATION DEADLINE</span><strong>{formatDate(item.deadline)}</strong></div></> : <div><span>{item.deadline ? "DEADLINE" : "WHEN"}</span><strong>{formatDate(item.deadline ?? item.startDate)}</strong></div>}<div><span>WHERE</span><strong>{item.venue ?? "To be confirmed"}</strong></div></div>
         </div>
-        <aside className="student-provenance"><p className="student-eyebrow">SOURCE NOTES</p><h2>Keep the context close.</h2><div className="student-provenance-block"><span>Publisher identity</span><strong>{item.publisher}</strong>{item.sourceType === "Student group" && <a className="student-publisher-link" href={`/explore/club/${clubSlug(item.publisher)}`}>View public club profile <ArrowUpRight size={14} /></a>}</div><div className="student-provenance-block"><span>Original source</span><strong>{item.sourceLabel ?? (item.sourceUrl ? "External source available" : "Source unavailable in this demo.")}</strong></div><div className="student-provenance-block"><span>Review status</span><strong><SourceBadge item={item} /></strong></div><div className="student-provenance-block"><span>Last checked</span><strong>{item.lastVerifiedAt ? formatDate(item.lastVerifiedAt) : "Not recorded"}</strong></div><p className="student-provenance-note">Human review does not make a fictional record an official institutional notice.</p></aside>
+        <aside className="student-provenance"><p className="student-eyebrow">SOURCE NOTES</p><h2>Keep the context close.</h2><div className="student-provenance-block"><span>Publisher identity</span><strong>{item.publisher}</strong>{item.sourceType === "Student group" && <a className="student-publisher-link" href={`/explore/club/${clubSlug(item.publisher)}`}>View public club profile <ArrowUpRight size={14} /></a>}</div><div className="student-provenance-block"><span>Original source</span><strong>{item.sourceLabel ?? (item.sourceUrl ? "External source available" : "Source unavailable in this demo.")}</strong></div><div className="student-provenance-block"><span>Review status</span><strong><span className="student-source-badge"><span className="student-source-dot" />{item.reviewStatus}</span></strong></div><div className="student-provenance-block"><span>Last checked</span><strong>{item.lastVerifiedAt ? formatDate(item.lastVerifiedAt) : "Not recorded"}</strong></div><p className="student-provenance-note">{recordOrigin(item) === "sample" ? "This is a sample record that ships with the prototype. It is not a real campus notice." : recordOrigin(item) === "test" ? "This is a test record published to check UniFlow. It is not a real event." : "Published by a club member after a human review. It is not an official institutional notice."}</p></aside>
       </div>
       {related.length > 0 && <section className="student-related"><div className="student-section-label"><span>MORE TO EXPLORE</span><span className="student-section-rule" /></div>{related.map((entry) => <button type="button" key={entry.id} onClick={() => onOpen(entry.id)}><span>{entry.category}</span><strong>{entry.title}</strong><ArrowUpRight size={16} /></button>)}</section>}
     </article>

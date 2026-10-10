@@ -286,7 +286,7 @@ function PublicUpdateList({ items }: { items: CampusItem[] }) {
             <span className="access-info-body">
               <strong>{entry.title}</strong>
               <span>{entry.summary}</span>
-              <small>{entry.category} from {entry.publisher}{entry.isClubPublication ? " (club update)" : ""}</small>
+              <small>{entry.category} from {entry.publisher}{entry.isClubPublication ? (/^\s*test\b/i.test(entry.title) ? " (test record)" : " (club update)") : " (sample)"}</small>
             </span>
             <ArrowUpRight size={17} aria-hidden="true" />
           </a>

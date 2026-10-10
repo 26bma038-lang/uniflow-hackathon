@@ -6,7 +6,7 @@ const sourceImages = [
   "https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=1200&q=82",
 ]
 
-export const DEMO_PERIOD = "18–25 October 2026 · illustrative prototype data"
+export const DEMO_PERIOD = "Sample records and club updates"
 
 export const campusItems: CampusItem[] = [
   {

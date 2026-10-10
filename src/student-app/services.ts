@@ -9,6 +9,18 @@ export type DiscoverFilters = {
   sort: "relevant" | "soonest" | "recent"
 }
 
+// Where a record comes from, so the interface can say so: a sample that ships with the
+// prototype, an update a club published to the database, or a published record whose
+// title marks it as a test.
+export type RecordOrigin = "sample" | "club" | "test"
+
+export function recordOrigin(item: CampusItem): RecordOrigin {
+  if (!item.isClubPublication) return "sample"
+  return /^\s*test\b/i.test(item.title) ? "test" : "club"
+}
+
+export const originLabels: Record<RecordOrigin, string> = { sample: "Sample record", club: "Club update", test: "Test record" }
+
 export const mockCampusService = {
   listItems(): CampusItem[] {
     return campusItems

@@ -113,7 +113,7 @@ function ClubNav({ location, mobileOpen, setMobileOpen, club, clubs, email, onSw
       {mobileOpen && <button className="club-mobile-scrim" aria-label="Close navigation" onClick={() => setMobileOpen(false)} />}
       <aside className={`club-sidebar ${mobileOpen ? "is-open" : ""}`}>
         <a className="club-brand" href="/club/overview" onClick={(event) => { event.preventDefault(); go("/club/overview") }}><span>U</span>UniFlow</a>
-        <p className="club-sidebar-kicker">CLUB WORKSPACE · DEMO</p>
+        <p className="club-sidebar-kicker">CLUB WORKSPACE</p>
         <nav aria-label="Club workspace">
           {links.map(([key, label]) => <a key={key} href={`/club/${key}`} className={location.route === key ? "is-active" : ""} onClick={(event) => { event.preventDefault(); setMobileOpen(false); go(`/club/${key}`) }}><i />{label}{key === "create" && <Plus size={14} />}</a>)}
         </nav>
@@ -155,7 +155,7 @@ function Overview({ records, counts, activity, onCreate, onOpen }: { records: Cl
   const drafts = records.filter((record) => record.status !== "published_demo").slice(0, 3)
   const eventRsvps = usePublishedEventRsvps(records, counts)
   return <section className="club-page">
-    <div className="club-page-heading"><div><p className="club-eyebrow">CLUB WORKSPACE · 18 OCT 2026</p><h1>Your club,<br />your campus.</h1><p>Prepare updates, review the source, and publish only when a human is ready to stand behind the details.</p></div><button className="club-primary-action" type="button" onClick={onCreate}><Plus size={17} /> Create campus update</button></div>
+    <div className="club-page-heading"><div><p className="club-eyebrow">CLUB WORKSPACE</p><h1>Your club,<br />your campus.</h1><p>Prepare updates, review the source, and publish only when a human is ready to stand behind the details.</p></div><button className="club-primary-action" type="button" onClick={onCreate}><Plus size={17} /> Create campus update</button></div>
     <div className="club-overview-grid-new">
       <div className="club-overview-main">
         <div className="club-section-title"><span>01</span><h2>Work in progress</h2><button type="button" onClick={() => go("/club/drafts")}>View all <ArrowUpRight size={14} /></button></div>

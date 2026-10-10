@@ -1,5 +1,7 @@
+import { motion, useReducedMotion } from "motion/react"
+import { formatCampusDate, humanizeAnswerDates } from "./answerDates"
 import { useEffect, useId, useRef, useState } from "react"
-import { ArrowUpRight, CircleAlert, ExternalLink, LoaderCircle, RefreshCw, Search, Sparkles } from "lucide-react"
+import { ArrowUpRight, CircleAlert, ExternalLink, LoaderCircle, RefreshCw, Search, } from "lucide-react"
 import { aiService } from "../api"
 import { DISCOVER_MAX_QUERY_LENGTH } from "../contracts"
 import type { AiErrorCode, AiService, DiscoverResponse, DiscoverSource } from "../contracts"
@@ -18,22 +20,6 @@ const DEFAULT_SUGGESTIONS = ["What’s happening this week?", "Which deadlines a
 
 // The counter appears once this few characters are left.
 const COUNTER_FROM = 60
-
-const DATE_ONLY = /^(\d{4})-(\d{2})-(\d{2})$/
-
-// Record dates arrive as ISO date-times. A bare date is read as that calendar day rather
-// than as midnight UTC, which would show the previous day in some time zones. Anything
-// unreadable is shown as it came, never replaced with a guess.
-function formatWhen(value: string) {
-  const dateOnly = DATE_ONLY.exec(value)
-  if (dateOnly) {
-    const date = new Date(Number(dateOnly[1]), Number(dateOnly[2]) - 1, Number(dateOnly[3]))
-    return new Intl.DateTimeFormat("en-GB", { weekday: "short", day: "numeric", month: "short", year: "numeric" }).format(date)
-  }
-  const date = new Date(value)
-  if (Number.isNaN(date.getTime())) return value
-  return new Intl.DateTimeFormat("en-GB", { weekday: "short", day: "numeric", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit", hourCycle: "h23" }).format(date)
-}
 
 function isWebUrl(value: string | null): value is string {
   if (!value) return false
@@ -54,8 +40,8 @@ function SourceRow({ source, onOpen }: { source: DiscoverSource; onOpen: () => v
       </p>
       <h4 className={styles.sourceTitle}>{source.title || "Untitled record"}</h4>
       <dl className={styles.facts}>
-        {source.startDate && <div><dt>When</dt><dd>{formatWhen(source.startDate)}</dd></div>}
-        {source.deadline && <div className={styles.deadline}><dt>{source.startDate ? "Register by" : "Deadline"}</dt><dd>{formatWhen(source.deadline)}</dd></div>}
+        {source.startDate && <div><dt>When</dt><dd>{formatCampusDate(source.startDate)}</dd></div>}
+        {source.deadline && <div className={styles.deadline}><dt>{source.startDate ? "Register by" : "Deadline"}</dt><dd>{formatCampusDate(source.deadline)}</dd></div>}
         {!source.startDate && !source.deadline && <div><dt>When</dt><dd>No date on this record</dd></div>}
         <div><dt>Where</dt><dd>{source.venue || "No venue on this record"}</dd></div>
       </dl>
@@ -76,6 +62,7 @@ function SourceRow({ source, onOpen }: { source: DiscoverSource; onOpen: () => v
 
 function AskCampus({ signedIn, onSignIn, onOpenItem, service = aiService, suggestions = DEFAULT_SUGGESTIONS }: AskCampusProps) {
   const id = useId()
+  const reducedMotion = useReducedMotion() ?? false
   const [query, setQuery] = useState("")
   const [formError, setFormError] = useState("")
   // What is being asked right now, if anything.
@@ -135,12 +122,7 @@ function AskCampus({ signedIn, onSignIn, onOpenItem, service = aiService, sugges
   const failureCopy = failure ? discoverErrorCopy(failure.code) : null
 
   return (
-    <section className={styles.root} aria-labelledby={`${id}-title`}>
-      <header className={styles.head}>
-        <p className={styles.kicker}><Sparkles size={13} aria-hidden="true" /> Ask UniFlow · AI</p>
-        <h2 id={`${id}-title`} className={styles.title}>Ask about what’s published.</h2>
-        <p className={styles.lede}>Ask in your own words. The answer is built only from records clubs and publishers have put on UniFlow, and it links to each one it used.</p>
-      </header>
+    <section className={styles.root} aria-label="Ask UniFlow">
 
       {!signedIn ? (
         <div className={styles.gate}>
@@ -254,13 +236,13 @@ function AskCampus({ signedIn, onSignIn, onOpenItem, service = aiService, sugges
           )}
 
           {answer && (
-            <article className={styles.answer} aria-labelledby={`${id}-answer`} aria-busy={pending ? true : undefined} data-stale={pending || failure ? true : undefined}>
+            <motion.article key={answer.question} initial={reducedMotion ? false : { y: 12 }} animate={{ y: 0 }} transition={{ duration: reducedMotion ? 0 : 0.28, ease: [0.16, 1, 0.3, 1] }} className={styles.answer} aria-labelledby={`${id}-answer`} aria-busy={pending ? true : undefined} data-stale={pending || failure ? true : undefined}>
               <p className={styles.asked}>
                 <span>{pending || failure ? "Earlier answer · you asked" : "You asked"}</span>
                 <q>{answer.question}</q>
               </p>
               <h3 id={`${id}-answer`} className={styles.answerLabel}>Answer</h3>
-              <p className={styles.answerText}>{answer.response.answer.trim() || "The model returned no text for this question."}</p>
+              <p className={styles.answerText}>{humanizeAnswerDates(answer.response.answer.trim()) || "The model returned no text for this question."}</p>
 
               <div className={styles.sources}>
                 <h3 className={styles.sourcesTitle}>
@@ -278,7 +260,7 @@ function AskCampus({ signedIn, onSignIn, onOpenItem, service = aiService, sugges
                   </p>
                 )}
               </div>
-            </article>
+            </motion.article>
           )}
         </>
       )}
