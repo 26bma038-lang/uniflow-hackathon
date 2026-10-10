@@ -1,0 +1,323 @@
+- generic [ref=f4e3]:
+  - banner [ref=f4e4]:
+    - navigation "Main navigation" [ref=f4e5]:
+      - link "UniFlow home" [ref=f4e6] [cursor=pointer]:
+        - /url: "#top"
+        - generic [ref=f4e7]: UniFlow
+      - generic [ref=f4e10]:
+        - link "How it works" [ref=f4e11] [cursor=pointer]:
+          - /url: "#how-it-works"
+        - link "Events" [ref=f4e15] [cursor=pointer]:
+          - /url: /events
+        - link "Clubs" [ref=f4e19] [cursor=pointer]:
+          - /url: "#clubs"
+      - link "Explore preview" [ref=f4e24] [cursor=pointer]:
+        - /url: "#campus-inbox"
+  - main [ref=f4e26]:
+    - region [ref=f4e27]:
+      - generic [ref=f4e28]:
+        - generic [ref=f4e29]:
+          - paragraph [ref=f4e30]: Built for life at NIT Hamirpur
+          - heading "Your campus, without the catch-up." [level=1] [ref=f4e31]: Your campus,without the catch-up.
+          - paragraph [ref=f4e32]: A calmer way to discover notices, deadlines, scholarships, opportunities, and events—then verify the source before you act.
+          - generic [ref=f4e33]:
+            - link "Explore the preview" [ref=f4e34] [cursor=pointer]:
+              - /url: "#campus-inbox"
+              - text: Explore the preview
+              - generic [aria-hidden] [ref=f4e35]: ↗
+            - link "How it works" [ref=f4e36] [cursor=pointer]:
+              - /url: "#how-it-works"
+              - text: How it works
+              - generic [aria-hidden] [ref=f4e37]: ↓
+          - paragraph [ref=f4e38]: An independent campus hub prototype.
+        - generic [ref=f4e39]:
+          - region [ref=f4e40]:
+            - generic [ref=f4e41]:
+              - paragraph [ref=f4e42]: YOUR CAMPUS, AT A GLANCE
+              - heading "Today & Soon" [level=2] [ref=f4e43]
+              - paragraph [ref=f4e44]: Week of 19 October 2026
+            - generic [ref=f4e46]:
+              - button "← Back to inbox" [active] [ref=f4e47] [cursor=pointer]
+              - paragraph [ref=f4e48]: Scholarship
+              - heading "Student support scholarship" [level=3] [ref=f4e49]
+              - paragraph [ref=f4e50]: Review the example eligibility criteria and prepare your application documents before the closing date.
+              - generic [ref=f4e51]: Illustrative prototype
+              - generic [ref=f4e54]:
+                - generic [ref=f4e55]:
+                  - term [ref=f4e56]: Audience
+                  - definition [ref=f4e57]: Undergraduate students
+                - generic [ref=f4e58]:
+                  - term [ref=f4e59]: Application deadline
+                  - definition [ref=f4e60]: 19 October 2026 · 5:00 PM IST
+                - generic [ref=f4e61]:
+                  - term [ref=f4e62]: Publisher
+                  - definition [ref=f4e63]: Student support office · example
+                - generic [ref=f4e64]:
+                  - term [ref=f4e65]: Original source
+                  - definition [ref=f4e66]: Student support notice
+                - generic [ref=f4e67]:
+                  - term [ref=f4e68]: Document date
+                  - definition [ref=f4e69]: 12 October 2026
+                - generic [ref=f4e70]:
+                  - term [ref=f4e71]: Last reviewed
+                  - definition [ref=f4e72]: Preview state · not live
+              - button "Review the source action" [ref=f4e73] [cursor=pointer]:
+                - text: Review the source action
+                - generic [aria-hidden] [ref=f4e74]: ↗
+              - paragraph [ref=f4e75]: Illustrative sample data for this prototype. No live source link or institutional verification is connected.
+            - generic [ref=f4e76]: Interactive preview · Example data
+          - paragraph [ref=f4e77]: 01 Find what matters. Check the source. Take action.
+  - main [ref=f4e78]:
+    - generic [ref=f4e80]:
+      - generic [ref=f4e81]:
+        - generic [ref=f4e82]:
+          - heading "Upcoming on campus" [level=2] [ref=f4e83]
+          - paragraph [ref=f4e84]: Events are one part of a broader campus feed for notices, deadlines, opportunities, and the moments worth showing up for.
+          - paragraph [ref=f4e85]: Example events for this prototype.
+        - link "View all events →" [ref=f4e86] [cursor=pointer]:
+          - /url: /events
+      - generic [ref=f4e87]:
+        - article [ref=f4e88]:
+          - img "Students collaborating around a laptop at a hackathon" [ref=f4e90]
+          - generic [ref=f4e91]:
+            - paragraph [ref=f4e92]: Technical workshop
+            - heading "Build Night" [level=3] [ref=f4e93]
+            - paragraph [ref=f4e94]: Campus Code Collective
+            - generic [ref=f4e95]:
+              - paragraph [ref=f4e96]: 18 Oct · 4:00 PM
+              - paragraph [ref=f4e100]: Innovation Lab
+            - button "View details →" [ref=f4e104]
+        - article [ref=f4e105]:
+          - img "Guitarist performing live on stage" [ref=f4e107]
+          - generic [ref=f4e108]:
+            - paragraph [ref=f4e109]: Music & performance
+            - heading "Campus Open Mic" [level=3] [ref=f4e110]
+            - paragraph [ref=f4e111]: Student Arts Circle
+            - generic [ref=f4e112]:
+              - paragraph [ref=f4e113]: 22 Oct · 6:30 PM
+              - paragraph [ref=f4e117]: Main Auditorium
+            - button "View details →" [ref=f4e121]
+        - article [ref=f4e122]:
+          - generic [ref=f4e124]:
+            - generic [ref=f4e125]: Sports
+            - heading "Inter-Hostel Futsal Cup" [level=3] [ref=f4e126]
+          - generic [ref=f4e127]:
+            - paragraph [ref=f4e128]: Sports
+            - heading "Inter-Hostel Futsal Cup" [level=3] [ref=f4e129]
+            - paragraph [ref=f4e130]: Campus Sports Council
+            - generic [ref=f4e131]:
+              - paragraph [ref=f4e132]: 26 Oct · 8:00 AM
+              - paragraph [ref=f4e136]: Indoor Sports Hall
+            - button "View details →" [ref=f4e140]
+    - generic [ref=f4e142]:
+      - generic [ref=f4e143]:
+        - paragraph [ref=f4e144]: Interactive product preview
+        - heading "Discover. Verify. Act." [level=2] [ref=f4e145]
+        - paragraph [ref=f4e146]: A personalized campus feed, source-aware context, and a clear next step.
+        - tablist "How UniFlow works" [ref=f4e147]:
+          - tab "01 Discover Find events that match your interests." [selected] [ref=f4e148]:
+            - generic [ref=f4e149]: "01"
+            - generic [ref=f4e150]:
+              - generic [ref=f4e151]: Discover
+              - generic [ref=f4e152]: Find events that match your interests.
+          - tab "02 Verify See who published it, where it came from, and when it was reviewed." [ref=f4e153]:
+            - generic [ref=f4e154]: "02"
+            - generic [ref=f4e155]:
+              - generic [ref=f4e156]: Verify
+              - generic [ref=f4e157]: See who published it, where it came from, and when it was reviewed.
+          - tab "03 Act Follow the relevant next step with the source in view." [ref=f4e158]:
+            - generic [ref=f4e159]: "03"
+            - generic [ref=f4e160]:
+              - generic [ref=f4e161]: Act
+              - generic [ref=f4e162]: Follow the relevant next step with the source in view.
+      - generic [ref=f4e168]:
+        - generic [ref=f4e169]:
+          - paragraph [ref=f4e170]: Today & Soon
+          - heading "A feed for campus life" [level=3] [ref=f4e171]
+        - generic [ref=f4e172]:
+          - generic [ref=f4e173]: All
+          - generic [ref=f4e174]: Deadlines
+          - generic [ref=f4e175]: Events
+        - generic [ref=f4e176]:
+          - generic [ref=f4e177]:
+            - generic [ref=f4e178]:
+              - generic [ref=f4e179]: "19"
+              - generic [ref=f4e180]: Oct
+            - generic [ref=f4e181]:
+              - paragraph [ref=f4e182]: Scholarship
+              - heading "Student support scholarship" [level=4] [ref=f4e183]
+              - paragraph [ref=f4e184]: Example item · for you
+          - generic [ref=f4e185]:
+            - generic [ref=f4e186]:
+              - generic [ref=f4e187]: "22"
+              - generic [ref=f4e188]: Oct
+            - generic [ref=f4e189]:
+              - paragraph [ref=f4e190]: Event
+              - heading "Campus open-air evening" [level=4] [ref=f4e191]
+              - paragraph [ref=f4e192]: Example item · for you
+    - generic [ref=f4e194]:
+      - heading "One campus, two ways in." [level=2] [ref=f4e195]:
+        - text: One campus,
+        - generic [ref=f4e196]: two ways in.
+      - generic [ref=f4e197]:
+        - article [ref=f4e198]:
+          - generic [ref=f4e199]: Students
+          - list [ref=f4e200]:
+            - listitem [ref=f4e201]: Discover notices, deadlines, and events.
+            - listitem [ref=f4e206]: Find opportunities that match your interests.
+            - listitem [ref=f4e211]: Verify the publisher and original source.
+            - listitem [ref=f4e215]: Act on the next step with context.
+          - link "Explore the campus feed" [ref=f4e220] [cursor=pointer]:
+            - /url: /events
+          - img "Detailed archival illustration of a group celebrating together" [ref=f4e224]
+        - article [ref=f4e225]:
+          - generic [ref=f4e226]: Club organizers
+          - list [ref=f4e227]:
+            - listitem [ref=f4e228]: Turn notices and posters into structured drafts.
+            - listitem [ref=f4e233]: Review extracted fields before publication.
+            - listitem [ref=f4e238]: Keep publisher and source details visible.
+            - listitem [ref=f4e242]: Publish clearer updates for students.
+          - link "Prepare a campus update" [ref=f4e247] [cursor=pointer]:
+            - /url: /poster-to-event
+          - img "Detailed archival illustration of a group organizing together" [ref=f4e251]
+    - generic [ref=f4e253]:
+      - generic [ref=f4e254]:
+        - heading "Behind every great campus event." [level=2] [ref=f4e255]
+        - paragraph [ref=f4e256]: Give your club one place to organize, manage, and follow up.
+        - paragraph [ref=f4e257]: Organizer tools preview — example data.
+      - generic [ref=f4e258]:
+        - tablist "Organizer tools" [ref=f4e259]:
+          - tab "Manage events" [selected] [ref=f4e260]
+          - tab "Registrations" [ref=f4e261]
+          - tab "QR attendance" [ref=f4e262]
+          - tab "Analytics" [ref=f4e263]
+        - tabpanel "Manage events" [ref=f4e264]:
+          - generic [ref=f4e266]:
+            - generic [ref=f4e267]:
+              - generic [ref=f4e268]:
+                - paragraph [ref=f4e269]: Club workspace
+                - heading "Event management" [level=3] [ref=f4e270]
+              - generic [ref=f4e271]: Example data
+            - table [ref=f4e273]:
+              - rowgroup [ref=f4e274]:
+                - row [ref=f4e275]:
+                  - columnheader "Event name" [ref=f4e276]
+                  - columnheader "Date" [ref=f4e277]
+                  - columnheader "Status" [ref=f4e278]
+                  - columnheader "Registrations" [ref=f4e279]
+                  - columnheader "Action" [ref=f4e280]
+              - rowgroup [ref=f4e281]:
+                - row [ref=f4e282]:
+                  - cell "Design Sprint Studio" [ref=f4e283]
+                  - cell "20 Oct" [ref=f4e284]
+                  - cell "Draft" [ref=f4e285]
+                  - cell "—" [ref=f4e286]
+                  - cell [ref=f4e287]:
+                    - button "Edit" [ref=f4e288]
+                - row [ref=f4e289]:
+                  - cell "Campus Open Mic" [ref=f4e290]
+                  - cell "22 Oct" [ref=f4e291]
+                  - cell "Published" [ref=f4e292]
+                  - cell "48" [ref=f4e293]
+                  - cell [ref=f4e294]:
+                    - button "Edit" [ref=f4e295]
+                - row [ref=f4e296]:
+                  - cell "Build Night" [ref=f4e297]
+                  - cell "18 Oct" [ref=f4e298]
+                  - cell "Completed" [ref=f4e299]
+                  - cell "64" [ref=f4e300]
+                  - cell [ref=f4e301]:
+                    - button "Edit" [ref=f4e302]
+    - generic [ref=f4e304]:
+      - generic [ref=f4e305]:
+        - generic [ref=f4e306]:
+          - generic [ref=f4e307]: Interactive demo
+          - heading "From poster to event draft." [level=2] [ref=f4e308]: From poster toevent draft.
+        - paragraph [ref=f4e309]: Upload your poster. Review the details. Your event is ready to share.
+      - generic [ref=f4e310]:
+        - generic [ref=f4e311]:
+          - generic [ref=f4e312]:
+            - paragraph [ref=f4e313]: Poster preview
+            - generic [ref=f4e314]: workshop.jpg
+          - generic [ref=f4e315]:
+            - img "Students collaborating around a laptop" [ref=f4e316]
+            - generic [ref=f4e317]:
+              - paragraph [ref=f4e318]: Campus Code Collective
+              - heading "Build Your First Web App" [level=3] [ref=f4e319]: Build YourFirst Web App
+              - generic [ref=f4e320]:
+                - paragraph [ref=f4e321]:
+                  - generic [ref=f4e322]: Date
+                  - strong [ref=f4e323]: 18 October
+                - paragraph [ref=f4e324]:
+                  - generic [ref=f4e325]: Time
+                  - strong [ref=f4e326]: 4:00 PM
+          - generic [ref=f4e327]:
+            - button "Try with this poster" [ref=f4e328]
+            - link "Prefer typing? Create your event manually." [ref=f4e329] [cursor=pointer]:
+              - /url: /poster-to-event
+        - generic [ref=f4e330]:
+          - generic [ref=f4e331]:
+            - generic [ref=f4e332]:
+              - heading "Event details" [level=3] [ref=f4e333]
+              - paragraph [ref=f4e334]: Sample demonstration — live AI extraction is not connected.
+            - paragraph
+          - generic [ref=f4e335]:
+            - generic [ref=f4e336]:
+              - generic [ref=f4e337]: Event title
+              - textbox "Event title" [ref=f4e338]
+            - generic [ref=f4e339]:
+              - generic [ref=f4e340]: Date
+              - textbox "Date" [ref=f4e341]
+            - generic [ref=f4e342]:
+              - generic [ref=f4e343]: Start time
+              - textbox "Start time" [ref=f4e344]
+            - generic [ref=f4e345]:
+              - generic [ref=f4e346]: Venue
+              - textbox "Venue" [ref=f4e347]
+            - generic [ref=f4e348]:
+              - generic [ref=f4e349]: Eligibility
+              - textbox "Eligibility" [ref=f4e350]
+            - generic [ref=f4e351]:
+              - generic [ref=f4e352]: Registration deadline
+              - textbox "Registration deadline" [ref=f4e353]
+    - generic [ref=f4e355]:
+      - generic [ref=f4e356]:
+        - heading "Campus life, beyond the classroom." [level=2] [ref=f4e357]
+        - paragraph [ref=f4e358]: The people, moments, and experiences that bring campus together.
+        - paragraph [ref=f4e359]: Illustrative photos — campus photos coming soon.
+      - generic [ref=f4e360]:
+        - 'button "Open photo 1: A student performing live on stage" [ref=f4e361]':
+          - img "A student performing live on stage" [ref=f4e362]
+        - 'button "Open photo 2: A technology workshop with illuminated computers" [ref=f4e363]':
+          - img "A technology workshop with illuminated computers" [ref=f4e364]
+        - 'button "Open photo 3: Students competing in an athletics event" [ref=f4e365]':
+          - img "Students competing in an athletics event" [ref=f4e366]
+        - 'button "Open photo 4: A student participating in a cultural celebration" [ref=f4e367]':
+          - img "A student participating in a cultural celebration" [ref=f4e368]
+        - 'button "Open photo 5: Students collaborating around a laptop" [ref=f4e369]':
+          - img "Students collaborating around a laptop" [ref=f4e370]
+        - 'button "Open photo 6: An audience enjoying a concert under stage lights" [ref=f4e371]':
+          - img "An audience enjoying a concert under stage lights" [ref=f4e372]
+    - generic [ref=f4e374]:
+      - heading "Your next campus memory starts here." [level=2] [ref=f4e375]: Your next campus memorystarts here.
+      - paragraph [ref=f4e376]: Find your next event—or bring your own to life.
+      - generic [ref=f4e377]:
+        - link "Explore events" [ref=f4e378] [cursor=pointer]:
+          - /url: /events
+        - link "For club organizers →" [ref=f4e379] [cursor=pointer]:
+          - /url: /poster-to-event
+  - contentinfo [ref=f4e380]:
+    - generic [ref=f4e381]:
+      - generic [ref=f4e382]:
+        - link "Return to UniFlow home" [ref=f4e383] [cursor=pointer]:
+          - /url: "#top"
+          - generic [ref=f4e384]: UniFlow
+        - paragraph [ref=f4e387]: Your campus. More connected.
+      - navigation "Footer navigation" [ref=f4e388]:
+        - link "Home" [ref=f4e389] [cursor=pointer]:
+          - /url: "#top"
+        - link "Events" [ref=f4e390] [cursor=pointer]:
+          - /url: /events
+        - link "Clubs" [ref=f4e391] [cursor=pointer]:
+          - /url: "#clubs"
+    - paragraph [ref=f4e392]: Prototype preview — accounts, AI extraction, and event publishing are not connected.

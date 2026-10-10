@@ -1,0 +1,92 @@
+- generic [active] [ref=f6e1]:
+  - generic [ref=f6e3]:
+    - complementary [ref=f6e4]:
+      - generic [ref=f6e5]:
+        - link "U UniFlow" [ref=f6e6] [cursor=pointer]:
+          - /url: /app/today
+          - generic [ref=f6e7]: U
+          - generic [ref=f6e8]: UniFlow
+        - generic [ref=f6e9]: STUDENT VIEW · DEMO
+      - navigation "Student application" [ref=f6e10]:
+        - link "Today & Soon" [ref=f6e11] [cursor=pointer]:
+          - /url: /app/today
+        - link "Discover" [ref=f6e13] [cursor=pointer]:
+          - /url: /app/discover
+        - link "Saved" [ref=f6e15] [cursor=pointer]:
+          - /url: /app/saved
+        - link "Profile" [ref=f6e17] [cursor=pointer]:
+          - /url: /app/profile
+      - generic [ref=f6e19]:
+        - paragraph [ref=f6e20]: Example period
+        - strong [ref=f6e21]: 18—25 OCT 2026
+        - generic [ref=f6e22]: Illustrative campus data. No live institutional feed is connected.
+        - button "Switch demo role" [ref=f6e23]
+        - button "Exit demo" [ref=f6e24]
+    - main [ref=f6e25]:
+      - generic [ref=f6e26]:
+        - generic [ref=f6e27]:
+          - link "UniFlow" [ref=f6e28] [cursor=pointer]:
+            - /url: /
+          - generic [ref=f6e31]: Information
+        - button "A Alex" [ref=f6e32]:
+          - generic [ref=f6e33]: A
+          - strong [ref=f6e34]: Alex
+      - article [ref=f6e36]:
+        - button "Back to campus information" [ref=f6e37]
+        - generic [ref=f6e40]:
+          - generic [ref=f6e41]:
+            - generic [ref=f6e42]:
+              - generic [ref=f6e43]: Opportunity
+              - generic [ref=f6e44]: Closing soon
+            - heading "Build Your First Web App" [level=1] [ref=f6e45]
+            - paragraph [ref=f6e46]: A beginner-friendly evening for students to form teams, explore an idea, and leave with a small working prototype.
+            - generic [ref=f6e47]:
+              - button "Save Build Your First Web App" [ref=f6e48]:
+                - generic [ref=f6e51]: Save
+              - button "Open source" [disabled] [ref=f6e52]
+            - paragraph [ref=f6e56]: A beginner-friendly evening for students to form teams, explore an idea, and leave with a small working prototype.
+            - generic [ref=f6e57]:
+              - generic [ref=f6e58]:
+                - generic [ref=f6e59]: WHO IT’S FOR
+                - strong [ref=f6e60]: All interested students
+              - generic [ref=f6e61]:
+                - generic [ref=f6e62]: DEPARTMENT
+                - strong [ref=f6e63]: Computer Science
+              - generic [ref=f6e64]:
+                - generic [ref=f6e65]: DEADLINE
+                - strong [ref=f6e66]: 17 Oct, 18:00
+              - generic [ref=f6e67]:
+                - generic [ref=f6e68]: WHERE
+                - strong [ref=f6e69]: Innovation Lab
+          - complementary [ref=f6e70]:
+            - paragraph [ref=f6e71]: SOURCE NOTES
+            - heading "Keep the context close." [level=2] [ref=f6e72]
+            - generic [ref=f6e73]:
+              - generic [ref=f6e74]: Publisher identity
+              - strong [ref=f6e75]: Campus Code Collective
+            - generic [ref=f6e76]:
+              - generic [ref=f6e77]: Original source
+              - strong [ref=f6e78]: WORKSHOP.JPG
+            - generic [ref=f6e79]:
+              - generic [ref=f6e80]: Review status
+              - strong [ref=f6e81]:
+                - generic [ref=f6e82]: Local demo publication
+            - generic [ref=f6e84]:
+              - generic [ref=f6e85]: Last checked
+              - strong [ref=f6e86]: 10 Oct, 0:38
+            - paragraph [ref=f6e87]: Human review does not make a fictional record an official institutional notice.
+        - generic [ref=f6e88]:
+          - generic [ref=f6e89]: MORE TO EXPLORE
+          - button "Opportunity Creative Circle recruitment" [ref=f6e92]:
+            - generic [ref=f6e93]: Opportunity
+            - strong [ref=f6e94]: Creative Circle recruitment
+  - generic:
+    - generic:
+      - generic:
+        - generic:
+          - generic:
+            - generic:
+              - generic:
+                - generic:
+                  - button "Copy element"
+          - button "Collapse toolbar" [expanded]

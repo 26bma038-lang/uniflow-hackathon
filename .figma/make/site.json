@@ -1,0 +1,10 @@
+{
+  "description": "Connects students to campus events with a user-friendly interface, featuring easy navigation and an engaging call-to-action to explore activities.",
+  "robots": {
+    "index": false
+  },
+  "accessibility": {
+    "addBypassLinks": false,
+    "ignoreReducedMotion": false
+  }
+}

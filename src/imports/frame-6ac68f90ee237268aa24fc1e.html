@@ -1,0 +1,163 @@
+<!DOCTYPE html><html lang="en"><head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Screen</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&amp;family=Poppins:wght@100..900&amp;family=Fira+Code:wght@300..700&amp;family=Plus+Jakarta+Sans:wght@200;300;400;500;600;700;800&amp;display=swap" rel="stylesheet">
+    <link id="theme-fonts" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://code.iconify.design/iconify-icon/3.0.0/iconify-icon.min.js"></script>
+    <style type="text/tailwindcss">
+      @import "tailwindcss";
+      @theme inline {
+        --color-background: var(--background);
+        --color-foreground: var(--foreground);
+        --color-primary: var(--primary);
+        --color-primary-foreground: var(--primary-foreground);
+        --color-secondary: var(--secondary);
+        --color-secondary-foreground: var(--secondary-foreground);
+        --color-tertiary: var(--tertiary);
+        --color-tertiary-foreground: var(--tertiary-foreground);
+        --color-muted: var(--muted);
+        --color-muted-foreground: var(--muted-foreground);
+        --color-accent: var(--accent);
+        --color-accent-foreground: var(--accent-foreground);
+        --color-destructive: var(--destructive);
+        --color-destructive-foreground: var(--destructive-foreground);
+        --color-card: var(--card);
+        --color-card-foreground: var(--card-foreground);
+        --color-popover: var(--popover);
+        --color-popover-foreground: var(--popover-foreground);
+        --color-border: var(--border);
+        --color-input: var(--input);
+        --color-ring: var(--ring);
+        --radius-sm: calc(var(--radius) - 4px);
+        --radius-md: calc(var(--radius) - 2px);
+        --radius-lg: var(--radius);
+        --font-family-sans: var(--font-sans);
+        --font-family-heading: var(--font-heading);
+        --font-family-mono: var(--font-mono);
+        /* Tailwind v4's font namespace is --font-*, NOT --font-family-*.
+         *
+         * Without this line the font-heading utility does not exist at all,
+         * so every h1–h6 the design prompt mandates (font-heading) silently
+         * inherited the body's font-sans. A user could set --font-heading a
+         * dozen times, watch the tool report success, and never see the
+         * typeface change — the "font applied but not reflected" report.
+         *
+         * font-sans and font-mono are Tailwind built-ins and already read
+         * :root, which is why only headings were broken. The fallback chain
+         * keeps themes that never set a heading font rendering the body face
+         * instead of nothing. */
+        --font-heading: var(--font-heading, var(--font-sans, ui-sans-serif, system-ui, sans-serif));
+      }
+
+      /* Every filled surface carries its own text colour.
+       *
+       * Without this, <div class="bg-accent"> inherits --foreground from
+       * <html> — a colour chosen to contrast the PAGE, not the accent fill. On
+       * a dark theme with a bright accent that renders near-white text on
+       * near-white (or near-black on near-black): the invisible text users
+       * report. Pairing each fill with its own foreground makes the readable
+       * result the default instead of something the model has to remember.
+       *
+       * These sit in @layer base deliberately. Any explicit text-* utility is
+       * in @layer utilities and therefore still wins, so an intentional colour
+       * choice is never overridden. The neutral surfaces (background, muted)
+       * are left out: --foreground is already guaranteed readable on those, and
+       * forcing --muted-foreground would wash out headings in muted panels.
+       */
+      @layer base {
+        .bg-card { color: var(--card-foreground); }
+        .bg-popover { color: var(--popover-foreground, var(--card-foreground)); }
+        .bg-primary { color: var(--primary-foreground); }
+        .bg-secondary { color: var(--secondary-foreground); }
+        .bg-accent { color: var(--accent-foreground, var(--foreground)); }
+        .bg-tertiary { color: var(--tertiary-foreground, var(--primary-foreground)); }
+        .bg-destructive { color: var(--destructive-foreground, var(--primary-foreground)); }
+      }
+      :root { --background: #f9fafb;
+        --foreground: #111111;
+        --primary: #7c3aed;
+        --primary-foreground: #ffffff;
+        --secondary: #ebeced;
+        --secondary-foreground: #111111;
+        --tertiary: #7c3aed;
+        --muted: #ebeced;
+        --muted-foreground: #797a7a;
+        --accent: #ae87f3;
+        --destructive: #ef4444;
+        --card: #ffffff;
+        --card-foreground: #111111;
+        --border: #ffffff;
+        --input: #ffffff;
+        --ring: #7c3aed;
+        --radius: 16px;
+        --font-sans: Inter, sans-serif;
+        --font-heading: Inter, sans-serif;
+        --font-mono: JetBrains Mono, monospace;
+        --shadow-offset-x: 0;
+        --shadow-offset-y: 10;
+        --shadow-blur: 30;
+        --shadow-spread: -8;
+        --shadow-color: rgba(15, 23, 42, 0.12); }
+    </style>
+    <style>
+      .brand-gradient { background-image: linear-gradient(135deg, var(--primary), var(--accent)); }
+      .shadow-theme {
+        box-shadow:
+          calc(var(--shadow-offset-x, 0) * 1px) calc(var(--shadow-offset-y, 10) * 1px)
+          calc(var(--shadow-blur, 30) * 1px) calc(var(--shadow-spread, -8) * 1px)
+          var(--shadow-color, rgba(15, 23, 42, 0.12));
+      }
+
+      /* Brand colours used as TEXT resolve to a legibility-adjusted variant.
+       *
+       * --primary and friends are tuned to look right as FILLS; painted as text
+       * on the page they are routinely too light — a #16A34A "+8.4%" on a white
+       * card measures 3.3:1. The --*-text tokens are the same hue and chroma
+       * with lightness nudged just far enough to clear AA on the page and card
+       * surfaces, so fills keep the exact brand colour while text becomes
+       * readable.
+       *
+       * This block is intentionally UNLAYERED: unlayered declarations outrank
+       * every cascade layer, so these beat Tailwind's own text-* utilities. The
+       * var() fallbacks leave documents that predate the derived tokens
+       * rendering exactly as before.
+       */
+      .text-primary { color: var(--primary-text, var(--primary)); }
+      .text-secondary { color: var(--secondary-text, var(--secondary)); }
+      .text-tertiary { color: var(--tertiary-text, var(--tertiary)); }
+      .text-accent { color: var(--accent-text, var(--accent)); }
+      .text-destructive { color: var(--destructive-text, var(--destructive)); }
+    </style>
+  
+
+
+<link id="google-font-Inter" rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap"><link id="google-font-JetBrains-Mono" rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&amp;display=swap"><style id="uxm-contrast-safety">
+@layer base {
+  .bg-card { color: var(--card-foreground); }
+  .bg-popover { color: var(--popover-foreground, var(--card-foreground)); }
+  .bg-primary { color: var(--primary-foreground); }
+  .bg-secondary { color: var(--secondary-foreground); }
+  .bg-accent { color: var(--accent-foreground, var(--foreground)); }
+  .bg-tertiary { color: var(--tertiary-foreground, var(--primary-foreground)); }
+  .bg-destructive { color: var(--destructive-foreground, var(--primary-foreground)); }
+}
+.text-primary { color: var(--primary-text, var(--primary)); }
+.text-secondary { color: var(--secondary-text, var(--secondary)); }
+.text-tertiary { color: var(--tertiary-text, var(--tertiary)); }
+.text-accent { color: var(--accent-text, var(--accent)); }
+.text-destructive { color: var(--destructive-text, var(--destructive)); }
+
+h1, h2, h3, h4, h5, h6,
+.font-heading { font-family: var(--font-heading, inherit); }
+code, pre, kbd, samp,
+.font-mono { font-family: var(--font-mono, inherit); }
+</style>
+
+
+</head>
+  <body class=""><div id="uxm-1" class="min-h-screen w-full bg-background font-sans text-foreground"><header class="sticky top-0 z-50 border-b border-[var(--border)] bg-[var(--card)]/95 px-5 py-4 backdrop-blur md:px-10"><nav class="mx-auto flex max-w-[1200px] items-center justify-between"><a href="#hero" class="text-2xl font-bold tracking-tight text-foreground">Eventum<span class="text-primary">.</span></a><div class="hidden items-center gap-8 text-sm font-medium md:flex"><a href="#discover" class="transition hover:text-primary">Discover</a><a href="#features" class="transition hover:text-primary">Features</a><a href="#community" class="transition hover:text-primary">For Clubs</a><a href="#gallery" class="transition hover:text-primary">Gallery</a></div><div class="flex items-center gap-3"><button class="hidden text-sm font-medium sm:block">Log in</button><a href="#discover" class="rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground transition hover:opacity-90">Get started <iconify-icon class="ml-1 align-middle" icon="lucide:arrow-up-right"></iconify-icon></a></div></nav></header><main><section id="hero" class="relative isolate overflow-hidden bg-card px-5 pb-20 pt-20 text-center md:px-10 md:pb-28 md:pt-28"><div class="absolute left-1/2 top-0 -z-10 h-[420px] w-[760px] -translate-x-1/2 rounded-full bg-[var(--accent)]/20 blur-3xl"></div><div class="mx-auto max-w-[820px]"><div class="mb-6 inline-flex items-center gap-2 rounded-full border border-[var(--border)] bg-background px-4 py-2 text-xs font-medium text-muted-foreground"><span class="size-2 rounded-full bg-primary"></span>Your campus, all in one place</div><h1 class="font-heading text-[42px] font-bold leading-[1.04] tracking-[-0.05em] text-foreground sm:text-[62px] md:text-[78px]">Never Miss What’s<br>Happening <span class="text-primary">Around You.</span></h1><p class="mx-auto mt-6 max-w-[560px] text-base leading-7 text-muted-foreground md:text-lg">Discover the best events on campus, connect with your community, and turn every day into an experience worth remembering.</p><div class="mt-8 flex flex-wrap justify-center gap-3"><a href="#discover" class="rounded-full bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground shadow-theme transition hover:opacity-90">Explore events <iconify-icon class="ml-1 align-middle text-base" icon="lucide:arrow-up-right"></iconify-icon></a><a href="#community" class="rounded-full border border-[var(--border)] bg-card px-6 py-3 text-sm font-semibold text-foreground transition hover:bg-muted">For clubs &amp; teams</a></div></div><div class="relative mx-auto mt-16 h-[290px] max-w-[960px] sm:h-[340px]"><div class="absolute left-[4%] top-8 hidden w-[185px] -rotate-[11deg] rounded-2xl border-4 border-[var(--card)] bg-background p-3 text-left shadow-theme md:block"><div class="mb-3 h-24 rounded-xl bg-[var(--accent)]/35"></div><p class="text-xs font-semibold">Creative Open Mic</p><p class="mt-1 text-[10px] text-muted-foreground">Friday · 6:30 PM</p></div><div class="absolute right-[4%] top-7 hidden w-[185px] rotate-[10deg] rounded-2xl border-4 border-[var(--card)] bg-background p-3 text-left shadow-theme md:block"><div class="mb-3 h-24 rounded-xl bg-primary/20"></div><p class="text-xs font-semibold">Campus Hackathon</p><p class="mt-1 text-[10px] text-muted-foreground">Saturday · 9:00 AM</p></div><img src="https://theeventum.com/images/landing_page/image_1_.png" alt="Eventum mobile event discovery screen" class="absolute left-1/2 top-0 h-[310px] w-auto -translate-x-1/2 rounded-[24px] border-4 border-[var(--card)] object-contain shadow-theme sm:h-[365px]"></div></section><section class="overflow-hidden border-y border-[var(--border)] bg-background py-5"><div class="flex w-max items-center gap-3 whitespace-nowrap px-5"><span class="rounded-full border border-[var(--border)] bg-card px-4 py-2 text-sm font-medium"><iconify-icon class="mr-2 text-primary" icon="lucide:code-2"></iconify-icon>Hackathons</span><span class="rounded-full border border-[var(--border)] bg-card px-4 py-2 text-sm font-medium"><iconify-icon class="mr-2 text-primary" icon="lucide:microphone"></iconify-icon>Open Mics</span><span class="rounded-full border border-[var(--border)] bg-card px-4 py-2 text-sm font-medium"><iconify-icon class="mr-2 text-primary" icon="lucide:palette"></iconify-icon>Art Shows</span><span class="rounded-full border border-[var(--border)] bg-card px-4 py-2 text-sm font-medium"><iconify-icon class="mr-2 text-primary" icon="lucide:dumbbell"></iconify-icon>Sports Meets</span><span class="rounded-full border border-[var(--border)] bg-card px-4 py-2 text-sm font-medium"><iconify-icon class="mr-2 text-primary" icon="lucide:camera"></iconify-icon>Photography</span><span class="rounded-full border border-[var(--border)] bg-card px-4 py-2 text-sm font-medium"><iconify-icon class="mr-2 text-primary" icon="lucide:users-round"></iconify-icon>Networking</span><span class="rounded-full border border-[var(--border)] bg-card px-4 py-2 text-sm font-medium"><iconify-icon class="mr-2 text-primary" icon="lucide:calendar-days"></iconify-icon>Workshops</span><span class="rounded-full border border-[var(--border)] bg-card px-4 py-2 text-sm font-medium"><iconify-icon class="mr-2 text-primary" icon="lucide:star"></iconify-icon>Fests</span></div></section><section id="discover" class="bg-card px-5 py-24 md:px-10 md:py-32"><div class="mx-auto grid max-w-[1120px] items-center gap-14 md:grid-cols-2"><div><p class="text-sm font-semibold uppercase tracking-[0.16em] text-primary">Made for campus life</p><h2 class="mt-4 font-heading text-4xl font-bold leading-tight tracking-tight md:text-6xl">Campus events are a chaotic mess.</h2><p class="mt-6 max-w-[470px] text-base leading-7 text-muted-foreground">Posters disappear, group chats move too fast, and the best things on campus are easy to miss. Eventum makes discovering what matters feel effortless.</p><div class="mt-8 space-y-3"><div class="flex items-center gap-3 rounded-2xl bg-background p-4"><span class="flex size-10 items-center justify-center rounded-xl bg-primary text-primary-foreground"><iconify-icon icon="lucide:compass"></iconify-icon></span><span class="font-medium">Discover events made for you</span></div><div class="flex items-center gap-3 rounded-2xl bg-background p-4"><span class="flex size-10 items-center justify-center rounded-xl bg-primary text-primary-foreground"><iconify-icon icon="lucide:bell-ring"></iconify-icon></span><span class="font-medium">Keep every update in one place</span></div><div class="flex items-center gap-3 rounded-2xl bg-background p-4"><span class="flex size-10 items-center justify-center rounded-xl bg-primary text-primary-foreground"><iconify-icon icon="lucide:heart"></iconify-icon></span><span class="font-medium">Build your campus story</span></div></div></div><div class="relative mx-auto flex min-h-[450px] w-full max-w-[430px] items-center justify-center rounded-[32px] bg-[var(--accent)]/20"><div class="absolute left-5 top-10 rounded-full bg-card px-4 py-2 text-xs font-semibold shadow-theme">New events every day</div><img src="https://theeventum.com/images/landing_page/image_2_.png" alt="Eventum event feed on a smartphone" class="relative z-10 h-[410px] w-auto object-contain drop-shadow-2xl"><div class="absolute bottom-8 right-4 rounded-2xl bg-primary px-4 py-3 text-xs font-semibold text-primary-foreground shadow-theme">Made for your campus <iconify-icon class="ml-1 align-middle" icon="lucide:sparkles"></iconify-icon></div></div></div></section><section class="bg-background px-5 py-24 md:px-10 md:py-32"><div class="mx-auto max-w-[1200px]"><div class="max-w-[650px]"><p class="text-sm font-semibold uppercase tracking-[0.16em] text-primary">Simple from day one</p><h2 class="mt-4 font-heading text-4xl font-bold tracking-tight md:text-6xl">3 steps to launch.</h2></div><div class="mt-14 grid gap-8 md:grid-cols-3"><article class="rounded-[24px] bg-card p-7 shadow-theme"><span class="font-mono text-sm text-primary">01</span><div class="mt-8 flex size-12 items-center justify-center rounded-2xl bg-primary text-xl text-primary-foreground"><iconify-icon icon="lucide:search"></iconify-icon></div><h3 class="mt-6 text-2xl font-semibold">Discover</h3><p class="mt-3 leading-7 text-muted-foreground">Explore events, clubs, workshops, hackathons, and experiences tailored to your interests.</p><img src="https://theeventum.com/images/landing_page/image_6.png" alt="Discover events in Eventum" class="mt-7 h-52 w-full object-contain"></article><article class="rounded-[24px] bg-card p-7 shadow-theme"><span class="font-mono text-sm text-primary">02</span><div class="mt-8 flex size-12 items-center justify-center rounded-2xl bg-primary text-xl text-primary-foreground"><iconify-icon icon="lucide:ticket-check"></iconify-icon></div><h3 class="mt-6 text-2xl font-semibold">Register</h3><p class="mt-3 leading-7 text-muted-foreground">Stay updated with schedules, announcements, reminders, and all your event details.</p><img src="https://theeventum.com/images/landing_page/image_7.png" alt="Register for campus events in Eventum" class="mt-7 h-52 w-full object-contain"></article><article class="rounded-[24px] bg-card p-7 shadow-theme"><span class="font-mono text-sm text-primary">03</span><div class="mt-8 flex size-12 items-center justify-center rounded-2xl bg-primary text-xl text-primary-foreground"><iconify-icon icon="lucide:chart-no-axes-combined"></iconify-icon></div><h3 class="mt-6 text-2xl font-semibold">Track</h3><p class="mt-3 leading-7 text-muted-foreground">Track tickets, certificates, memories, and your entire campus journey effortlessly.</p><img src="https://theeventum.com/images/landing_page/image_8_.png" alt="Track campus event activity in Eventum" class="mt-7 h-52 w-full object-contain"></article></div></div></section><section id="features" class="bg-card px-5 py-24 md:px-10 md:py-32"><div class="mx-auto max-w-[1200px]"><div class="flex flex-wrap items-end justify-between gap-6"><div><p class="text-sm font-semibold uppercase tracking-[0.16em] text-primary">Everything in one place</p><h2 class="mt-4 font-heading text-4xl font-bold tracking-tight md:text-6xl">Features that keep<br>campus moving.</h2></div><a href="#community" class="rounded-full border border-[var(--border)] px-5 py-3 text-sm font-semibold transition hover:bg-muted">Explore Eventum <iconify-icon class="ml-1 align-middle" icon="lucide:arrow-up-right"></iconify-icon></a></div><div class="mt-12 overflow-hidden rounded-[28px] bg-background p-5 shadow-theme md:p-8"><img src="https://theeventum.com/images/landing_page/image_9_.png" alt="Eventum discovery features" class="h-auto w-full rounded-2xl object-cover"></div><div class="mt-6 flex flex-wrap gap-2"><button class="rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground">Discover</button><button class="rounded-full bg-background px-5 py-2.5 text-sm font-medium">Analytics</button><button class="rounded-full bg-background px-5 py-2.5 text-sm font-medium">Notifications</button><button class="rounded-full bg-background px-5 py-2.5 text-sm font-medium">Manage Events</button><button class="rounded-full bg-background px-5 py-2.5 text-sm font-medium">Club Details</button></div></div></section><section id="community" class="bg-background px-5 py-24 md:px-10 md:py-32"><div class="mx-auto max-w-[1000px]"><h2 class="text-center font-heading text-4xl font-bold leading-tight tracking-tight md:text-[54px]">Built for both,<br><span class="border-b-4 border-primary">Students and Clubs.</span></h2><div class="mt-14 grid gap-7 md:grid-cols-2"><article class="relative min-h-[500px] overflow-hidden rounded-[24px] bg-accent p-8 text-accent-foreground"><span class="inline-flex rounded-full bg-foreground px-5 py-2 text-sm font-semibold text-background">Students</span><h3 class="mt-6 text-3xl font-semibold">Find your people.</h3><div class="mt-5 space-y-3 text-base"><p><span class="mr-2">🔍</span>Discover events.</p><p><span class="mr-2">🚀</span>Build skills.</p><p><span class="mr-2">👤</span>Save your memories.</p><p><span class="mr-2">📋</span>Track every event.</p></div><img src="https://theeventum.com/assets/2acc38c1685de2826b32ec48f88ddd89-removebg-preview-aQrgXNj4.png" alt="Students enjoying a campus event" class="absolute bottom-0 left-0 w-full object-contain"></article><article class="relative min-h-[500px] overflow-hidden rounded-[24px] bg-foreground p-8 text-primary-foreground"><span class="inline-flex rounded-full bg-muted px-5 py-2 text-sm font-semibold text-foreground">Clubs &amp; Initiatives</span><h3 class="mt-6 text-3xl font-semibold">Grow your community.</h3><div class="mt-5 space-y-3 text-base"><p><span class="mr-2">📅</span>Create events.</p><p><span class="mr-2">👤</span>Manage registrations.</p><p><span class="mr-2">📈</span>Increase participation.</p><p><span class="mr-2">📊</span>Track analytics.</p></div><img src="https://theeventum.com/assets/e44ee6e5998afdff950b5193547279ec__1_-removebg-preview%201-wyxtbAtb.png" alt="Campus club event illustration" class="absolute bottom-0 right-0 w-full object-contain"></article></div></div></section><section id="gallery" class="bg-card px-5 py-24 md:px-10 md:py-32"><div class="mx-auto max-w-[1100px] rounded-[32px] bg-primary px-7 py-16 text-center text-primary-foreground md:px-16 md:py-24"><p class="text-sm font-semibold uppercase tracking-[0.16em] text-primary-foreground">Your next memory is waiting</p><h2 class="mx-auto mt-5 max-w-[720px] font-heading text-4xl font-bold leading-tight tracking-tight md:text-6xl">Enough scrolling.<br>Start experiencing.</h2><p class="mx-auto mt-6 max-w-[510px] leading-7 text-primary-foreground">The best parts of campus rarely happen in your feed. Find them with Eventum.</p><a href="#hero" class="mt-9 inline-flex rounded-full bg-card px-6 py-3 text-sm font-semibold text-foreground transition hover:opacity-90">Get started <iconify-icon class="ml-1 align-middle" icon="lucide:arrow-up-right"></iconify-icon></a></div></section></main><footer class="overflow-hidden bg-primary px-5 pb-10 pt-16 text-primary-foreground md:px-10 md:pt-20"><div class="mx-auto max-w-[1200px]"><div class="flex flex-wrap justify-between gap-12"><div class="max-w-[340px]"><a href="#hero" class="text-3xl font-bold tracking-tight">Eventum.</a><p class="mt-4 text-sm leading-6 text-primary-foreground">Your one-stop platform to discover, register for, and create unforgettable campus events.</p><div class="mt-6 flex gap-3"><a href="https://www.instagram.com/the_eventum_?igsh=dmo4dWQ4dXFvZnFq" class="flex size-10 items-center justify-center rounded-xl bg-card text-foreground"><iconify-icon icon="lucide:instagram"></iconify-icon></a><a href="https://www.linkedin.com/company/theeventum" class="flex size-10 items-center justify-center rounded-xl bg-card text-foreground"><iconify-icon icon="lucide:linkedin"></iconify-icon></a></div></div><div class="grid grid-cols-2 gap-x-12 gap-y-10 text-sm sm:grid-cols-3"><div><p class="mb-4 text-xs font-semibold uppercase tracking-[0.16em]">Product</p><div class="space-y-3"><a href="#hero" class="block">Home</a><a href="#community" class="block">Clubs</a><a href="#gallery" class="block">Gallery</a></div></div><div><p class="mb-4 text-xs font-semibold uppercase tracking-[0.16em]">Company</p><div class="space-y-3"><a href="#features" class="block">About</a><a href="#community" class="block">Contact</a></div></div><div><p class="mb-4 text-xs font-semibold uppercase tracking-[0.16em]">Legal</p><div class="space-y-3"><a href="#hero" class="block">Privacy Policy</a><a href="#hero" class="block">Terms of Use</a></div></div></div></div><div class="mt-16 flex flex-wrap justify-between gap-4 border-t border-[var(--primary-foreground)]/30 pt-7 text-xs"><p>© 2026 Eventum. All rights reserved.</p><p>Crafted with ♥ for campus events</p></div><div class="mt-12 select-none text-center text-[16vw] font-bold leading-none tracking-[-0.08em] text-primary-foreground/15">EVENTUM</div></div></footer></div></body></html>

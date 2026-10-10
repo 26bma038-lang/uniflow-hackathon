@@ -1,0 +1,118 @@
+.root {
+  width: 100%;
+}
+
+.listShell {
+  position: relative;
+  max-width: 100%;
+}
+
+.viewport {
+  max-width: 100%;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.viewport::-webkit-scrollbar {
+  display: none;
+}
+
+.list {
+  display: inline-flex;
+  min-width: max-content;
+  align-items: center;
+  gap: 0.25rem;
+  border-radius: 999px;
+  background: #f0e3fb;
+  padding: 0.25rem;
+}
+
+.trigger {
+  position: relative;
+  isolation: isolate;
+  min-height: 2.75rem;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  padding: 0.625rem 1rem;
+  color: #525252;
+  font: inherit;
+  font-size: 0.875rem;
+  font-weight: 700;
+  white-space: nowrap;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.trigger:hover {
+  color: #111111;
+}
+
+.trigger:focus-visible {
+  outline: 2px solid #111111;
+  outline-offset: 2px;
+}
+
+.trigger[data-state="active"] {
+  color: #ffffff;
+}
+
+.selection {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  background: #111111;
+}
+
+.triggerLabel {
+  position: relative;
+  z-index: 1;
+}
+
+.scrollButton {
+  position: absolute;
+  top: 50%;
+  z-index: 3;
+  display: grid;
+  width: 2rem;
+  height: 2rem;
+  place-items: center;
+  transform: translateY(-50%);
+  border: 1px solid #d4d4d4;
+  border-radius: 999px;
+  background: #ffffff;
+  color: #111111;
+  cursor: pointer;
+}
+
+.scrollButton:focus-visible {
+  outline: 2px solid #111111;
+  outline-offset: 2px;
+}
+
+.scrollButton:disabled {
+  visibility: hidden;
+}
+
+.scrollLeft {
+  left: 0.375rem;
+}
+
+.scrollRight {
+  right: 0.375rem;
+}
+
+.listShell[data-left="true"] .viewport {
+  padding-left: 2.5rem;
+}
+
+.listShell[data-right="true"] .viewport {
+  padding-right: 2.5rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .viewport {
+    scroll-behavior: auto;
+  }
+}

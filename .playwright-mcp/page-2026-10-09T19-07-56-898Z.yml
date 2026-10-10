@@ -1,0 +1,102 @@
+- generic [active] [ref=f1e1]:
+  - generic [ref=f1e3]:
+    - generic [ref=f1e5]:
+      - generic [ref=f1e6]:
+        - button "← Back to UniFlow" [ref=f1e7]
+        - paragraph [ref=f1e8]: "Demo: simulated extraction"
+        - paragraph [ref=f1e9]: Runs locally with example data. No poster is sent to an API.
+      - generic [ref=f1e10]:
+        - checkbox "Simulate extraction failure" [ref=f1e11]
+        - text: Simulate extraction failure
+    - generic [ref=f1e13]:
+      - generic [ref=f1e14]:
+        - generic [ref=f1e15]:
+          - paragraph [ref=f1e16]: Poster to Event
+          - heading "Create an event from your poster" [level=1] [ref=f1e17]
+          - paragraph [ref=f1e18]: Upload a poster, review the AI-assisted draft, and save it when the details are ready.
+        - list "Event creation progress" [ref=f1e19]:
+          - listitem [ref=f1e20]:
+            - generic [ref=f1e21]: "1"
+            - generic [ref=f1e22]: Upload
+          - listitem [ref=f1e24]:
+            - generic [ref=f1e25]: "2"
+            - generic [ref=f1e26]: Extract
+          - listitem [ref=f1e28]:
+            - generic [ref=f1e29]: "3"
+            - generic [ref=f1e30]: Review
+      - generic [ref=f1e31]: Select a poster to begin, or create the event manually.
+      - generic [ref=f1e32]:
+        - complementary [ref=f1e33]:
+          - heading "Event poster" [level=2] [ref=f1e34]
+          - paragraph [ref=f1e35]: JPEG, PNG, or WebP · Maximum 10 MB
+          - button "Choose File" [ref=f1e36]
+          - button "Drop your event poster here or click to choose a file" [ref=f1e37]:
+            - generic [ref=f1e42]: Drop your event poster here
+            - generic [ref=f1e43]: or click to choose a file
+          - generic [ref=f1e44]:
+            - button "Extract event details" [disabled] [ref=f1e45]
+            - button "Enter event details manually" [ref=f1e51]
+        - generic [ref=f1e52]:
+          - generic [ref=f1e54]:
+            - heading "Event details" [level=2] [ref=f1e55]
+            - paragraph [ref=f1e56]: Everything stays editable. Confirm each detail before saving.
+          - generic [ref=f1e57]:
+            - generic [ref=f1e58]:
+              - generic [ref=f1e59]: Event title
+              - textbox "Event title" [ref=f1e62]
+            - generic [ref=f1e63]:
+              - generic [ref=f1e64]: Description
+              - textbox "Description" [ref=f1e67]
+            - generic [ref=f1e68]:
+              - generic [ref=f1e69]: Category
+              - combobox "Category" [ref=f1e72]:
+                - option "Select a category" [selected]
+                - option "Technical"
+                - option "Cultural"
+                - option "Sports"
+                - option "Other"
+            - generic [ref=f1e73]:
+              - generic [ref=f1e74]: Timezone
+              - combobox "Timezone" [ref=f1e77]:
+                - option "Asia/Kolkata" [selected]
+                - option "Asia/Dubai"
+                - option "Europe/London"
+                - option "America/New_York"
+            - generic [ref=f1e78]:
+              - generic [ref=f1e79]: Start date
+              - textbox "Start date" [ref=f1e82]
+            - generic [ref=f1e83]:
+              - generic [ref=f1e84]: Start time
+              - textbox "Start time" [ref=f1e87]
+            - generic [ref=f1e88]:
+              - generic [ref=f1e89]: End date
+              - textbox "End date" [ref=f1e92]
+            - generic [ref=f1e93]:
+              - generic [ref=f1e94]: End time
+              - textbox "End time" [ref=f1e97]
+            - generic [ref=f1e98]:
+              - generic [ref=f1e99]: Venue
+              - textbox "Venue" [ref=f1e102]
+            - generic [ref=f1e103]:
+              - generic [ref=f1e104]: Eligibility
+              - textbox "Eligibility" [ref=f1e107]
+            - generic [ref=f1e108]:
+              - generic [ref=f1e109]: Registration deadline
+              - textbox "Registration deadline" [ref=f1e112]
+            - generic [ref=f1e113]:
+              - generic [ref=f1e114]: Registration URL
+              - textbox "Registration URL" [ref=f1e117]:
+                - /placeholder: https://
+            - generic [ref=f1e118]:
+              - button "Preview event" [ref=f1e119]
+              - button "Save draft" [ref=f1e123]
+  - generic:
+    - generic:
+      - generic:
+        - generic:
+          - generic:
+            - generic:
+              - generic:
+                - generic:
+                  - button "Copy element"
+          - button "Collapse toolbar" [expanded]

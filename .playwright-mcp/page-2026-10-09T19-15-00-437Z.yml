@@ -1,0 +1,193 @@
+- generic [active] [ref=f14e1]:
+  - generic [ref=f14e3]:
+    - complementary [ref=f14e4]:
+      - generic [ref=f14e5]:
+        - link "U UniFlow" [ref=f14e6] [cursor=pointer]:
+          - /url: /app/today
+          - generic [ref=f14e7]: U
+          - generic [ref=f14e8]: UniFlow
+        - generic [ref=f14e9]: STUDENT VIEW · DEMO
+      - navigation "Student application" [ref=f14e10]:
+        - link "Today & Soon" [ref=f14e11] [cursor=pointer]:
+          - /url: /app/today
+        - link "Discover" [ref=f14e13] [cursor=pointer]:
+          - /url: /app/discover
+        - link "Saved" [ref=f14e15] [cursor=pointer]:
+          - /url: /app/saved
+        - link "Profile" [ref=f14e17] [cursor=pointer]:
+          - /url: /app/profile
+      - generic [ref=f14e19]:
+        - paragraph [ref=f14e20]: Example period
+        - strong [ref=f14e21]: 18—25 OCT 2026
+        - generic [ref=f14e22]: Illustrative campus data. No live institutional feed is connected.
+        - button "Switch demo role" [ref=f14e23]
+        - button "Exit demo" [ref=f14e24]
+    - main [ref=f14e25]:
+      - generic [ref=f14e26]:
+        - generic [ref=f14e27]:
+          - link "UniFlow" [ref=f14e28] [cursor=pointer]:
+            - /url: /
+          - generic [ref=f14e31]: Today & Soon
+        - button "A Alex" [ref=f14e32]:
+          - generic [ref=f14e33]: A
+          - strong [ref=f14e34]: Alex
+      - generic [ref=f14e36]:
+        - generic [ref=f14e37]:
+          - generic [ref=f14e38]:
+            - paragraph [ref=f14e39]: TODAY & SOON · 18–25 October 2026 · illustrative prototype data
+            - heading "Good morning, Alex." [level=1] [ref=f14e40]
+            - paragraph [ref=f14e41]: Here’s what matters on your campus, shaped by your demo preferences.
+          - button "Search campus" [ref=f14e42]
+        - generic [ref=f14e46]: Recommendations based on your demo preferences · Computer Science · 2nd year
+        - generic [ref=f14e50]:
+          - generic [ref=f14e51]:
+            - generic [ref=f14e52]:
+              - generic [ref=f14e53]: "01"
+              - heading "Needs attention" [level=2] [ref=f14e54]
+            - article [ref=f14e56]:
+              - generic [ref=f14e57]:
+                - strong [ref=f14e58]: "20"
+                - generic [ref=f14e59]: Oct,
+              - button "Notice School of Design Design thinking assignment First-year teams submit their concept boards for studio review. Deadline 20 Oct, 17:00 Closing soon Design Studio 2" [ref=f14e60]:
+                - generic [ref=f14e61]:
+                  - generic [ref=f14e62]: Notice
+                  - generic [ref=f14e63]: School of Design
+                - heading "Design thinking assignment" [level=3] [ref=f14e64]
+                - paragraph [ref=f14e65]: First-year teams submit their concept boards for studio review.
+                - generic [ref=f14e66]:
+                  - generic [ref=f14e67]:
+                    - generic [ref=f14e68]: Deadline
+                    - text: 20 Oct, 17:00
+                    - emphasis [ref=f14e69]: Closing soon
+                  - generic [ref=f14e70]: Design Studio 2
+              - generic [ref=f14e71]:
+                - generic [ref=f14e72]: Human reviewed
+                - button "Save Design thinking assignment" [ref=f14e74]:
+                  - generic [ref=f14e77]: Save
+                - button "Open Design thinking assignment" [ref=f14e78]
+            - article [ref=f14e83]:
+              - generic [ref=f14e84]:
+                - strong [ref=f14e85]: "19"
+                - generic [ref=f14e86]: Oct,
+              - button "Scholarship Student Support Office Student support scholarship A prototype support opportunity for undergraduate students. Deadline 19 Oct, 17:00 Closing soon Undergraduate students" [ref=f14e87]:
+                - generic [ref=f14e88]:
+                  - generic [ref=f14e89]: Scholarship
+                  - generic [ref=f14e90]: Student Support Office
+                - heading "Student support scholarship" [level=3] [ref=f14e91]
+                - paragraph [ref=f14e92]: A prototype support opportunity for undergraduate students.
+                - generic [ref=f14e93]:
+                  - generic [ref=f14e94]:
+                    - generic [ref=f14e95]: Deadline
+                    - text: 19 Oct, 17:00
+                    - emphasis [ref=f14e96]: Closing soon
+                  - generic [ref=f14e97]: Undergraduate students
+              - generic [ref=f14e98]:
+                - generic [ref=f14e99]: Source unavailable
+                - button "Save Student support scholarship" [ref=f14e101]:
+                  - generic [ref=f14e104]: Save
+                - button "Open Student support scholarship" [ref=f14e105]
+          - generic [ref=f14e110]:
+            - generic [ref=f14e111]: FEATURED
+            - article [ref=f14e114]:
+              - generic [ref=f14e115]:
+                - strong [ref=f14e116]: "18"
+                - generic [ref=f14e117]: Oct,
+              - button "Opportunity Campus Code Collective Build Your First Web App A beginner-friendly evening for students to form teams, explore an idea, and leave with a small working prototype. Event 18 Oct, 16:00 Register by 17 Oct, 18:00 Innovation Lab" [ref=f14e118]:
+                - generic [ref=f14e119]:
+                  - generic [ref=f14e120]: Opportunity
+                  - generic [ref=f14e121]: Campus Code Collective
+                - heading "Build Your First Web App" [level=3] [ref=f14e122]
+                - paragraph [ref=f14e123]: A beginner-friendly evening for students to form teams, explore an idea, and leave with a small working prototype.
+                - generic [ref=f14e124]:
+                  - generic [ref=f14e125]:
+                    - generic [ref=f14e126]: Event
+                    - text: 18 Oct, 16:00
+                  - generic [ref=f14e127]:
+                    - generic [ref=f14e128]: Register by
+                    - text: 17 Oct, 18:00
+                  - generic [ref=f14e129]: Innovation Lab
+              - generic [ref=f14e130]:
+                - generic [ref=f14e131]: Local demo
+                - button "Save Build Your First Web App" [ref=f14e133]:
+                  - generic [ref=f14e136]: Save
+                - button "Open Build Your First Web App" [ref=f14e137]
+        - generic [ref=f14e142]:
+          - generic [ref=f14e143]:
+            - generic [ref=f14e144]: "02"
+            - heading "Coming up" [level=2] [ref=f14e145]
+            - button "View all" [ref=f14e147]
+          - generic [ref=f14e151]:
+            - article [ref=f14e152]:
+              - generic [ref=f14e153]:
+                - strong [ref=f14e154]: "22"
+                - generic [ref=f14e155]: Oct,
+              - button "Event Student Arts Circle Campus Open Mic Music, spoken word, and short performances on an open stage. When 22 Oct, 18:30 Main Auditorium" [ref=f14e156]:
+                - generic [ref=f14e157]:
+                  - generic [ref=f14e158]: Event
+                  - generic [ref=f14e159]: Student Arts Circle
+                - heading "Campus Open Mic" [level=3] [ref=f14e160]
+                - paragraph [ref=f14e161]: Music, spoken word, and short performances on an open stage.
+                - generic [ref=f14e162]:
+                  - generic [ref=f14e163]:
+                    - generic [ref=f14e164]: When
+                    - text: 22 Oct, 18:30
+                  - generic [ref=f14e165]: Main Auditorium
+              - generic [ref=f14e166]:
+                - generic [ref=f14e167]: Human reviewed
+                - button "Save Campus Open Mic" [ref=f14e169]:
+                  - generic [ref=f14e172]: Save
+                - button "Open Campus Open Mic" [ref=f14e173]
+            - article [ref=f14e178]:
+              - generic [ref=f14e179]:
+                - strong [ref=f14e180]: "21"
+                - generic [ref=f14e181]: Oct,
+              - button "Opportunity Creative Circle Creative Circle recruitment Join a small peer group for visual experiments and collaboration. Event 21 Oct, 16:00 Register by 21 Oct, 23:59 Arts Commons" [ref=f14e182]:
+                - generic [ref=f14e183]:
+                  - generic [ref=f14e184]: Opportunity
+                  - generic [ref=f14e185]: Creative Circle
+                - heading "Creative Circle recruitment" [level=3] [ref=f14e186]
+                - paragraph [ref=f14e187]: Join a small peer group for visual experiments and collaboration.
+                - generic [ref=f14e188]:
+                  - generic [ref=f14e189]:
+                    - generic [ref=f14e190]: Event
+                    - text: 21 Oct, 16:00
+                  - generic [ref=f14e191]:
+                    - generic [ref=f14e192]: Register by
+                    - text: 21 Oct, 23:59
+                  - generic [ref=f14e193]: Arts Commons
+              - generic [ref=f14e194]:
+                - generic [ref=f14e195]: Needs review
+                - button "Save Creative Circle recruitment" [ref=f14e197]:
+                  - generic [ref=f14e200]: Save
+                - button "Open Creative Circle recruitment" [ref=f14e201]
+            - article [ref=f14e206]:
+              - generic [ref=f14e207]:
+                - strong [ref=f14e208]: "25"
+                - generic [ref=f14e209]: Oct,
+              - button "Deadline Research Commons Undergraduate research poster deadline Submit a one-page research poster for the autumn showcase. Deadline 25 Oct, 23:59 Undergraduate researchers" [ref=f14e210]:
+                - generic [ref=f14e211]:
+                  - generic [ref=f14e212]: Deadline
+                  - generic [ref=f14e213]: Research Commons
+                - heading "Undergraduate research poster deadline" [level=3] [ref=f14e214]
+                - paragraph [ref=f14e215]: Submit a one-page research poster for the autumn showcase.
+                - generic [ref=f14e216]:
+                  - generic [ref=f14e217]:
+                    - generic [ref=f14e218]: Deadline
+                    - text: 25 Oct, 23:59
+                  - generic [ref=f14e219]: Undergraduate researchers
+              - generic [ref=f14e220]:
+                - generic [ref=f14e221]: Human reviewed
+                - button "Save Undergraduate research poster deadline" [ref=f14e223]:
+                  - generic [ref=f14e226]: Save
+                - button "Open Undergraduate research poster deadline" [ref=f14e227]
+        - paragraph [ref=f14e232]: Prototype records are illustrative and are not official institutional notices.
+  - generic:
+    - generic:
+      - generic:
+        - generic:
+          - generic:
+            - generic:
+              - generic:
+                - generic:
+                  - button "Copy element"
+          - button "Collapse toolbar" [expanded]

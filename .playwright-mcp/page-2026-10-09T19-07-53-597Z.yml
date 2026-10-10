@@ -1,0 +1,418 @@
+- generic [ref=e3]:
+  - banner [ref=e4]:
+    - navigation "Main navigation" [ref=e5]:
+      - link "UniFlow home" [ref=e6] [cursor=pointer]:
+        - /url: "#top"
+        - generic [ref=e7]: UniFlow
+      - generic [ref=e10]:
+        - link "How it works" [ref=e11] [cursor=pointer]:
+          - /url: "#how-it-works"
+        - link "Events" [ref=e15] [cursor=pointer]:
+          - /url: /events
+        - link "Clubs" [ref=e19] [cursor=pointer]:
+          - /url: "#clubs"
+      - link "Get started" [ref=e24] [cursor=pointer]:
+        - /url: /app/today
+  - main [ref=e26]:
+    - region [ref=e27]:
+      - generic [ref=e28]:
+        - generic [ref=e29]:
+          - paragraph [ref=e30]: A clearer campus rhythm
+          - heading [level=1] [ref=e31]:
+            - text: Your campus,
+            - emphasis [ref=e32]: without
+            - text: the catch-up.
+          - paragraph [ref=e33]: UniFlow brings notices, deadlines, scholarships, opportunities, and events into one source-aware place—so students can move from “what did I miss?” to “I know what to do next.”
+          - generic [ref=e34]:
+            - link "Explore the live preview" [ref=e35] [cursor=pointer]:
+              - /url: "#campus-inbox"
+              - text: Explore the live preview
+              - generic [aria-hidden] [ref=e36]: ↗
+            - link "See how it works" [ref=e37] [cursor=pointer]:
+              - /url: "#how-it-works"
+              - text: See how it works
+              - generic [aria-hidden] [ref=e38]: ↓
+          - generic [ref=e39]:
+            - generic [ref=e40]: ✦
+            - generic [ref=e41]: Independent campus hub prototype
+            - generic [ref=e43]: Illustrative content
+        - generic [ref=e44]:
+          - generic [ref=e45]:
+            - generic [ref=e46]: "01"
+            - generic [ref=e47]: Noticeboard, re-composed
+          - generic [aria-hidden] [ref=e48]:
+            - generic [ref=e49]: UNI
+            - generic [ref=e50]: FLOW
+          - region [ref=e51]:
+            - generic [ref=e52]:
+              - generic [ref=e53]:
+                - paragraph [ref=e54]: YOUR CAMPUS, AT A GLANCE
+                - heading "Today & Soon" [level=2] [ref=e55]
+              - generic [ref=e56]: 19—25OCT 2026
+            - generic [ref=e57]:
+              - group "Filter campus inbox" [ref=e58]:
+                - button "All" [pressed] [ref=e59]
+                - button "Deadlines" [ref=e60]
+                - button "Events" [ref=e61]
+              - generic [ref=e62]: 4 items
+            - generic [ref=e64]:
+              - button "19 OCT Scholarship Student support scholarship Undergraduate students" [ref=e65]:
+                - generic [ref=e66]:
+                  - generic [ref=e67]: "19"
+                  - generic [ref=e68]: OCT
+                - generic [ref=e69]:
+                  - generic [ref=e70]: Scholarship
+                  - strong [ref=e71]: Student support scholarship
+                  - generic [ref=e72]: Undergraduate students
+                - generic [aria-hidden] [ref=e73]: ↗
+              - button "20 OCT Academic notice Design thinking assignment First-year students" [ref=e74]:
+                - generic [ref=e75]:
+                  - generic [ref=e76]: "20"
+                  - generic [ref=e77]: OCT
+                - generic [ref=e78]:
+                  - generic [ref=e79]: Academic notice
+                  - strong [ref=e80]: Design thinking assignment
+                  - generic [ref=e81]: First-year students
+                - generic [aria-hidden] [ref=e82]: ↗
+              - button "21 OCT Opportunity Creative Circle recruitment All students" [ref=e83]:
+                - generic [ref=e84]:
+                  - generic [ref=e85]: "21"
+                  - generic [ref=e86]: OCT
+                - generic [ref=e87]:
+                  - generic [ref=e88]: Opportunity
+                  - strong [ref=e89]: Creative Circle recruitment
+                  - generic [ref=e90]: All students
+                - generic [aria-hidden] [ref=e91]: ↗
+              - button "22 OCT Campus event Campus open-air evening Campus community" [ref=e92]:
+                - generic [ref=e93]:
+                  - generic [ref=e94]: "22"
+                  - generic [ref=e95]: OCT
+                - generic [ref=e96]:
+                  - generic [ref=e97]: Campus event
+                  - strong [ref=e98]: Campus open-air evening
+                  - generic [ref=e99]: Campus community
+                - generic [aria-hidden] [ref=e100]: ↗
+            - generic [ref=e101]:
+              - generic [ref=e102]: Source-aware by design
+              - generic [ref=e103]: Example data · prototype
+          - paragraph [ref=e104]:
+            - generic [ref=e105]: Find what matters.
+            - text: Check the source. Take action.
+  - main [ref=e106]:
+    - generic [ref=e108]:
+      - generic [ref=e109]:
+        - generic [ref=e110]:
+          - paragraph [ref=e111]: Campus noticeboard · 19—25 October
+          - heading "What deserves a little more of your attention this week?" [level=2] [ref=e112]
+        - generic [ref=e113]:
+          - paragraph [ref=e114]: One edited view for the things students usually piece together from five different places.
+          - link "Open the full events feed" [ref=e115] [cursor=pointer]:
+            - /url: /events
+            - text: Open the full events feed
+            - generic [aria-hidden] [ref=e116]: ↗
+      - group "Filter campus discovery" [ref=e117]:
+        - button "Everything" [pressed] [ref=e118]
+        - button "Events" [ref=e119]
+        - button "Opportunities" [ref=e120]
+        - button "Notices" [ref=e121]
+        - generic [ref=e122]: 4 of 4 items shown
+      - generic [ref=e123]:
+        - article [ref=e124]:
+          - generic [ref=e125]:
+            - img "Guitarist performing live on stage" [ref=e126]
+            - generic [ref=e127]: 22OCT
+            - generic [ref=e128]: Example event poster · Student Arts Circle
+          - generic [ref=e129]:
+            - generic [ref=e130]:
+              - generic [ref=e131]: Featured opportunity
+              - generic [ref=e132]: 01 / 04
+            - heading "Campus Open Mic" [level=3] [ref=e133]
+            - paragraph [ref=e134]: Music, spoken word, and short performances in an open stage format. A soft landing for anyone looking for a reason to leave their room.
+            - generic [ref=e135]:
+              - generic [ref=e136]:
+                - generic [ref=e137]: When
+                - text: 22 October · 6:30 PM
+              - generic [ref=e138]:
+                - generic [ref=e139]: Where
+                - text: Main Auditorium
+            - button "Read the event note" [ref=e140]: Read the event note ↗
+        - generic [ref=e141]:
+          - generic [ref=e142]:
+            - generic [ref=e143]: Next on the board
+            - generic [ref=e144]: Updated for the week
+          - button "19 OCT Scholarships Student support scholarship 19 Oct · 5:00 PM" [ref=e145]:
+            - generic [ref=e146]:
+              - text: "19"
+              - generic [ref=e147]: OCT
+            - generic [ref=e148]:
+              - generic [ref=e149]: Scholarships
+              - strong [ref=e150]: Student support scholarship
+              - generic [ref=e151]: 19 Oct · 5:00 PM
+            - generic [aria-hidden] [ref=e152]: •
+          - button "20 OCT Academic notice Design thinking assignment 20 Oct · submission" [ref=e153]:
+            - generic [ref=e154]:
+              - text: "20"
+              - generic [ref=e155]: OCT
+            - generic [ref=e156]:
+              - generic [ref=e157]: Academic notice
+              - strong [ref=e158]: Design thinking assignment
+              - generic [ref=e159]: 20 Oct · submission
+            - generic [aria-hidden] [ref=e160]: •
+          - button "21 OCT Student opportunity Creative Circle recruitment 21 Oct · interest" [ref=e161]:
+            - generic [ref=e162]:
+              - text: "21"
+              - generic [ref=e163]: OCT
+            - generic [ref=e164]:
+              - generic [ref=e165]: Student opportunity
+              - strong [ref=e166]: Creative Circle recruitment
+              - generic [ref=e167]: 21 Oct · interest
+            - generic [aria-hidden] [ref=e168]: •
+          - button "22 OCT Campus event Campus Open Mic 22 Oct · 6:30 PM" [ref=e169]:
+            - generic [ref=e170]:
+              - text: "22"
+              - generic [ref=e171]: OCT
+            - generic [ref=e172]:
+              - generic [ref=e173]: Campus event
+              - strong [ref=e174]: Campus Open Mic
+              - generic [ref=e175]: 22 Oct · 6:30 PM
+            - generic [aria-hidden] [ref=e176]: ↗
+        - complementary [ref=e177]:
+          - generic [ref=e178]: ✦
+          - paragraph [ref=e179]:
+            - strong [ref=e180]: Source-aware by design.
+            - text: Publisher, timing, and original context stay close to every item.
+          - generic [ref=e181]: Illustrative prototype
+    - region [ref=e182]:
+      - generic [ref=e183]:
+        - generic [ref=e184]:
+          - paragraph [ref=e185]: The old campus rhythm
+          - heading "Important things are everywhere. Clarity should be too." [level=2] [ref=e186]: Important things are everywhere.Clarity should be too.
+          - paragraph [ref=e187]: Students piece together campus life from forwarded messages, printed notices, social posts, and inboxes. UniFlow gives every item a place, a source, and a next step.
+          - button "Bring the examples together" [ref=e188]:
+            - generic [aria-hidden] [ref=e190]: ↗
+          - paragraph [ref=e191]: Illustrative examples only · no live campus channels are connected.
+        - generic [ref=e192]:
+          - generic [ref=e193]:
+            - generic [ref=e194]: Four places students look
+            - generic [ref=e195]: Illustrative campus signals
+          - generic [ref=e196]:
+            - generic [ref=e197]:
+              - button "WhatsApp Scholarship notice Forwarded · no context" [ref=e198]:
+                - generic [ref=e199]: WhatsApp
+                - strong [ref=e200]: Scholarship notice
+                - generic [ref=e201]: Forwarded · no context
+              - button "Noticeboard Design assignment Printed · easy to miss" [ref=e202]:
+                - generic [ref=e203]: Noticeboard
+                - strong [ref=e204]: Design assignment
+                - generic [ref=e205]: Printed · easy to miss
+              - button "Instagram Open-air evening Posted · details scattered" [ref=e206]:
+                - generic [ref=e207]: Instagram
+                - strong [ref=e208]: Open-air evening
+                - generic [ref=e209]: Posted · details scattered
+              - button "Email Club recruitment Buried · action unclear" [ref=e210]:
+                - generic [ref=e211]: Email
+                - strong [ref=e212]: Club recruitment
+                - generic [ref=e213]: Buried · action unclear
+            - generic [ref=e214]:
+              - generic [ref=e215]:
+                - generic [ref=e216]: UNIFLOW
+                - generic [ref=e217]: ● PREVIEW
+              - paragraph [ref=e218]: TODAY & SOON
+              - heading "Everything that matters next." [level=3] [ref=e219]
+              - generic [ref=e220]:
+                - generic [ref=e221]: "19"
+                - generic [ref=e222]:
+                  - strong [ref=e223]: Student support scholarship
+                  - generic [ref=e224]: Deadline · source visible
+              - generic [ref=e225]:
+                - generic [ref=e226]: "22"
+                - generic [ref=e227]:
+                  - strong [ref=e228]: Campus open-air evening
+                  - generic [ref=e229]: Event · publisher visible
+              - generic [ref=e230]: Discover → verify → act
+    - region [ref=e231]:
+      - generic [ref=e232]:
+        - generic [ref=e233]:
+          - paragraph [ref=e234]: A calmer decision loop
+          - heading "Discover. Verify. Act." [level=2] [ref=e235]: Discover.Verify.Act.
+          - paragraph [ref=e236]: The interface changes with the question a student is asking—not just the page they are on.
+          - tablist "How UniFlow works" [ref=e237]:
+            - tab "01 Discover A focused feed brings the next useful thing to the surface." [selected] [ref=e238]:
+              - generic [ref=e239]: "01"
+              - generic [ref=e240]:
+                - strong [ref=e241]: Discover
+                - generic [ref=e242]: A focused feed brings the next useful thing to the surface.
+              - generic [aria-hidden] [ref=e243]: ↗
+            - tab "02 Verify Publisher, document date, and review state stay close to the claim." [ref=e244]:
+              - generic [ref=e245]: "02"
+              - generic [ref=e246]:
+                - strong [ref=e247]: Verify
+                - generic [ref=e248]: Publisher, document date, and review state stay close to the claim.
+              - generic [aria-hidden] [ref=e249]: ↗
+            - tab "03 Act The relevant next step is clear without hiding the original source." [ref=e250]:
+              - generic [ref=e251]: "03"
+              - generic [ref=e252]:
+                - strong [ref=e253]: Act
+                - generic [ref=e254]: The relevant next step is clear without hiding the original source.
+              - generic [aria-hidden] [ref=e255]: ↗
+        - generic [ref=e256]:
+          - generic [ref=e257]:
+            - generic [ref=e258]: UniFlow / student view
+            - generic [ref=e259]: Illustrative interface
+          - generic [ref=e261]:
+            - generic [ref=e262]:
+              - generic [ref=e263]: Today & Soon
+              - generic [ref=e264]: For you
+            - heading "Your week, at a glance." [level=3] [ref=e265]
+            - generic [ref=e266]:
+              - generic [ref=e267]:
+                - generic [ref=e268]: "19"
+                - generic [ref=e269]:
+                  - generic [ref=e270]: SCHOLARSHIP
+                  - strong [ref=e271]: Student support scholarship
+                  - emphasis [ref=e272]: Deadline · 5:00 PM IST
+              - generic [ref=e273]:
+                - generic [ref=e274]: "22"
+                - generic [ref=e275]:
+                  - generic [ref=e276]: EVENT
+                  - strong [ref=e277]: Campus open-air evening
+                  - emphasis [ref=e278]: Central courtyard · 6:30 PM
+            - generic [ref=e279]: 4 items worth your attention
+          - generic [ref=e280]:
+            - generic [ref=e281]: 01 / 03
+            - generic [ref=e282]: Source-aware campus information
+    - generic [ref=e284]:
+      - heading "One campus, two ways in." [level=2] [ref=e285]:
+        - text: One campus,
+        - generic [ref=e286]: two ways in.
+      - generic [ref=e287]:
+        - article [ref=e288]:
+          - generic [ref=e289]: Students
+          - list [ref=e290]:
+            - listitem [ref=e291]: Discover notices, deadlines, and events.
+            - listitem [ref=e296]: Find opportunities that match your interests.
+            - listitem [ref=e301]: Verify the publisher and original source.
+            - listitem [ref=e305]: Act on the next step with context.
+          - link "Explore the campus feed" [ref=e310] [cursor=pointer]:
+            - /url: /events
+          - img "Detailed archival illustration of a group celebrating together" [ref=e314]
+        - article [ref=e315]:
+          - generic [ref=e316]: Club organizers
+          - list [ref=e317]:
+            - listitem [ref=e318]: Turn notices and posters into structured drafts.
+            - listitem [ref=e323]: Review extracted fields before publication.
+            - listitem [ref=e328]: Keep publisher and source details visible.
+            - listitem [ref=e332]: Publish clearer updates for students.
+          - link "Prepare a campus update" [ref=e337] [cursor=pointer]:
+            - /url: /poster-to-event
+          - img "Detailed archival illustration of a group organizing together" [ref=e341]
+    - generic [ref=e343]:
+      - generic [ref=e344]:
+        - paragraph [ref=e345]: AI-assisted publishing workspace
+        - heading "From campus notice to trusted draft." [level=2] [ref=e346]
+        - paragraph [ref=e347]: Upload a source, structure the details, review what was extracted, and publish only when a human is ready to stand behind it.
+        - paragraph [ref=e348]: Local prototype simulation · no live AI, accounts, or publishing connection.
+      - generic [ref=e349]:
+        - tablist "AI publishing workflow" [ref=e350]:
+          - text: PUBLISHING DESK
+          - tab "01 Upload Add a source document" [selected] [ref=e351]:
+            - generic [ref=e352]: "01"
+            - generic [ref=e355]: Upload
+            - generic [ref=e356]: Add a source document
+          - tab "02 AI Extraction Structure the notice" [ref=e357]:
+            - generic [ref=e358]: "02"
+            - generic [ref=e361]: AI Extraction
+            - generic [ref=e362]: Structure the notice
+          - tab "03 Human Review Edit before approval" [ref=e363]:
+            - generic [ref=e364]: "03"
+            - generic [ref=e367]: Human Review
+            - generic [ref=e368]: Edit before approval
+          - tab "04 Approve & Publish Confirm the final draft" [ref=e369]:
+            - generic [ref=e370]: "04"
+            - generic [ref=e373]: Approve & Publish
+            - generic [ref=e374]: Confirm the final draft
+        - tabpanel "01 Upload Add a source document" [ref=e375]:
+          - generic [ref=e377]:
+            - generic [ref=e378]:
+              - generic [ref=e379]:
+                - generic [ref=e380]: Illustrative source document
+                - generic [ref=e381]: Awaiting upload
+              - generic [ref=e382]:
+                - generic [ref=e383]:
+                  - generic [ref=e384]: CC
+                  - generic [ref=e385]: Campus Code Collective
+                  - generic [ref=e386]: Workshop brief · example
+                - text: OPEN SESSION / 01
+                - heading "Build Your First Web App" [level=3] [ref=e388]: Build YourFirst Web App
+                - paragraph [ref=e390]: A beginner-friendly evening for students to form teams, explore an idea, and leave with a small working prototype.
+                - generic [ref=e391]:
+                  - generic [ref=e392]:
+                    - generic [ref=e393]: 18 OCT 2026
+                    - generic [ref=e394]: Date
+                  - generic [ref=e395]:
+                    - generic [ref=e396]: 4:00—6:00 PM
+                    - generic [ref=e397]: Time
+                  - generic [ref=e398]:
+                    - generic [ref=e399]: Innovation Lab
+                    - generic [ref=e400]: Venue
+                - generic [ref=e401]:
+                  - paragraph [ref=e402]: Bring a question you care about. We will work through the first steps together, with mentors and other curious builders.
+                  - paragraph [ref=e403]: Open to all interested students. Registration details are illustrative.
+                - generic [ref=e404]:
+                  - generic [ref=e405]: Published by Campus Code Collective
+                  - generic [ref=e406]: "Source: workshop.jpg"
+              - generic [ref=e407]:
+                - generic [ref=e408]: Source remains visible during review
+                - generic [ref=e409]: Prototype document · not an official notice
+            - generic [ref=e410]:
+              - paragraph [ref=e411]: Step 01 · Upload
+              - heading "Start with the notice, not a blank form." [level=3] [ref=e412]
+              - paragraph [ref=e413]: Add a campus poster or notice. This local prototype validates the file, then uses clearly labeled sample extraction data.
+              - generic [ref=e414]:
+                - generic [ref=e415] [cursor=pointer]:
+                  - text: Choose image
+                  - button "Choose image" [ref=e419]
+                - button "Use sample poster" [ref=e420]
+              - paragraph [ref=e421]: JPG, PNG, or WEBP · 5 MB maximum · illustrative prototype
+              - button "Extract information" [disabled] [ref=e422]
+    - generic [ref=e426]:
+      - generic [ref=e427]:
+        - heading "Campus life, beyond the classroom." [level=2] [ref=e428]
+        - paragraph [ref=e429]: The people, moments, and experiences that bring campus together.
+        - paragraph [ref=e430]: Illustrative photos — campus photos coming soon.
+      - generic [ref=e431]:
+        - 'button "Open photo 1: A student performing live on stage" [ref=e432]':
+          - img "A student performing live on stage" [ref=e433]
+        - 'button "Open photo 2: A technology workshop with illuminated computers" [ref=e434]':
+          - img "A technology workshop with illuminated computers" [ref=e435]
+        - 'button "Open photo 3: Students competing in an athletics event" [ref=e436]':
+          - img "Students competing in an athletics event" [ref=e437]
+        - 'button "Open photo 4: A student participating in a cultural celebration" [ref=e438]':
+          - img "A student participating in a cultural celebration" [ref=e439]
+        - 'button "Open photo 5: Students collaborating around a laptop" [ref=e440]':
+          - img "Students collaborating around a laptop" [ref=e441]
+        - 'button "Open photo 6: An audience enjoying a concert under stage lights" [ref=e442]':
+          - img "An audience enjoying a concert under stage lights" [ref=e443]
+    - generic [ref=e445]:
+      - heading "Your next campus memory starts here." [level=2] [ref=e446]: Your next campus memorystarts here.
+      - paragraph [ref=e447]: Find your next event—or bring your own to life.
+      - generic [ref=e448]:
+        - link "Explore events" [ref=e449] [cursor=pointer]:
+          - /url: /events
+        - link "For club organizers →" [ref=e450] [cursor=pointer]:
+          - /url: /poster-to-event
+  - contentinfo [ref=e451]:
+    - generic [ref=e452]:
+      - generic [ref=e453]:
+        - link "Return to UniFlow home" [ref=e454] [cursor=pointer]:
+          - /url: "#top"
+          - generic [ref=e455]: UniFlow
+        - paragraph [ref=e458]: Your campus. More connected.
+      - navigation "Footer navigation" [ref=e459]:
+        - link "Home" [ref=e460] [cursor=pointer]:
+          - /url: "#top"
+        - link "Events" [ref=e461] [cursor=pointer]:
+          - /url: /events
+        - link "Clubs" [ref=e462] [cursor=pointer]:
+          - /url: "#clubs"
+    - paragraph [ref=e463]: Prototype preview — accounts, AI extraction, and event publishing are not connected.

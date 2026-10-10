@@ -1,0 +1,14 @@
+{
+  "detector": {
+    "ignoreRules": [],
+    "ignoreFiles": [],
+    "ignoreValues": [
+      {
+        "rule": "overused-font",
+        "value": "inter",
+        "createdAt": "2026-10-09T19:36:13.520Z",
+        "reason": "Project design system: DESIGN.md names Inter as the single display/body family (One Voice Rule); not user confirmed in chat"
+      }
+    ]
+  }
+}

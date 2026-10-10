@@ -1,0 +1,62 @@
+- generic [active] [ref=f20e1]:
+  - generic [ref=f20e4]:
+    - banner [ref=f20e5]:
+      - link "U UniFlow" [ref=f20e6] [cursor=pointer]:
+        - /url: /
+        - generic [ref=f20e7]: U
+        - text: UniFlow
+      - generic [ref=f20e8]: Local demo
+    - main [ref=f20e9]:
+      - generic [ref=f20e10]:
+        - paragraph [ref=f20e11]: Welcome to UniFlow
+        - heading "How would you like to come in?" [level=1] [ref=f20e12]
+        - paragraph [ref=f20e13]: Three ways into campus life. Pick one now; you can switch at any time.
+      - list [ref=f20e14]:
+        - listitem [ref=f20e15]:
+          - link "Explore publicly Browse campus information, clubs, and a simple campus guide. No account needed. Notices, events, and deadlines Sample club directory Illustrative campus guide Start exploring Open to everyone" [ref=f20e16] [cursor=pointer]:
+            - /url: /explore
+            - generic [ref=f20e21]: Explore publicly
+            - generic [ref=f20e22]: Browse campus information, clubs, and a simple campus guide. No account needed.
+            - generic [ref=f20e23]:
+              - generic [ref=f20e24]: Notices, events, and deadlines
+              - generic [ref=f20e27]: Sample club directory
+              - generic [ref=f20e30]: Illustrative campus guide
+            - generic [ref=f20e33]: Start exploring
+            - generic [ref=f20e37]: Open to everyone
+        - listitem [ref=f20e38]:
+          - link "I’m a student Enter your college email, pick your interests, and get a Today feed shaped around them. Today & Soon, Discover, and Saved Interests you can change later Stays on this device Continue as student Demo access with an @nith.ac.in email" [ref=f20e39] [cursor=pointer]:
+            - /url: /login/student
+            - generic [ref=f20e44]: I’m a student
+            - generic [ref=f20e45]: Enter your college email, pick your interests, and get a Today feed shaped around them.
+            - generic [ref=f20e46]:
+              - generic [ref=f20e47]: Today & Soon, Discover, and Saved
+              - generic [ref=f20e50]: Interests you can change later
+              - generic [ref=f20e53]: Stays on this device
+            - generic [ref=f20e56]: Continue as student
+            - generic [ref=f20e60]: Demo access with an @nith.ac.in email
+        - listitem [ref=f20e61]:
+          - link "I’m a club organizer Turn a poster or notice into a structured update, review it, and publish it to the student feed. Create and review updates Publish to the demo student feed See your demo publications Open club workspace Demo access, permissions not verified" [ref=f20e62] [cursor=pointer]:
+            - /url: /login/club
+            - generic [ref=f20e69]: I’m a club organizer
+            - generic [ref=f20e70]: Turn a poster or notice into a structured update, review it, and publish it to the student feed.
+            - generic [ref=f20e71]:
+              - generic [ref=f20e72]: Create and review updates
+              - generic [ref=f20e75]: Publish to the demo student feed
+              - generic [ref=f20e78]: See your demo publications
+            - generic [ref=f20e81]: Open club workspace
+            - generic [ref=f20e85]: Demo access, permissions not verified
+      - paragraph [ref=f20e86]: Student and club access are local demos. Nothing here verifies identity or publisher permissions.
+    - contentinfo [ref=f20e89]:
+      - generic [ref=f20e90]: Frontend-only prototype. No real sign-in, and not an official NIT Hamirpur service.
+      - link "Return to UniFlow" [ref=f20e91] [cursor=pointer]:
+        - /url: /
+  - generic:
+    - generic:
+      - generic:
+        - generic:
+          - generic:
+            - generic:
+              - generic:
+                - generic:
+                  - button "Copy element"
+          - button "Collapse toolbar" [expanded]

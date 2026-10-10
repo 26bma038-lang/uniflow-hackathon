@@ -1,0 +1,95 @@
+- generic [active] [ref=f10e1]:
+  - generic [ref=f10e3]:
+    - complementary [ref=f10e4]:
+      - generic [ref=f10e5]:
+        - link "U UniFlow" [ref=f10e6] [cursor=pointer]:
+          - /url: /app/today
+          - generic [ref=f10e7]: U
+          - generic [ref=f10e8]: UniFlow
+        - generic [ref=f10e9]: STUDENT VIEW · DEMO
+      - navigation "Student application" [ref=f10e10]:
+        - link "Today & Soon" [ref=f10e11] [cursor=pointer]:
+          - /url: /app/today
+        - link "Discover" [ref=f10e13] [cursor=pointer]:
+          - /url: /app/discover
+        - link "Saved" [ref=f10e15] [cursor=pointer]:
+          - /url: /app/saved
+        - link "Profile" [ref=f10e17] [cursor=pointer]:
+          - /url: /app/profile
+      - generic [ref=f10e19]:
+        - paragraph [ref=f10e20]: Example period
+        - strong [ref=f10e21]: 18—25 OCT 2026
+        - generic [ref=f10e22]: Illustrative campus data. No live institutional feed is connected.
+        - button "Switch demo role" [ref=f10e23]
+        - button "Exit demo" [ref=f10e24]
+    - main [ref=f10e25]:
+      - generic [ref=f10e26]:
+        - generic [ref=f10e27]:
+          - link "UniFlow" [ref=f10e28] [cursor=pointer]:
+            - /url: /
+          - generic [ref=f10e31]: Information
+        - button "A Alex" [ref=f10e32]:
+          - generic [ref=f10e33]: A
+          - strong [ref=f10e34]: Alex
+      - article [ref=f10e36]:
+        - button "Back to campus information" [ref=f10e37]
+        - generic [ref=f10e40]:
+          - generic [ref=f10e41]:
+            - generic [ref=f10e42]:
+              - generic [ref=f10e43]: Opportunity
+              - generic [ref=f10e44]: Open
+            - heading "Build Your First Web App" [level=1] [ref=f10e45]
+            - paragraph [ref=f10e46]: A beginner-friendly evening for students to form teams, explore an idea, and leave with a small working prototype.
+            - generic [ref=f10e47]:
+              - button "Save Build Your First Web App" [ref=f10e48]:
+                - generic [ref=f10e51]: Save
+              - button "Open source" [disabled] [ref=f10e52]
+            - paragraph [ref=f10e56]: A beginner-friendly evening for students to form teams, explore an idea, and leave with a small working prototype.
+            - generic [ref=f10e57]:
+              - generic [ref=f10e58]:
+                - generic [ref=f10e59]: WHO IT’S FOR
+                - strong [ref=f10e60]: All interested students
+              - generic [ref=f10e61]:
+                - generic [ref=f10e62]: DEPARTMENT
+                - strong [ref=f10e63]: Computer Science
+              - generic [ref=f10e64]:
+                - generic [ref=f10e65]: EVENT DATE
+                - strong [ref=f10e66]: 18 Oct, 16:00
+              - generic [ref=f10e67]:
+                - generic [ref=f10e68]: REGISTRATION DEADLINE
+                - strong [ref=f10e69]: 17 Oct, 18:00
+              - generic [ref=f10e70]:
+                - generic [ref=f10e71]: WHERE
+                - strong [ref=f10e72]: Innovation Lab
+          - complementary [ref=f10e73]:
+            - paragraph [ref=f10e74]: SOURCE NOTES
+            - heading "Keep the context close." [level=2] [ref=f10e75]
+            - generic [ref=f10e76]:
+              - generic [ref=f10e77]: Publisher identity
+              - strong [ref=f10e78]: Campus Code Collective
+            - generic [ref=f10e79]:
+              - generic [ref=f10e80]: Original source
+              - strong [ref=f10e81]: WORKSHOP.JPG
+            - generic [ref=f10e82]:
+              - generic [ref=f10e83]: Review status
+              - strong [ref=f10e84]:
+                - generic [ref=f10e85]: Local demo publication
+            - generic [ref=f10e87]:
+              - generic [ref=f10e88]: Last checked
+              - strong [ref=f10e89]: 10 Oct, 0:38
+            - paragraph [ref=f10e90]: Human review does not make a fictional record an official institutional notice.
+        - generic [ref=f10e91]:
+          - generic [ref=f10e92]: MORE TO EXPLORE
+          - button "Opportunity Creative Circle recruitment" [ref=f10e95]:
+            - generic [ref=f10e96]: Opportunity
+            - strong [ref=f10e97]: Creative Circle recruitment
+  - generic:
+    - generic:
+      - generic:
+        - generic:
+          - generic:
+            - generic:
+              - generic:
+                - generic:
+                  - button "Copy element"
+          - button "Collapse toolbar" [expanded]
