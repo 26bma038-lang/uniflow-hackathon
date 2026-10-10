@@ -1,7 +1,7 @@
-import { useEffect, useMemo, useSyncExternalStore } from "react"
+import { useEffect, useMemo, useState, useSyncExternalStore } from "react"
 import { campusItems } from "../student-app/data"
 import type { CampusItem } from "../student-app/types"
-import { listPublishedEvents } from "./events-api"
+import { listClubs, listPublishedEvents, type PublicClubRow } from "./events-api"
 import { toCampusItem } from "./publishing"
 
 // Published club updates, read from the server and shared by Explore, the student app, and
@@ -65,6 +65,22 @@ export function mergeWithSamples(published: CampusItem[], publishedFirst: boolea
   const keys = new Set(published.map(key))
   const samples = campusItems.filter((entry) => !ids.has(entry.id) && !keys.has(key(entry)))
   return publishedFirst ? [...published, ...samples] : [...samples, ...published]
+}
+
+// Clubs imported from public sources, for the public directory. Empty until loaded, and
+// empty if the request fails: the directory then shows what it can derive from updates.
+export function useImportedClubs() {
+  const [clubs, setClubs] = useState<PublicClubRow[]>([])
+  useEffect(() => {
+    let cancelled = false
+    listClubs().then((result) => {
+      if (!cancelled && result.ok) setClubs(result.value.filter((club) => club.sourceUrl !== ""))
+    })
+    return () => {
+      cancelled = true
+    }
+  }, [])
+  return clubs
 }
 
 export function useCampusItems(publishedFirst: boolean) {

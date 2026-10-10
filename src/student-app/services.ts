@@ -12,14 +12,21 @@ export type DiscoverFilters = {
 // Where a record comes from, so the interface can say so: a sample that ships with the
 // prototype, an update a club published to the database, or a published record whose
 // title marks it as a test.
-export type RecordOrigin = "sample" | "club" | "test"
+export type RecordOrigin = "sample" | "club" | "test" | "imported"
 
 export function recordOrigin(item: CampusItem): RecordOrigin {
+  if (item.isImported) return "imported"
   if (!item.isClubPublication) return "sample"
   return /^\s*test\b/i.test(item.title) ? "test" : "club"
 }
 
-export const originLabels: Record<RecordOrigin, string> = { sample: "Sample record", club: "Club update", test: "Test record" }
+export const originLabels: Record<RecordOrigin, string> = { sample: "Sample record", club: "Club update", test: "Test record", imported: "Imported" }
+
+// The full label, naming the publisher an imported record was copied from.
+export function originLabel(item: CampusItem) {
+  const origin = recordOrigin(item)
+  return origin === "imported" ? `Imported from ${item.publisher}` : originLabels[origin]
+}
 
 export const mockCampusService = {
   listItems(): CampusItem[] {

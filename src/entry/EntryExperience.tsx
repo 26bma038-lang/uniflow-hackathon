@@ -14,7 +14,8 @@ import { clearPendingDestination, peekPendingDestination, takePendingDestination
 import { defaultProfile } from "../student-app/data"
 import { interestOptions, type CampusItem, type StudentProfile } from "../student-app/types"
 import { clubIdForPublisher, clubSlug, demoClubs, getCurrentClubId, readClubProfile, setCurrentClubId } from "../club/publishing"
-import { useCampusItems, usePublishedEvents } from "../club/published-events"
+import { useCampusItems, useImportedClubs, usePublishedEvents } from "../club/published-events"
+import type { PublicClubRow } from "../club/events-api"
 
 type EntryRoute = "roles" | "explore" | "explore-item" | "explore-club" | "student" | "student-interests" | "club"
 
@@ -190,12 +191,26 @@ function AccessSelection() {
 
 function formatDay(value: string | null) {
   if (!value) return "Date to be confirmed"
-  return new Intl.DateTimeFormat("en-GB", { day: "numeric", month: "short" }).format(new Date(value))
+  return new Intl.DateTimeFormat("en-GB", { day: "numeric", month: "short", timeZone: value.includes("T") ? undefined : "UTC" }).format(new Date(value))
 }
 
+// A value with no time is shown as a date only: no time is made up for it.
 function formatDateTime(value: string | null) {
   if (!value) return "Date to be confirmed"
+  if (!value.includes("T")) return new Intl.DateTimeFormat("en-GB", { day: "numeric", month: "short", year: "numeric", timeZone: "UTC" }).format(new Date(value))
   return new Intl.DateTimeFormat("en-GB", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit", hourCycle: "h23" }).format(new Date(value))
+}
+
+function formatSpan(entry: CampusItem) {
+  if (!entry.startDate) return entry.isImported ? "No date given by the source" : "Date to be confirmed"
+  if (!entry.endDate || entry.endDate.slice(0, 10) === entry.startDate.slice(0, 10)) return formatDateTime(entry.startDate)
+  return `${formatDateTime(entry.startDate)} to ${formatDateTime(entry.endDate)}`
+}
+
+function originNote(entry: CampusItem) {
+  if (entry.isImported) return `Imported from ${entry.publisher}. ${entry.publisher} does not post on UniFlow, and this is not an endorsement.`
+  if (entry.isClubPublication) return "Published by a club through UniFlow, not an official institutional notice"
+  return "Sample data for the prototype, not an official notice"
 }
 
 // Events and opportunities run on startDate; any deadline on them is a registration cutoff.
@@ -239,18 +254,18 @@ function PublicItemDetail() {
       <p className="access-detail-back">{backLink}</p>
       <div className="access-detail-layout">
         <article className="access-detail-main">
-          <p className="access-sample-tag">{item.isClubPublication ? "Published by a club through UniFlow, not an official institutional notice" : "Sample data for the prototype, not an official notice"}</p>
+          <p className="access-sample-tag">{originNote(item)}</p>
           {item.description && item.description !== item.summary && <p className="access-detail-description">{item.description}</p>}
           <dl className="access-detail-facts">
             {hasRegistration(item) ? (
               <>
-                <div className="is-date"><dt>Event date</dt><dd>{formatDateTime(item.startDate)}</dd></div>
+                <div className="is-date"><dt>Event date</dt><dd>{formatSpan(item)}</dd></div>
                 <div className="is-date is-deadline"><dt>Registration deadline</dt><dd>{formatDateTime(item.deadline)}</dd></div>
               </>
             ) : (
-              <div className={item.deadline ? "is-date is-deadline" : "is-date"}><dt>{item.deadline ? "Deadline" : "When"}</dt><dd>{formatDateTime(item.deadline ?? item.startDate)}</dd></div>
+              <div className={item.deadline ? "is-date is-deadline" : "is-date"}><dt>{item.deadline ? "Deadline" : "When"}</dt><dd>{item.deadline ? formatDateTime(item.deadline) : formatSpan(item)}</dd></div>
             )}
-            <div><dt>Where</dt><dd>{item.venue ?? "To be confirmed"}</dd></div>
+            <div><dt>Where</dt><dd>{item.venue ?? (item.isImported ? "Not stated by the source" : "To be confirmed")}</dd></div>
             <div><dt>Who it’s for</dt><dd>{item.audience}</dd></div>
           </dl>
         </article>
@@ -258,11 +273,12 @@ function PublicItemDetail() {
           <h2>Source notes</h2>
           <dl>
             <div><dt>Publisher</dt><dd>{item.sourceType === "Student group" ? <LinkButton to={`/explore/club/${clubSlug(item.publisher)}`}>{item.publisher}</LinkButton> : item.publisher}</dd></div>
-            <div><dt>Source</dt><dd>{item.sourceLabel ?? (item.sourceUrl ? <a href={item.sourceUrl} target="_blank" rel="noopener noreferrer">Open original source</a> : `${item.sourceType}, no link available in this demo`)}</dd></div>
-            <div><dt>Review status</dt><dd>{item.isClubPublication ? "Reviewed by the publishing club" : item.reviewStatus}</dd></div>
+            <div><dt>Source</dt><dd>{item.isImported && item.sourceUrl ? <>{item.sourceLabel}. <a href={item.sourceUrl} target="_blank" rel="noopener noreferrer">Open original source</a></> : item.sourceLabel ?? (item.sourceUrl ? <a href={item.sourceUrl} target="_blank" rel="noopener noreferrer">Open original source</a> : `${item.sourceType}, no link available in this demo`)}</dd></div>
+            {item.registrationUrl && item.registrationUrl !== item.sourceUrl && <div><dt>Apply or register</dt><dd><a href={item.registrationUrl} target="_blank" rel="noopener noreferrer">Open application link</a></dd></div>}
+            <div><dt>Review status</dt><dd>{item.isImported ? "Checked against the original source" : item.isClubPublication ? "Reviewed by the publishing club" : item.reviewStatus}</dd></div>
             <div><dt>Last checked</dt><dd>{item.lastVerifiedAt ? formatDateTime(item.lastVerifiedAt) : "Not recorded"}</dd></div>
           </dl>
-          <p>Review in this prototype does not make a record an official institutional notice.</p>
+          <p>{item.isImported ? "UniFlow is independent of NIT Hamirpur. Rely on the original source for anything that matters." : "Review in this prototype does not make a record an official institutional notice."}</p>
         </aside>
       </div>
       <div className="access-detail-invite">
@@ -286,7 +302,7 @@ function PublicUpdateList({ items }: { items: CampusItem[] }) {
             <span className="access-info-body">
               <strong>{entry.title}</strong>
               <span>{entry.summary}</span>
-              <small>{entry.category} from {entry.publisher}{entry.isClubPublication ? (/^\s*test\b/i.test(entry.title) ? " (test record)" : " (club update)") : " (sample)"}</small>
+              <small>{entry.category} from {entry.publisher}{entry.isImported ? " (imported)" : entry.isClubPublication ? (/^\s*test\b/i.test(entry.title) ? " (test record)" : " (club update)") : " (sample)"}</small>
             </span>
             <ArrowUpRight size={17} aria-hidden="true" />
           </a>
@@ -297,19 +313,53 @@ function PublicUpdateList({ items }: { items: CampusItem[] }) {
 }
 
 // clubId is set when the publisher is one of the demo clubs that can be selected in the workspace.
-type PublicClub = { name: string; slug: string; updates: CampusItem[]; clubId: string | null }
+// imported is set for a club copied from public sources into the database.
+type PublicClub = { name: string; slug: string; updates: CampusItem[]; clubId: string | null; imported?: PublicClubRow }
 
-// Clubs are the student-group publishers in the public items; nothing is stored separately for them.
-function readPublicClubs(items: CampusItem[]): PublicClub[] {
+// Sample and UniFlow clubs are the student-group publishers of the public items. Imported
+// clubs come from the clubs table, with any updates that belong to them.
+function readPublicClubs(items: CampusItem[], importedClubs: PublicClubRow[] = []): PublicClub[] {
   const groups = new Map<string, CampusItem[]>()
   items.filter((entry) => entry.sourceType === "Student group").forEach((entry) => groups.set(entry.publisher, [...(groups.get(entry.publisher) ?? []), entry]))
-  return [...groups.entries()].map(([name, updates]) => ({ name, slug: clubSlug(name), updates, clubId: clubIdForPublisher(name) }))
+  const derived = [...groups.entries()].map(([name, updates]) => ({ name, slug: clubSlug(name), updates, clubId: clubIdForPublisher(name) }))
+  const imported = importedClubs
+    .filter((club) => !groups.has(club.name))
+    .map((club) => ({ name: club.name, slug: club.id, updates: items.filter((entry) => entry.clubId === club.id), clubId: null, imported: club }))
+  return [...imported, ...derived]
+}
+
+function ImportedClubProfile({ club, backLink }: { club: PublicClub & { imported: PublicClubRow }; backLink: React.ReactNode }) {
+  const { imported } = club
+  const checked = imported.sourceCheckedOn ? formatDateTime(imported.sourceCheckedOn) : null
+  return (
+    <EntryShell back eyebrow="Public view · Club" title={club.name} description={imported.description || "No description was imported for this club."}>
+      <p className="access-detail-back">{backLink}</p>
+      <p className="access-sample-tag access-club-status">
+        Imported from NIT Hamirpur’s public sources{checked ? `, checked on ${checked}` : ""}. This club does not run this page or post on UniFlow, and UniFlow is not endorsed by NIT Hamirpur. No logo is shown because none was provided with permission to reuse it.
+      </p>
+      <dl className="access-detail-facts access-club-facts">
+        {imported.category && <div><dt>Category</dt><dd>{imported.category}</dd></div>}
+        {imported.website && <div><dt>Official page</dt><dd><a href={imported.website} target="_blank" rel="noopener noreferrer">{new URL(imported.website).hostname}</a></dd></div>}
+        <div><dt>Source</dt><dd><a href={imported.sourceUrl} target="_blank" rel="noopener noreferrer">Open the source this entry is based on</a></dd></div>
+      </dl>
+      <div className="access-sections">
+        <section className="access-section" aria-labelledby="club-updates-title">
+          <div className="access-section-heading">
+            <h2 id="club-updates-title">Imported updates</h2>
+            <span className="access-sample-tag">{club.updates.length === 1 ? "1 update" : `${club.updates.length} updates`}</span>
+          </div>
+          {club.updates.length ? <PublicUpdateList items={club.updates} /> : <p className="access-hint">No current updates were imported for this club. Past recruitment notices are not shown as open opportunities.</p>}
+        </section>
+      </div>
+    </EntryShell>
+  )
 }
 
 function PublicClubProfile() {
   const slug = decodeURIComponent(window.location.pathname.split("/")[3] ?? "")
   const campus = useCampusItems(true)
-  const club = useMemo(() => readPublicClubs(campus.items).find((entry) => entry.slug === slug) ?? null, [campus.items, slug])
+  const importedClubs = useImportedClubs()
+  const club = useMemo(() => readPublicClubs(campus.items, importedClubs).find((entry) => entry.slug === slug) ?? null, [campus.items, importedClubs, slug])
   const backLink = <LinkButton to="/explore" className="access-switch"><ArrowLeft size={15} /> Back to Explore</LinkButton>
   if (!club && campus.status === "loading") {
     return (
@@ -325,6 +375,7 @@ function PublicClubProfile() {
       </EntryShell>
     )
   }
+  if (club.imported) return <ImportedClubProfile club={{ ...club, imported: club.imported }} backLink={backLink} />
   const profile = club.clubId ? readClubProfile(club.clubId) : null
   const publishedCount = club.updates.filter((entry) => entry.isClubPublication).length
   return (
@@ -366,10 +417,12 @@ function PublicClubProfile() {
 function ExplorePublic() {
   const campus = useCampusItems(true)
   const items = campus.items
-  const clubs = useMemo(() => readPublicClubs(items), [items])
+  const importedClubs = useImportedClubs()
+  const clubs = useMemo(() => readPublicClubs(items, importedClubs), [items, importedClubs])
   const places = useMemo(() => {
     const venues = new Map<string, CampusItem[]>()
-    items.filter((entry) => entry.venue).forEach((entry) => venues.set(entry.venue!, [...(venues.get(entry.venue!) ?? []), entry]))
+    // The guide is built from sample venues only; imported records are not mixed into it.
+    items.filter((entry) => entry.venue && !entry.isImported).forEach((entry) => venues.set(entry.venue!, [...(venues.get(entry.venue!) ?? []), entry]))
     return [...venues.entries()]
   }, [items])
   return (
@@ -377,7 +430,7 @@ function ExplorePublic() {
       back
       eyebrow="Public view"
       title="Explore the campus."
-      description="Campus information anyone can read, without an account. Club updates are published by signed-in club members; everything else is sample content for the prototype."
+      description="Campus information anyone can read, without an account. Each record says where it comes from: imported from a public NIT Hamirpur source, published by a club member, or a sample that ships with the prototype."
     >
       <nav className="access-jump" aria-label="On this page">
         <a href="#campus-information">Campus information</a>
@@ -399,7 +452,7 @@ function ExplorePublic() {
       <section id="club-directory" className="access-section" aria-labelledby="club-directory-title">
         <div className="access-section-heading">
           <h2 id="club-directory-title">Clubs</h2>
-          <span className="access-sample-tag">Sample directory</span>
+          <span className="access-sample-tag">{importedClubs.length ? `${importedClubs.length} imported from public sources, the rest are samples` : "Sample directory"}</span>
         </div>
         <ul className="access-club-list">
           {clubs.map((club) => (
@@ -408,12 +461,12 @@ function ExplorePublic() {
                 <span className="access-club-mark" aria-hidden="true">{club.name.split(" ").map((word) => word[0]).slice(0, 2).join("")}</span>
                 <strong>{club.name}</strong>
                 <span>{club.updates.length === 1 ? "1 update listed here" : `${club.updates.length} updates listed here`}</span>
-                <small>Sample club · Latest: {club.updates[0].title}</small>
+                <small>{club.imported ? "Imported from NIT Hamirpur public sources" : "Sample club"}{club.updates[0] ? ` · Latest: ${club.updates[0].title}` : ""}</small>
               </a>
             </li>
           ))}
         </ul>
-        <p className="access-hint">These are example student groups from the prototype data, not a list of real NIT Hamirpur clubs. Run a club? <LinkButton to="/login/club">Sign in to the club workspace</LinkButton>.</p>
+        <p className="access-hint">Clubs marked “Imported” were copied from NIT Hamirpur’s public pages and notices; they do not run these entries. Clubs marked “Sample club” are examples from the prototype data. Run a club? <LinkButton to="/login/club">Sign in to the club workspace</LinkButton>.</p>
       </section>
 
       <section id="campus-guide" className="access-section" aria-labelledby="campus-guide-title">

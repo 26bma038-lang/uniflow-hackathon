@@ -7,7 +7,12 @@ import { getDemoClub, type ClubRecord, type PublicationStatus } from "./publishi
 
 type EventRow = {
   id: string
-  club_id: string
+  // Null for a record imported from a publisher that is not a club on UniFlow.
+  club_id: string | null
+  publisher_name: string
+  source_url: string
+  deadline_date: string | null
+  source_published_on: string | null
   status: "draft" | "needs_review" | "ready_for_approval" | "published"
   title: string
   description: string
@@ -107,7 +112,11 @@ export function fromRow(row: EventRow): ClubRecord {
   const status: PublicationStatus = row.status === "published" ? "published_demo" : row.status
   return {
     id: row.id,
-    clubId: row.club_id,
+    clubId: row.club_id ?? "",
+    imported: row.source === "Imported source",
+    sourceUrl: row.source_url ?? "",
+    deadlineDate: row.deadline_date ?? null,
+    sourcePublishedOn: row.source_published_on ?? null,
     status,
     title: row.title,
     description: row.description,
@@ -124,7 +133,8 @@ export function fromRow(row: EventRow): ClubRecord {
     source: row.source,
     sourceName: row.source_name,
     department: row.department,
-    publisher: row.club?.name ?? getDemoClub(row.club_id).name,
+    // An imported record names its own publisher; it is never attributed to a UniFlow club.
+    publisher: row.publisher_name || row.club?.name || (row.club_id ? getDemoClub(row.club_id).name : "Unknown publisher"),
     publisherCampusId: row.club?.campus_id ?? "demo-campus",
     reviewConfirmed: row.review_confirmed,
     reviewedAt: row.reviewed_at,
@@ -132,6 +142,36 @@ export function fromRow(row: EventRow): ClubRecord {
     publishedAt: row.published_at,
     createdAt: row.created_at,
     updatedAt: row.updated_at,
+  }
+}
+
+export type PublicClubRow = {
+  id: string
+  name: string
+  description: string
+  category: string
+  website: string
+  // The public page or notice that establishes an imported club. Empty for UniFlow's own clubs.
+  sourceUrl: string
+  sourceCheckedOn: string | null
+}
+
+// Every club in the database. Readable without signing in.
+export async function listClubs(): Promise<ApiResult<PublicClubRow[]>> {
+  if (!supabase) return { ok: false, message: NOT_CONFIGURED_MESSAGE }
+  const { data, error } = await supabase.from("clubs").select("id, name, description, category, website, source_url, source_checked_on").order("name")
+  if (error) return failure(error, "Couldn’t load the club directory.")
+  return {
+    ok: true,
+    value: (data as Array<Record<string, string | null>>).map((row) => ({
+      id: String(row.id),
+      name: String(row.name),
+      description: row.description ?? "",
+      category: row.category ?? "",
+      website: row.website ?? "",
+      sourceUrl: row.source_url ?? "",
+      sourceCheckedOn: row.source_checked_on ?? null,
+    })),
   }
 }
 

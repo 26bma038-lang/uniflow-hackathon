@@ -16,7 +16,7 @@ import {
   X,
 } from "lucide-react"
 import { defaultProfile, DEMO_PERIOD } from "./data"
-import { filterCampusItems, matchInterests, orderByInterests, originLabels, recordOrigin, type DiscoverFilters } from "./services"
+import { filterCampusItems, matchInterests, orderByInterests, originLabel, originLabels, recordOrigin, type DiscoverFilters } from "./services"
 import type { CampusCategory, CampusItem, StudentProfile } from "./types"
 import { interestOptions } from "./types"
 import { useSavedItems } from "./useSavedItems"
@@ -70,6 +70,8 @@ function formatDate(value: string | null) {
     hour: value.includes("T") ? "2-digit" : undefined,
     minute: value.includes("T") ? "2-digit" : undefined,
     hourCycle: "h23",
+    // A value with no time is a calendar day, shown as that day wherever the viewer is.
+    timeZone: value.includes("T") ? undefined : "UTC",
   }).format(new Date(value))
 }
 
@@ -78,16 +80,23 @@ function hasRegistration(item: CampusItem) {
   return Boolean(item.startDate && item.deadline) && (item.category === "Event" || item.category === "Opportunity")
 }
 
+// "29 Oct to 31 Oct" when an item runs over several days, otherwise the single date.
+function formatSpan(item: CampusItem) {
+  const start = formatDate(item.startDate)
+  if (!item.startDate || !item.endDate || item.endDate.slice(0, 10) === item.startDate.slice(0, 10)) return start
+  return `${start} to ${formatDate(item.endDate)}`
+}
+
 function primaryDate(item: CampusItem) {
   return hasRegistration(item) ? item.startDate : item.deadline ?? item.startDate
 }
 
 function DateLines({ item }: { item: CampusItem }) {
-  const soon = item.status === "Closing soon" && <em>Closing soon</em>
+  const soon = item.status === "Closing soon" ? <em>Closing soon</em> : item.status === "Past" ? <em>Past</em> : item.status === "Check source" && item.deadline ? <em>Today, no time given</em> : null
   if (hasRegistration(item)) {
     return (
       <>
-        <span className="student-when"><b>Event</b>{formatDate(item.startDate)}</span>
+        <span className="student-when"><b>Event</b>{formatSpan(item)}</span>
         <span className="student-when is-deadline"><b>Register by</b>{formatDate(item.deadline)}{soon}</span>
       </>
     )
@@ -95,7 +104,9 @@ function DateLines({ item }: { item: CampusItem }) {
   if (item.deadline) {
     return <span className="student-when is-deadline"><b>Deadline</b>{formatDate(item.deadline)}{soon}</span>
   }
-  return <span className="student-when"><b>When</b>{formatDate(item.startDate)}</span>
+  // No date at all is said plainly rather than shown as a date still to come.
+  if (!item.startDate) return <span className="student-when"><b>When</b>{item.isImported ? "No date given by the source" : formatDate(item.startDate)}</span>
+  return <span className="student-when"><b>When</b>{formatSpan(item)}</span>
 }
 
 // Student sign-in for a visitor with no session. From Join or Save, sign-in returns to that item;
@@ -117,7 +128,7 @@ function SourceBadge({ item }: { item: CampusItem }) {
   return (
     <span className="student-source-badge" data-origin={recordOrigin(item)}>
       <span className="student-source-dot" />
-      {originLabels[recordOrigin(item)]}{recordOrigin(item) === "test" ? "" : ` · ${item.reviewStatus}`}
+      {originLabels[recordOrigin(item)]}{recordOrigin(item) === "test" ? "" : recordOrigin(item) === "imported" ? " · source checked" : ` · ${item.reviewStatus}`}
     </span>
   )
 }
@@ -489,9 +500,10 @@ function TodayPage({ items, profile, saved, onSave, onOpen, onDiscover }: { item
   const personalized = items.filter((item) => profile.preferredCategories.includes(item.category) || item.tags.some((tag) => profile.interests.some((interest) => tag.toLowerCase().includes(interest.split(" ")[0].toLowerCase()))))
   const featured = items.find((item) => item.isClubPublication) ?? items.find((item) => item.id === "build-first-web-app") ?? items[0]
   // Urgency decides membership: the two earliest deadlines. Interests only reorder within the section.
-  const mostUrgent = items.filter((item) => item.deadline && item.id !== featured.id && !item.isClubPublication).sort((a, b) => a.deadline!.localeCompare(b.deadline!)).slice(0, 2)
+  const mostUrgent = items.filter((item) => item.deadline && item.status !== "Past" && item.id !== featured.id && !item.isClubPublication).sort((a, b) => a.deadline!.localeCompare(b.deadline!)).slice(0, 2)
   const needsAttention = orderByInterests(mostUrgent, profile.interests)
-  const comingUp = orderByInterests(items.filter((item) => !needsAttention.includes(item) && item.id !== featured.id), profile.interests).slice(0, 3)
+  // Nothing already past is offered as coming up.
+  const comingUp = orderByInterests(items.filter((item) => item.status !== "Past" && !needsAttention.includes(item) && item.id !== featured.id), profile.interests).slice(0, 3)
   void personalized
   return (
     <section className="student-page">
@@ -602,12 +614,12 @@ function JoinAction({ item, rsvp }: { item: CampusItem; rsvp: JoinedEvents }) {
   const { email, isJoined, join, cancel, pendingId, error, status } = rsvp
   const joined = isJoined(item.id)
   const busy = pendingId === item.id
-  // Sample records have no row on the server for an RSVP to point at.
+  // Imported events are run by their own organisers; sample records have no row to RSVP to.
   if (!acceptsRsvps(item)) {
     return (
       <div className="student-join" role="status">
-        <strong className="student-join-state is-closed"><CircleAlert size={16} aria-hidden="true" /> RSVPs aren’t open for this sample event</strong>
-        <p>This is a sample record that ships with the prototype. Events published by a club can be joined.</p>
+        <strong className="student-join-state is-closed"><CircleAlert size={16} aria-hidden="true" /> {item.isImported ? "UniFlow doesn’t take RSVPs for this event" : "RSVPs aren’t open for this sample event"}</strong>
+        <p>{item.isImported ? `This record was imported from ${item.publisher}. Registration, if any, is handled by the organiser: use the original source.` : "This is a sample record that ships with the prototype. Events published by a club can be joined."}</p>
       </div>
     )
   }
@@ -652,15 +664,15 @@ function DetailPage({ loading, rsvp, items, item, saved, onSave, onBack, onOpen 
       <button type="button" className="student-back-action" onClick={onBack}><ArrowLeft size={16} /> Back to campus information</button>
       <div className="student-detail-layout">
         <div className="student-detail-main">
-          <div className="student-detail-kicker"><span className={categoryColors[item.category]}>{item.category}</span><span>{item.status}</span><span className="student-origin-tag" data-origin={recordOrigin(item)}>{originLabels[recordOrigin(item)]}</span></div>
+          <div className="student-detail-kicker"><span className={categoryColors[item.category]}>{item.category}</span><span>{item.status}</span><span className="student-origin-tag" data-origin={recordOrigin(item)}>{originLabel(item)}</span></div>
           <h1>{item.title}</h1><p className="student-detail-summary">{item.summary}</p>
           {canJoin(item) && <JoinAction item={item} rsvp={rsvp} />}
-          <div className="student-detail-actions"><SaveButton item={item} isSaved={saved} onToggle={() => onSave?.()} />{item.sourceUrl && <button type="button" className="student-primary-action" onClick={() => window.open(item.sourceUrl!, "_blank", "noopener,noreferrer")}>Open original link <ArrowUpRight size={16} /></button>}</div>
+          <div className="student-detail-actions"><SaveButton item={item} isSaved={saved} onToggle={() => onSave?.()} />{item.sourceUrl && <button type="button" className="student-primary-action" onClick={() => window.open(item.sourceUrl!, "_blank", "noopener,noreferrer")}>Open original {item.isImported ? "source" : "link"} <ArrowUpRight size={16} /></button>}{item.registrationUrl && item.registrationUrl !== item.sourceUrl && <button type="button" className="student-secondary-action" onClick={() => window.open(item.registrationUrl!, "_blank", "noopener,noreferrer")}>Open application link <ArrowUpRight size={16} /></button>}</div>
           {item.image && <img className="student-detail-image" src={item.image} alt="" />}
           {item.description && item.description !== item.summary && <p className="student-detail-description">{item.description}</p>}
-          <div className="student-detail-facts"><div><span>WHO IT’S FOR</span><strong>{item.audience}</strong></div><div><span>DEPARTMENT</span><strong>{item.department}</strong></div>{hasRegistration(item) ? <><div className="student-fact-date"><span>EVENT DATE</span><strong>{formatDate(item.startDate)}</strong></div><div className="student-fact-date is-deadline"><span>REGISTRATION DEADLINE</span><strong>{formatDate(item.deadline)}</strong></div></> : <div><span>{item.deadline ? "DEADLINE" : "WHEN"}</span><strong>{formatDate(item.deadline ?? item.startDate)}</strong></div>}<div><span>WHERE</span><strong>{item.venue ?? "To be confirmed"}</strong></div></div>
+          <div className="student-detail-facts"><div><span>WHO IT’S FOR</span><strong>{item.audience}</strong></div><div><span>DEPARTMENT</span><strong>{item.department}</strong></div>{hasRegistration(item) ? <><div className="student-fact-date"><span>{item.endDate && item.startDate && item.endDate.slice(0, 10) !== item.startDate.slice(0, 10) ? "EVENT DATES" : "EVENT DATE"}</span><strong>{formatSpan(item)}</strong></div><div className="student-fact-date is-deadline"><span>REGISTRATION DEADLINE</span><strong>{formatDate(item.deadline)}</strong></div></> : <div><span>{item.deadline ? "DEADLINE" : "WHEN"}</span><strong>{item.deadline ? formatDate(item.deadline) : item.startDate ? formatSpan(item) : item.isImported ? "No date given by the source" : formatDate(null)}</strong></div>}<div><span>WHERE</span><strong>{item.venue ?? (item.isImported ? "Not stated by the source" : "To be confirmed")}</strong></div></div>
         </div>
-        <aside className="student-provenance"><p className="student-eyebrow">SOURCE NOTES</p><h2>Keep the context close.</h2><div className="student-provenance-block"><span>Publisher identity</span><strong>{item.publisher}</strong>{item.sourceType === "Student group" && <a className="student-publisher-link" href={`/explore/club/${clubSlug(item.publisher)}`}>View public club profile <ArrowUpRight size={14} /></a>}</div><div className="student-provenance-block"><span>Original source</span><strong>{item.sourceLabel ?? (item.sourceUrl ? "External source available" : "Source unavailable in this demo.")}</strong></div><div className="student-provenance-block"><span>Review status</span><strong><span className="student-source-badge"><span className="student-source-dot" />{item.reviewStatus}</span></strong></div><div className="student-provenance-block"><span>Last checked</span><strong>{item.lastVerifiedAt ? formatDate(item.lastVerifiedAt) : "Not recorded"}</strong></div><p className="student-provenance-note">{recordOrigin(item) === "sample" ? "This is a sample record that ships with the prototype. It is not a real campus notice." : recordOrigin(item) === "test" ? "This is a test record published to check UniFlow. It is not a real event." : "Published by a club member after a human review. It is not an official institutional notice."}</p></aside>
+        <aside className="student-provenance"><p className="student-eyebrow">SOURCE NOTES</p><h2>Keep the context close.</h2><div className="student-provenance-block"><span>Publisher identity</span><strong>{item.publisher}</strong>{item.sourceType === "Student group" && <a className="student-publisher-link" href={`/explore/club/${clubSlug(item.publisher)}`}>View public club profile <ArrowUpRight size={14} /></a>}</div><div className="student-provenance-block"><span>Original source</span><strong>{item.sourceLabel ?? (item.sourceUrl ? "External source available" : "Source unavailable in this demo.")}</strong></div><div className="student-provenance-block"><span>Review status</span><strong><span className="student-source-badge"><span className="student-source-dot" />{item.reviewStatus}</span></strong></div><div className="student-provenance-block"><span>Last checked</span><strong>{item.lastVerifiedAt ? formatDate(item.lastVerifiedAt) : "Not recorded"}</strong></div><p className="student-provenance-note">{recordOrigin(item) === "imported" ? `Imported from ${item.publisher}’s public page and checked against it. ${item.publisher} does not post on UniFlow, and this is not an endorsement of UniFlow.` : recordOrigin(item) === "sample" ? "This is a sample record that ships with the prototype. It is not a real campus notice." : recordOrigin(item) === "test" ? "This is a test record published to check UniFlow. It is not a real event." : "Published by a club member after a human review. It is not an official institutional notice."}</p></aside>
       </div>
       {related.length > 0 && <section className="student-related"><div className="student-section-label"><span>MORE TO EXPLORE</span><span className="student-section-rule" /></div>{related.map((entry) => <button type="button" key={entry.id} onClick={() => onOpen(entry.id)}><span>{entry.category}</span><strong>{entry.title}</strong><ArrowUpRight size={16} /></button>)}</section>}
     </article>

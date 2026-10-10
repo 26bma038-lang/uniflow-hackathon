@@ -15,7 +15,13 @@ export type ClubRecord = EventDraft & {
   status: PublicationStatus
   updatedAt: string
   createdAt: string
-  source: "Manual entry" | "Sample document" | "Uploaded document"
+  source: "Manual entry" | "Sample document" | "Uploaded document" | "Imported source"
+  // Set on records imported from a publisher's public page (src/club/events-api.ts).
+  imported?: boolean
+  sourceUrl?: string
+  // A deadline the source gives as a date with no time.
+  deadlineDate?: string | null
+  sourcePublishedOn?: string | null
   sourceName: string
   department: string
   publisher: string
@@ -169,9 +175,38 @@ export function blankRecord(clubId: string = DEFAULT_CLUB_ID): ClubRecord {
   }
 }
 
-function isoDate(record: ClubRecord, time: string) {
-  if (!record.startDate) return null
-  return `${record.startDate}T${time || "00:00"}:00+05:30`
+// A date with a time becomes a date-time in campus time. A date with no time stays a date:
+// no midnight or end-of-day time is made up.
+function dateValue(date: string, time: string) {
+  if (!date) return null
+  return time ? `${date}T${time}:00+05:30` : date
+}
+
+function todayOnCampus() {
+  return new Intl.DateTimeFormat("en-CA", { timeZone: "Asia/Kolkata" }).format(new Date())
+}
+
+function addDays(date: string, days: number) {
+  const value = new Date(`${date}T12:00:00Z`)
+  value.setUTCDate(value.getUTCDate() + days)
+  return value.toISOString().slice(0, 10)
+}
+
+// Status for an imported record, worked out from whole dates only.
+function importedStatus(record: ClubRecord, category: CampusItem["category"]): CampusItem["status"] {
+  const today = todayOnCampus()
+  if (category === "Event" && record.startDate) {
+    if ((record.endDate || record.startDate) < today) return "Past"
+    return "Upcoming"
+  }
+  if (record.deadlineDate) {
+    if (record.deadlineDate < today) return "Past"
+    // The source gives no cut-off time, so on the day itself it may or may not have closed.
+    if (record.deadlineDate === today) return "Check source"
+    return record.deadlineDate <= addDays(today, 3) ? "Closing soon" : "Open"
+  }
+  // No deadline is stated. Never shown as closing soon.
+  return category === "Notice" ? "Open" : "Check source"
 }
 
 const campusCategories: CampusItem["category"][] = ["Notice", "Event", "Scholarship", "Deadline", "Opportunity"]
@@ -185,20 +220,51 @@ function registrationStatus(deadline: string | null): CampusItem["status"] {
 }
 
 export function toCampusItem(record: ClubRecord): CampusItem {
-  const startDate = isoDate(record, record.startTime)
-  const endDate = isoDate(record, record.endTime)
+  const imported = Boolean(record.imported)
+  const category = campusCategories.find((name) => name.toLowerCase() === record.category.trim().toLowerCase()) ?? "Event"
+  const startDate = dateValue(record.startDate, record.startTime)
+  const endDate = dateValue(record.endDate, record.endTime)
   const deadline = record.registrationDeadline
     ? record.registrationDeadline.includes("T")
       ? `${record.registrationDeadline}:00+05:30`
       : `${record.registrationDeadline}T23:59:00+05:30`
-    : null
+    : record.deadlineDate ?? null
+  if (imported) {
+    return {
+      id: record.id,
+      campusId: record.publisherCampusId,
+      title: record.title,
+      summary: record.description.slice(0, 160),
+      description: record.description,
+      category,
+      audience: record.eligibility || "Not stated by the source",
+      department: record.department || record.publisher,
+      startDate,
+      endDate,
+      deadline,
+      venue: record.venue || null,
+      publisher: record.publisher,
+      sourceType: "Department",
+      sourceUrl: record.sourceUrl || null,
+      registrationUrl: record.registrationUrl || null,
+      documentDate: record.sourcePublishedOn ?? null,
+      publishedAt: record.publishedAt || record.updatedAt,
+      lastVerifiedAt: record.reviewedAt,
+      reviewStatus: "Human reviewed",
+      status: importedStatus(record, category),
+      tags: [record.category.toLowerCase(), "imported"],
+      isImported: true,
+      clubId: record.clubId || null,
+      sourceLabel: record.sourceName,
+    }
+  }
   return {
     id: record.id,
     campusId: record.publisherCampusId,
     title: record.title,
     summary: record.description.slice(0, 160),
     description: record.description,
-    category: campusCategories.find((name) => name.toLowerCase() === record.category.trim().toLowerCase()) ?? "Event",
+    category,
     audience: record.eligibility || "All interested students",
     department: record.department || record.publisher,
     startDate,
@@ -215,6 +281,7 @@ export function toCampusItem(record: ClubRecord): CampusItem {
     status: registrationStatus(deadline),
     tags: [record.category.toLowerCase(), "club update", "student group"],
     isClubPublication: true,
+    clubId: record.clubId || null,
     sourceLabel: record.sourceName,
   }
 }
