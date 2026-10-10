@@ -27,9 +27,11 @@ The loop UniFlow is built around: campus notice or poster → AI extraction → 
 | Student sign-in | Supabase email and password (`signInWithPassword`). Accounts are created by the team; there is no sign-up screen. Needs users to exist in the project |
 | Club sign-in | Same sign-in, then the account's rows in `club_members` decide which club workspaces open. Stays closed until the migration is applied and members are added |
 | Storage | Supabase for events (drafts and publications), RSVPs and membership. `localStorage` for saved items, interests, club profile text and the activity list |
-| AI extraction from a poster | **Simulated.** The review screen shows preset sample values; no model is called |
+| AI extraction from a poster | Built, **not deployed or run against a model.** The club create screen sends an image to the `extract-poster` Edge Function and the result goes to human review with flagged fields. "Use sample brief" is still simulated |
+| AI discovery (`/app/ask`) | Built, **not deployed or run against a model.** Answers come from published events only and link to the records used |
+| Assignments (`/app/assignments`) | Built, **migration not applied.** A private per-student coursework list |
 | Supabase database | Connected: Auth, `club_members`, `events`, `rsvps` and `club_rsvp_counts()`. `seed.sql` is not applied, so the sample records are not in the database and cannot be joined |
-| Gemma via the Gemini API | **Not implemented.** No API call exists in the code |
+| Gemma via the Gemini API | Called only from the Edge Functions in `supabase/functions/`, default model `gemma-4-26b-a4b-it`. Needs the `GEMINI_API_KEY` function secret; see `supabase/README.md` |
 
 ## Flows
 
@@ -60,7 +62,7 @@ The loop UniFlow is built around: campus notice or poster → AI extraction → 
 
 **Planned, not built**
 
-- **Gemma through the Gemini API** for extracting fields from an uploaded notice or poster. The call must run server-side so the API key never reaches the browser, and its output always goes through human review before publication.
+- Deploying the Edge Functions and applying the assignments migration to the hosted project, then testing extraction and discovery against the real model.
 
 ## Repository layout
 
@@ -98,7 +100,7 @@ Copy `.env.example` to `.env.local`. The browser reads the two `VITE_` values; w
 | `VITE_SUPABASE_URL` | browser | Project URL |
 | `VITE_SUPABASE_PUBLISHABLE_KEY` | browser | Publishable key (`sb_publishable_…`); safe to ship only because RLS is enabled |
 | `SUPABASE_SECRET_KEY` | admin scripts only | Secret key (`sb_secret_…`). Not read by the app. Never prefix with `VITE_`, never ship to the browser |
-| `GEMINI_API_KEY` | server-side extraction only | Never prefix with `VITE_` |
+| `GEMINI_API_KEY` | Edge Function secret only | Set with `supabase secrets set`, not in `.env.local`. Never prefix with `VITE_` |
 | `PORT` | Vite | Optional, defaults to 8443 |
 
 ## Database
@@ -150,7 +152,7 @@ Needs two accounts created in the Supabase project, one of them added to `club_m
 - No real authentication, and no organizer permission check.
 - Data is per browser. Clearing site data removes everything.
 - Uploaded source images are not stored; they must be reattached after a refresh.
-- Extraction is simulated and returns preset values regardless of the image.
+- AI extraction and discovery have only been exercised with mocked responses. The Edge Functions have not been deployed, and no real model call has been made.
 - All campus content is sample data for 18–25 October 2026. Some filters use those fixed dates.
 - The Supabase migration is untested against a real Supabase stack and unused by the app. Sign-in method (and whether anonymous sign-in is allowed) is undecided.
 - The club contact field is not part of the database draft.
