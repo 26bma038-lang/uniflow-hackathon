@@ -26,8 +26,12 @@ import { clearPendingDestination, setPendingItemDestination } from "../demo-sess
 import { clubSlug } from "../club/publishing"
 import { useCampusItems } from "../club/published-events"
 import { refreshPublishedEvents } from "../club/published-events"
+import AskCampus from "../ai/components/AskCampus"
+import AssignmentsPage from "../assignments/components/AssignmentsPage"
 
-type StudentRoute = "today" | "discover" | "saved" | "joined" | "profile" | "item"
+type StudentRoute = "today" | "discover" | "ask" | "assignments" | "saved" | "joined" | "profile" | "item"
+
+const routeTitles: Record<StudentRoute, string> = { today: "Today & Soon", discover: "Discover", ask: "Ask", assignments: "Assignments", saved: "Saved", joined: "Joined", profile: "Profile", item: "Information" }
 
 const categories: Array<CampusCategory | "All"> = [
   "All",
@@ -51,7 +55,7 @@ function getRoute() {
   if (parts[1] === "item" && parts[2]) return { route: "item" as const, id: parts[2] }
   const route = parts[1] as StudentRoute
   return {
-    route: ["today", "discover", "saved", "joined", "profile"].includes(route)
+    route: ["today", "discover", "ask", "assignments", "saved", "joined", "profile"].includes(route)
       ? route
       : ("today" as const),
     id: undefined,
@@ -358,6 +362,11 @@ function StudentAppContent() {
     return () => window.removeEventListener("popstate", sync)
   }, [])
 
+  // The mobile tab bar scrolls sideways; keep the current tab in view.
+  useEffect(() => {
+    document.querySelector('.student-tabbar a[aria-current="page"]')?.scrollIntoView({ inline: "center", block: "nearest" })
+  }, [location.route])
+
   const go = (path: string) => {
     if (path === "/") {
       window.location.assign("/")
@@ -404,6 +413,8 @@ function StudentAppContent() {
           {[
             ["today", "Today & Soon"],
             ["discover", "Discover"],
+            ["ask", "Ask"],
+            ["assignments", "Assignments"],
             ["saved", `Saved${saved.length ? ` · ${saved.length}` : ""}`],
             ["joined", "Joined"],
             ["profile", "Profile"],
@@ -437,7 +448,7 @@ function StudentAppContent() {
         </div>
       </aside>
       <nav className="student-tabbar" aria-label="Student application tabs">
-        {[["today", "Today"], ["discover", "Discover"], ["saved", "Saved"], ["joined", "Joined"], ["profile", "Profile"]].map(([route, label]) => (
+        {[["today", "Today"], ["discover", "Discover"], ["ask", "Ask"], ["assignments", "Assignments"], ["saved", "Saved"], ["joined", "Joined"], ["profile", "Profile"]].map(([route, label]) => (
           <a key={route} href={`/app/${route}`} aria-current={location.route === route ? "page" : undefined} onClick={(event) => { event.preventDefault(); go(`/app/${route}`) }}>{label}{route === "saved" && saved.length > 0 && <b>{saved.length}</b>}{route === "joined" && rsvp.joined.length > 0 && <b>{rsvp.joined.length}</b>}</a>
         ))}
       </nav>
@@ -448,7 +459,7 @@ function StudentAppContent() {
           <div className="student-breadcrumb">
             <a href="/" onClick={(event) => { event.preventDefault(); go("/") }}>UniFlow</a>
             <ChevronRight size={15} />
-            <span>{location.route === "item" ? "Information" : location.route === "today" ? "Today & Soon" : location.route[0].toUpperCase() + location.route.slice(1)}</span>
+            <span>{routeTitles[location.route]}</span>
           </div>
           <button className="student-profile-mini" type="button" onClick={() => go("/app/profile")}>
             <span>{profile.displayName.slice(0, 1).toUpperCase()}</span>
@@ -461,6 +472,13 @@ function StudentAppContent() {
           <motion.div key={`${location.route}-${location.id ?? ""}`} initial={reducedMotion ? false : { y: 10 }} animate={{ y: 0 }} transition={{ duration: reducedMotion ? 0 : 0.25 }}>
             {location.route === "today" && <TodayPage items={campusRecords} profile={profile} saved={isSaved} onSave={handleSave} onOpen={(id) => go(`/app/item/${id}`)} onDiscover={() => go("/app/discover")} />}
             {location.route === "discover" && <DiscoverPage items={campusRecords} interests={profile.interests} saved={isSaved} onSave={handleSave} onOpen={(id) => go(`/app/item/${id}`)} />}
+            {location.route === "ask" && (
+              <section className="student-page">
+                <div className="student-page-heading"><div><p className="student-eyebrow">AI DISCOVERY · PUBLISHED UPDATES ONLY</p><h1>Ask UniFlow.</h1></div></div>
+                <AskCampus signedIn={Boolean(studentEmail)} onSignIn={() => enterStudentDemo()} onOpenItem={(id) => go(`/app/item/${id}`)} />
+              </section>
+            )}
+            {location.route === "assignments" && <AssignmentsPage signedIn={Boolean(studentEmail)} email={studentEmail} onSignIn={() => enterStudentDemo()} />}
             {location.route === "saved" && <SavedPage email={studentEmail} items={campusRecords} savedItems={saved.map((entry) => campusRecords.find((itemEntry) => itemEntry.id === entry.itemId)).filter((entry): entry is CampusItem => Boolean(entry))} saved={isSaved} onSave={handleSave} onOpen={(id) => go(`/app/item/${id}`)} onDiscover={() => go("/app/discover")} />}
             {location.route === "profile" && <ProfilePage profile={profile} onSave={(next) => { setProfile(next); localStorage.setItem("uniflow-student-profile", JSON.stringify(next)); setSavedNotice("Demo preferences saved.") }} />}
             {location.route === "joined" && <JoinedPage rsvp={rsvp} joinedItems={rsvp.joined.map((entry) => campusRecords.find((itemEntry) => itemEntry.id === entry.itemId)).filter((entry): entry is CampusItem => Boolean(entry))} saved={isSaved} onSave={handleSave} onOpen={(id) => go(`/app/item/${id}`)} onDiscover={() => go("/app/discover")} />}

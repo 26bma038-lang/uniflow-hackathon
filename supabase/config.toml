@@ -380,6 +380,16 @@ deno_version = 2
 # [edge_runtime.secrets]
 # secret_key = "env(SECRET_VALUE)"
 
+# Both functions check the caller's session themselves (supabase/functions/_shared/http.ts
+# asks Supabase Auth to validate the bearer token) and answer in the app's own error shape,
+# so the gateway's separate JWT check is turned off. Neither function does anything for a
+# caller without a valid session.
+[functions.extract-poster]
+verify_jwt = false
+
+[functions.discover]
+verify_jwt = false
+
 [analytics]
 enabled = true
 port = 54327
