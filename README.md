@@ -28,11 +28,11 @@ The loop UniFlow is built around: campus notice or poster → AI extraction → 
 | Club sign-in | Same sign-in, then the account's rows in `club_members` decide which club workspaces open. **Tested live**: a member opens the workspace, a non-member is refused |
 | Storage | Supabase for events (drafts and publications), RSVPs and membership. `localStorage` for saved items, interests, club profile text and the activity list |
 | AI extraction from a poster | Working, **tested live** with `gemma-4-26b-a4b-it`: a club member's poster image goes to the `extract-poster` Edge Function, the fields fill the editable form, and the update goes through human review before it can be published. "Use sample brief" is still simulated |
-| AI discovery (`/app/ask`) | Working, **tested live**: the model answered from a published event and cited that record with its source link. Answers come from published events only |
+| AI discovery (`/app/ask`) | Working, **tested live** with 169Pi's `alpie-32b`. Answers come from published records only, cite the records used and link their original sources. Three questions were checked through the Ask page on 2026-10-10: ChEmference 2026 (29 to 31 October, citing the record and the official page), a scholarship with no stated deadline (said so, invented no date), and a question with no matching record (cited nothing). Answers took 8 to 23 seconds |
 | Assignments (`/app/assignments`) | Working, **tested live**: create, list, mark done, delete. A private per-student coursework list |
 | Supabase database | Connected: Auth, `club_members`, `events`, `rsvps`, `assignments` and `club_rsvp_counts()`. `seed.sql` is not applied, so the sample records are not in the database and cannot be joined |
 | Imported campus data | **Live.** 9 NIT Hamirpur clubs and 5 updates imported from official public sources, labelled "Imported from …" with their source links. See [Imported campus data](#imported-campus-data) |
-| Gemma via the Gemini API | Called only from the Edge Functions in `supabase/functions/`, default model `gemma-4-26b-a4b-it`. Needs the `GEMINI_API_KEY` function secret; see `supabase/README.md` |
+| AI models | Called only from the Edge Functions in `supabase/functions/`. Poster extraction uses Gemma (`gemma-4-26b-a4b-it`, `GEMINI_API_KEY`). Ask uses 169Pi's Alpie (`alpie-32b`, `ALPIE_API_KEY`). There is no model selector and no fallback from one to the other; see `supabase/README.md` |
 
 ## Flows
 
@@ -101,7 +101,8 @@ Copy `.env.example` to `.env.local`. The browser reads the two `VITE_` values; w
 | `VITE_SUPABASE_URL` | browser | Project URL |
 | `VITE_SUPABASE_PUBLISHABLE_KEY` | browser | Publishable key (`sb_publishable_…`); safe to ship only because RLS is enabled |
 | `SUPABASE_SECRET_KEY` | admin scripts only | Secret key (`sb_secret_…`). Not read by the app. Never prefix with `VITE_`, never ship to the browser |
-| `GEMINI_API_KEY` | Edge Function secret only | Set with `supabase secrets set`, not in `.env.local`. Never prefix with `VITE_` |
+| `GEMINI_API_KEY` | Edge Function secret only | Poster extraction. Set with `supabase secrets set`, not in `.env.local`. Never prefix with `VITE_` |
+| `ALPIE_API_KEY` | Edge Function secret only | Ask. Same rules as above |
 | `PORT` | Vite | Optional, defaults to 8443 |
 
 ## Database
@@ -183,6 +184,8 @@ Needs two accounts created in the Supabase project, one of them added to `club_m
 7. Sign back in as the club and open the published page to see the RSVP count.
 
 ## Known limitations
+
+- Ask is slow: Alpie took 8 to 23 seconds per answer in the live checks. The page shows "Searching published records." while it waits. If Alpie fails or times out (60 seconds), Ask shows the error; it does not fall back to another model.
 
 - Imported records are a snapshot from 2026-10-10. Nothing re-checks the sources, so a date changed by the publisher will not update here.
 - AI discovery cites a record's start date only; a multi-day range appears in the answer text and on the record page.

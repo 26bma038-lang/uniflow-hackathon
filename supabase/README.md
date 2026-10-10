@@ -77,7 +77,10 @@ To keep the key out of shell history, put `GEMINI_API_KEY=...` in a file that gi
 
 | Secret | Required | Default | Purpose |
 |---|---|---|---|
-| `GEMINI_API_KEY` | yes | — | Gemini API key from Google AI Studio |
+| `GEMINI_API_KEY` | yes, for `extract-poster` | — | Gemini API key from Google AI Studio |
+| `ALPIE_API_KEY` | yes, for `discover` | — | 169Pi API key |
+| `ALPIE_MODEL` | no | `alpie-32b` | Model id sent to 169Pi |
+| `ALPIE_TIMEOUT_MS` | no | `60000` | How long `discover` waits for Alpie, 1000–70000. Kept under the 75 s the browser waits |
 | `GEMMA_MODEL` | no | `gemma-4-26b-a4b-it` | Model id; `gemma-4-31b-it` is the other Gemma 4 id the Gemini API serves |
 | `GEMMA_THINKING_LEVEL` | no | `minimal` | `minimal` (thinking off, faster) or `high`; empty leaves the model's default |
 | `GEMMA_TIMEOUT_MS` | no | `45000` | How long to wait for the model, 1000–120000 |
@@ -179,7 +182,7 @@ Scholarship, Deadline, or Opportunity. `timezone` is returned only when the post
 1. Validates the session and the query.
 2. Reads up to 60 of the newest events with `status = 'published'`, as the caller. The
    explicit status filter keeps a club member's own drafts out.
-3. Sends only those rows and the question to Gemma, which returns an answer and the ids it
+3. Sends only those rows and the question to 169Pi's Alpie (`alpie-32b`, `POST https://api.169pi.com/v1/chat/completions` with a bearer key, as in 169Pi's official `pi169` SDK), which returns an answer and the ids it
    relied on. Registration links are not sent to the model.
 4. Drops any id that was not fetched, builds each source from the database row (never from
    model text), removes links the model wrote unless a cited row holds them, and replaces
@@ -200,7 +203,7 @@ Checked on 2026-10-10 against Google's documentation:
 - Rate limits are not published per model. They are per project and shown in
   [Google AI Studio](https://aistudio.google.com/rate-limit).
 
-Neither function limits how often one user may call it; the only limit is the Gemini API's.
+Neither function limits how often one user may call it; the only limits are the model providers' own (169Pi documents 60 requests a minute and 1,000 an hour). `discover` has no fallback model: an Alpie failure is returned to the caller with the HTTP status and Alpie's own error word in `detail`.
 
 ## Assignments
 
