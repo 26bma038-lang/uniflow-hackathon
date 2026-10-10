@@ -390,6 +390,10 @@ verify_jwt = false
 [functions.discover]
 verify_jwt = false
 
+# Trial of the Alpie model for Ask. Same caller checks as discover, done inside the function.
+[functions.discover-alpie]
+verify_jwt = false
+
 [analytics]
 enabled = true
 port = 54327
